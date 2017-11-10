@@ -10,9 +10,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
         ReadMe.md = ReadMe.md
     EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D9E63A0E-EE9A-4507-9D4A-35AD47E5C89A}"
+    ProjectSection(SolutionItems) = preProject
+        Directory.Build.props = Directory.Build.props
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Stochastics", "source\gfoidl.Stochastics\gfoidl.Stochastics.csproj", "{B071CBBC-D096-4E62-A7D1-146FFC9B0431}"
+EndProject
 Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
     GlobalSection(SolutionProperties) = preSolution
         HideSolutionNode = FALSE
+    EndGlobalSection
+    GlobalSection(NestedProjects) = preSolution
+        {B071CBBC-D096-4E62-A7D1-146FFC9B0431} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
     EndGlobalSection
     GlobalSection(ExtensibilityGlobals) = postSolution
         SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
