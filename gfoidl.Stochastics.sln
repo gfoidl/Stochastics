@@ -12,12 +12,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D9E63A0E-EE9A-4507-9D4A-35AD47E5C89A}"
     ProjectSection(SolutionItems) = preProject
+        .appveyor.yml = .appveyor.yml
+        build.sh = build.sh
         Directory.Build.props = Directory.Build.props
     EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Stochastics", "source\gfoidl.Stochastics\gfoidl.Stochastics.csproj", "{B071CBBC-D096-4E62-A7D1-146FFC9B0431}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Stochastics", "source\gfoidl.Stochastics\gfoidl.Stochastics.csproj", "{B071CBBC-D096-4E62-A7D1-146FFC9B0431}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{5156FC31-AB87-4E55-97D3-F68959317BB8}"
+    ProjectSection(SolutionItems) = preProject
+        .circleci\config.yml = .circleci\config.yml
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EFBEAA6C-2E09-4A10-898C-D20897F3609F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Stochastics.Tests", "tests\gfoidl.Stochastics.Tests\gfoidl.Stochastics.Tests.csproj", "{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +40,18 @@ Global
         {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Debug|Any CPU.Build.0 = Debug|Any CPU
         {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Release|Any CPU.ActiveCfg = Release|Any CPU
         {B071CBBC-D096-4E62-A7D1-146FFC9B0431}.Release|Any CPU.Build.0 = Release|Any CPU
+        {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Release|Any CPU.Build.0 = Release|Any CPU
     EndGlobalSection
     GlobalSection(SolutionProperties) = preSolution
         HideSolutionNode = FALSE
     EndGlobalSection
     GlobalSection(NestedProjects) = preSolution
         {B071CBBC-D096-4E62-A7D1-146FFC9B0431} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
+        {5156FC31-AB87-4E55-97D3-F68959317BB8} = {D9E63A0E-EE9A-4507-9D4A-35AD47E5C89A}
+        {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3} = {EFBEAA6C-2E09-4A10-898C-D20897F3609F}
     EndGlobalSection
     GlobalSection(ExtensibilityGlobals) = postSolution
         SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
