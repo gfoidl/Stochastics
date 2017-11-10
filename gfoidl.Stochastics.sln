@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EFBEAA6C-2E09-4A10-898C-D20897F3609F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Stochastics.Tests", "tests\gfoidl.Stochastics.Tests\gfoidl.Stochastics.Tests.csproj", "{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Stochastics.Tests", "tests\gfoidl.Stochastics.Tests\gfoidl.Stochastics.Tests.csproj", "{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
