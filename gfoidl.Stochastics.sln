@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE412BB7-AEC5-4321-868C-87D37360D929}"
+    ProjectSection(SolutionItems) = preProject
+        .gitattributes = .gitattributes
+        .gitignore = .gitignore
+        ReadMe.md = ReadMe.md
+    EndProjectSection
+EndProject
+Global
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+    GlobalSection(ExtensibilityGlobals) = postSolution
+        SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
+    EndGlobalSection
+EndGlobal
