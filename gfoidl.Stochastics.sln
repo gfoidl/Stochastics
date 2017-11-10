@@ -30,6 +30,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EFBEAA6C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Stochastics.Tests", "tests\gfoidl.Stochastics.Tests\gfoidl.Stochastics.Tests.csproj", "{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{7917B2B4-78F0-4BDE-86FE-316549A84E4E}"
+    ProjectSection(SolutionItems) = preProject
+        doc\RandomNumberGenerator.md = doc\RandomNumberGenerator.md
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{14C631E7-BED7-4C06-BDEF-2AF5FAF0F37C}"
+    ProjectSection(SolutionItems) = preProject
+        doc\images\Chauvenet's-criterion.png = doc\images\Chauvenet's-criterion.png
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Statistics", "Statistics", "{244A6568-911B-4EA7-BC51-3F1AA155E8E7}"
+    ProjectSection(SolutionItems) = preProject
+        doc\Statistics\Sample.md = doc\Statistics\Sample.md
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutlierDetection", "OutlierDetection", "{786350CE-30B5-414D-BC8F-5F959AAD5949}"
+    ProjectSection(SolutionItems) = preProject
+        doc\Statistics\OutlierDetection\ChauvenetOutlierDetection.md = doc\Statistics\OutlierDetection\ChauvenetOutlierDetection.md
+    EndProjectSection
+EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
         Debug|Any CPU = Debug|Any CPU
@@ -52,6 +72,9 @@ Global
         {B071CBBC-D096-4E62-A7D1-146FFC9B0431} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
         {5156FC31-AB87-4E55-97D3-F68959317BB8} = {D9E63A0E-EE9A-4507-9D4A-35AD47E5C89A}
         {902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3} = {EFBEAA6C-2E09-4A10-898C-D20897F3609F}
+        {14C631E7-BED7-4C06-BDEF-2AF5FAF0F37C} = {7917B2B4-78F0-4BDE-86FE-316549A84E4E}
+        {244A6568-911B-4EA7-BC51-3F1AA155E8E7} = {7917B2B4-78F0-4BDE-86FE-316549A84E4E}
+        {786350CE-30B5-414D-BC8F-5F959AAD5949} = {244A6568-911B-4EA7-BC51-3F1AA155E8E7}
     EndGlobalSection
     GlobalSection(ExtensibilityGlobals) = postSolution
         SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}

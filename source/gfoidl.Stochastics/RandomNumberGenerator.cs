@@ -37,9 +37,10 @@ namespace gfoidl.Stochastics
         /// Produces the next uniform distributes number in the range [0, 1).
         /// </summary>
         /// <returns>The next uniform distributes number in the range [0, 1).</returns>
+        /// <remarks>Lehmer / Knuth</remarks>
         public double Uniform()
         {
-            _uz = (201d * _uz + 100000d / 3d) - (int)(201d * _uz + 100000d / 3d);
+            _uz = (201d * _uz + 100_000d / 3d) - (int)(201d * _uz + 100_000d / 3d);
 
             return _uz;
         }

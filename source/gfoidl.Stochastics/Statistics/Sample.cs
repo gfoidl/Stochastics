@@ -14,7 +14,7 @@ namespace gfoidl.Stochastics.Statistics
         private readonly double[] _values;
         //---------------------------------------------------------------------
         /// <summary>
-        /// Sammple.
+        /// Sample.
         /// </summary>
         public ICollection<double> Values => _values;
         //---------------------------------------------------------------------
@@ -184,7 +184,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         private double _variance = double.NaN;
         /// <summary>
-        /// Variance.
+        /// Variance. 1/N
         /// </summary>
         public double Variance
         {
@@ -198,6 +198,9 @@ namespace gfoidl.Stochastics.Statistics
         }
         //---------------------------------------------------------------------
         private double _sampleVariance = double.NaN;
+        /// <summary>
+        /// Sample Variance. 1/(N-1)
+        /// </summary>
         public double SampleVariance
         {
             get
