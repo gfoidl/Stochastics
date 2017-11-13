@@ -88,7 +88,6 @@ namespace gfoidl.Stochastics.Statistics
             return kurtosis;
         }
         //---------------------------------------------------------------------
-        private double ZTransformation(double value, double avg, double sigma)
-            => (value - avg) / sigma;
+        private double ZTransformation(double value, double avg, double sigma) => (value - avg) / sigma;
     }
 }

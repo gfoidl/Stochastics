@@ -33,5 +33,18 @@ namespace gfoidl.Stochastics.Tests.Statistics.ChauvenetOutlierDetectionTests
 
             Assert.AreEqual(values.Length, actual.Length);
         }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Sample_with_repeated_values___no_outlier_reported()
+        {
+            double[] values = Enumerable.Repeat(0.6, 5).ToArray();
+            var sample      = new Sample(values);
+
+            var sut = new ChauvenetOutlierDetection(sample);
+
+            var actual = sut.GetValuesWithoutOutliers().ToArray();
+
+            CollectionAssert.AreEqual(values, actual);
+        }
     }
 }

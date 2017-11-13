@@ -44,6 +44,18 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             }
         }
         //---------------------------------------------------------------------
+        [Test]
+        public void Repeated_values_given___original_values_returned()
+        {
+            double[] values = Enumerable.Repeat(42d, 10).ToArray();
+
+            var sut = new Sample(values);
+
+            double[] transformed = sut.ZTransformation().ToArray();
+
+            CollectionAssert.AreEqual(values, transformed);
+        }
+        //---------------------------------------------------------------------
         private double[] GetSampleValues()
         {
             var values = new double[1000];
