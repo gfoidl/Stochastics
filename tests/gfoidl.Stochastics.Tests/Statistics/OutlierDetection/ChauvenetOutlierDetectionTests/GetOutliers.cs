@@ -42,7 +42,7 @@ namespace gfoidl.Stochastics.Tests.Statistics.ChauvenetOutlierDetectionTests
 
             var sut = new ChauvenetOutlierDetection(sample);
 
-            var actual = sut.GetValuesWithoutOutliers().ToArray();
+            var actual = sut.GetOutliers().ToArray();
 
             Assert.AreEqual(0, actual.Length);
         }
