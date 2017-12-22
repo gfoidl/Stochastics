@@ -17,18 +17,6 @@ namespace gfoidl.Stochastics.Statistics
                 return _sortedValues[n >> 1];
         }
         //---------------------------------------------------------------------
-        private double CalculateDelta()
-        {
-            double delta = 0;
-            double[] tmp = _sortedValues;
-            double avg   = this.Mean;
-
-            for (int i = 0; i < tmp.Length; ++i)
-                delta += Math.Abs(tmp[i] - avg);
-
-            return delta / tmp.Length;
-        }
-        //---------------------------------------------------------------------
         private double CalculateVariance()       => this.VarianceCore() / this.Count;
         private double CalculateSampleVariance() => this.VarianceCore() / (this.Count - 1d);
         //---------------------------------------------------------------------
