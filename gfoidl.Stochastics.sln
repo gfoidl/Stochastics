@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE412BB7-AEC5-4321-868C-87D37360D929}"
 	ProjectSection(SolutionItems) = preProject
@@ -50,6 +50,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutlierDetection", "Outlier
 		doc\Statistics\OutlierDetection\ChauvenetOutlierDetection.md = doc\Statistics\OutlierDetection\ChauvenetOutlierDetection.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "perf", "perf", "{8B4BBAD6-14D4-410F-9789-91A0682D93C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Stochastics.Benchmarks", "perf\gfoidl.Stochastics.Benchmarks\gfoidl.Stochastics.Benchmarks.csproj", "{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,10 @@ Global
 		{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{902CB41A-DDB5-4AEB-B5E8-AD6494EF4DB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +83,7 @@ Global
 		{14C631E7-BED7-4C06-BDEF-2AF5FAF0F37C} = {7917B2B4-78F0-4BDE-86FE-316549A84E4E}
 		{244A6568-911B-4EA7-BC51-3F1AA155E8E7} = {7917B2B4-78F0-4BDE-86FE-316549A84E4E}
 		{786350CE-30B5-414D-BC8F-5F959AAD5949} = {244A6568-911B-4EA7-BC51-3F1AA155E8E7}
+		{1B138AD4-AB52-4011-A0CB-C9AD6BB10D7B} = {8B4BBAD6-14D4-410F-9789-91A0682D93C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
