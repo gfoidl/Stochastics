@@ -30,7 +30,7 @@ namespace gfoidl.Stochastics.Statistics
         /// <exception cref="ArgumentNullException"><paramref name="values" /> is <c>null</c>.</exception>
         public Sample(IEnumerable<double> values)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
 
             if (values is double[] tmp)
                 _values = tmp;
