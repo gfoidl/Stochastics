@@ -8,6 +8,7 @@ namespace gfoidl.Stochastics
     /// </summary>
     public class RandomNumberGenerator
     {
+        private static readonly double _100_000_by_3 = 100_000d / 3;
         private double _uz;
         private double _nz;
         private double _ez;
@@ -40,7 +41,7 @@ namespace gfoidl.Stochastics
         /// <remarks>Lehmer / Knuth</remarks>
         public double Uniform()
         {
-            _uz = (201d * _uz + 100_000d / 3d) - (int)(201d * _uz + 100_000d / 3d);
+            _uz = (201d * _uz + _100_000_by_3) - (int)(201d * _uz + _100_000_by_3);
 
             return _uz;
         }
