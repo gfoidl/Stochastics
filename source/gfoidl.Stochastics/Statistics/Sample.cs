@@ -332,7 +332,7 @@ namespace gfoidl.Stochastics.Statistics
                 if (pi.Name == nameof(this.Values) || pi.Name == nameof(this.SortedValues))
                     continue;
 
-                sb.AppendLine($"{pi.Name,-23}: {pi.GetValue(this)}");
+                sb.AppendFormat("{0,-23}", pi.Name).Append(": ").Append(pi.GetValue(this)).AppendLine();
             }
 
             return sb.ToString();
