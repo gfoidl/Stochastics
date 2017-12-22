@@ -9,12 +9,12 @@ namespace gfoidl.Stochastics.Statistics
             int n = this.SortedValues.Count;
 
             if (n % 2 == 0)
-                return (_sortedValues[n / 2 - 1] + _sortedValues[n / 2]) * 0.5;
+                return (_sortedValues[(n >> 1) - 1] + _sortedValues[n >> 1]) * 0.5;
             else
                 // this is correct, but n is an int, so the next line is 
-                // very slight optimization and yield the same resul.
+                // very slight optimization and yield the same result.
                 //_median = _sortedValues[(n - 1) / 2];
-                return _sortedValues[n / 2];
+                return _sortedValues[n >> 1];
         }
         //---------------------------------------------------------------------
         private double CalculateDelta()
