@@ -297,8 +297,10 @@ namespace gfoidl.Stochastics.Statistics
             //-----------------------------------------------------------------
             IEnumerable<(double, double)> Core()
             {
-                for (int i = 0; i < tmp.Length; ++i)
-                    yield return (tmp[i], this.ZTransformation(tmp[i], avg, sigma));
+                double[] data = _values;
+
+                for (int i = 0; i < data.Length; ++i)
+                    yield return (data[i], this.ZTransformation(data[i], avg, sigma));
             }
         }
         //---------------------------------------------------------------------
