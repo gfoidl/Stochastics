@@ -26,7 +26,5 @@
 
             return _varianceCore;
         }
-        //---------------------------------------------------------------------
-        private double ZTransformation(double value, double avg, double sigma) => (value - avg) / sigma;
     }
 }

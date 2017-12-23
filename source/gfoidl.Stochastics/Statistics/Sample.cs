@@ -283,27 +283,8 @@ namespace gfoidl.Stochastics.Statistics
         /// </param>
         /// <returns>The z-Transformed sample.</returns>
         /// <seealso cref="!:https://en.wikipedia.org/wiki/Standard_score" />
-        public IEnumerable<double> ZTransformation(double? standardDeviation = null) 
+        public IEnumerable<double> ZTransformation(double? standardDeviation = null)
             => this.ZTransformationInternal(standardDeviation).Select(t => t.zTransformed);
-        //---------------------------------------------------------------------
-        internal IEnumerable<(double Value, double zTransformed)> ZTransformationInternal(double? standardDeviation = null)
-        {
-            double avg   = this.Mean;
-            double sigma = standardDeviation ?? this.SampleStandardDeviation;
-            double[] tmp = _values;
-
-            return sigma == 0
-                ? tmp.Select(d => (d, d))
-                : Core();
-            //-----------------------------------------------------------------
-            IEnumerable<(double, double)> Core()
-            {
-                double[] data = _values;
-
-                for (int i = 0; i < data.Length; ++i)
-                    yield return (data[i], this.ZTransformation(data[i], avg, sigma));
-            }
-        }
         //---------------------------------------------------------------------
         /// <summary>
         /// Autocorrelation
