@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace gfoidl.Stochastics.Statistics
@@ -30,7 +31,7 @@ namespace gfoidl.Stochastics.Statistics
         /// <exception cref="ArgumentNullException"><paramref name="values" /> is <c>null</c>.</exception>
         public Sample(IEnumerable<double> values)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
 
             if (values is double[] tmp)
                 _values = tmp;
@@ -282,44 +283,32 @@ namespace gfoidl.Stochastics.Statistics
         /// </param>
         /// <returns>The z-Transformed sample.</returns>
         /// <seealso cref="!:https://en.wikipedia.org/wiki/Standard_score" />
-        public IEnumerable<double> ZTransformation(double? standardDeviation = null) 
+        public IEnumerable<double> ZTransformation(double? standardDeviation = null)
             => this.ZTransformationInternal(standardDeviation).Select(t => t.zTransformed);
         //---------------------------------------------------------------------
-        internal IEnumerable<(double Value, double zTransformed)> ZTransformationInternal(double? standardDeviation = null)
-        {
-            double avg   = this.Mean;
-            double sigma = standardDeviation ?? this.SampleStandardDeviation;
-            double[] tmp = _values;
-
-            return sigma == 0
-                ? tmp.Select(d => (d, d))
-                : Core();
-            //-----------------------------------------------------------------
-            IEnumerable<(double, double)> Core()
-            {
-                for (int i = 0; i < tmp.Length; ++i)
-                    yield return (tmp[i], this.ZTransformation(tmp[i], avg, sigma));
-            }
-        }
+        /// <summary>
+        /// Returns the z-Transformed sample.
+        /// </summary>
+        /// <param name="standardDeviation">
+        /// The standard deviation used to perform the z-Transformation.
+        /// Can bei either <see cref="StandardDeviation" /> or <see cref="SampleStandardDeviation" />
+        /// depending on the sample and on what to inspect.
+        /// <para>
+        /// When no value is given, <see cref="SampleStandardDeviation" /> will be used.
+        /// </para>
+        /// </param>
+        /// <returns>The z-Transformed sample.</returns>
+        /// <seealso cref="!:https://en.wikipedia.org/wiki/Standard_score" />
+        public double[] ZTransformationToArray(double? standardDeviation = null)
+            => this.ZTransformationToArrayInternal(standardDeviation);
         //---------------------------------------------------------------------
         /// <summary>
         /// Autocorrelation
         /// </summary>
         /// <returns>The autocorrelation of the sample.</returns>
-        public IEnumerable<double> AutoCorrelation()
-        {
-            double[] tmp = _values;
-
-            for (int m = 0; m < tmp.Length / 2; ++m)
-            {
-                double r_xx = 0;
-
-                for (int k = m; k < tmp.Length; ++k)
-                    r_xx += tmp[k] * tmp[k - m];
-
-                yield return r_xx / (tmp.Length - m);
-            }
-        }
+        public IEnumerable<double> AutoCorrelation() => Vector.IsHardwareAccelerated
+            ? AutoCorrelationSimd()
+            : AutoCorrelationSequential();
         //---------------------------------------------------------------------
         public override string ToString()
         {
@@ -330,7 +319,7 @@ namespace gfoidl.Stochastics.Statistics
                 if (pi.Name == nameof(this.Values) || pi.Name == nameof(this.SortedValues))
                     continue;
 
-                sb.AppendLine($"{pi.Name,-23}: {pi.GetValue(this)}");
+                sb.AppendFormat("{0,-23}", pi.Name).Append(": ").Append(pi.GetValue(this)).AppendLine();
             }
 
             return sb.ToString();
