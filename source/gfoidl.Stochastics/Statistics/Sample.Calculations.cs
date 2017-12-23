@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace gfoidl.Stochastics.Statistics
+﻿namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {

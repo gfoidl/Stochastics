@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace gfoidl.Stochastics.Statistics
@@ -308,20 +309,9 @@ namespace gfoidl.Stochastics.Statistics
         /// Autocorrelation
         /// </summary>
         /// <returns>The autocorrelation of the sample.</returns>
-        public IEnumerable<double> AutoCorrelation()
-        {
-            double[] tmp = _values;
-
-            for (int m = 0; m < tmp.Length / 2; ++m)
-            {
-                double r_xx = 0;
-
-                for (int k = m; k < tmp.Length; ++k)
-                    r_xx += tmp[k] * tmp[k - m];
-
-                yield return r_xx / (tmp.Length - m);
-            }
-        }
+        public IEnumerable<double> AutoCorrelation() => Vector.IsHardwareAccelerated
+            ? AutoCorrelationSimd()
+            : AutoCorrelationSequential();
         //---------------------------------------------------------------------
         public override string ToString()
         {
