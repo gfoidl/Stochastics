@@ -287,6 +287,22 @@ namespace gfoidl.Stochastics.Statistics
             => this.ZTransformationInternal(standardDeviation).Select(t => t.zTransformed);
         //---------------------------------------------------------------------
         /// <summary>
+        /// Returns the z-Transformed sample.
+        /// </summary>
+        /// <param name="standardDeviation">
+        /// The standard deviation used to perform the z-Transformation.
+        /// Can bei either <see cref="StandardDeviation" /> or <see cref="SampleStandardDeviation" />
+        /// depending on the sample and on what to inspect.
+        /// <para>
+        /// When no value is given, <see cref="SampleStandardDeviation" /> will be used.
+        /// </para>
+        /// </param>
+        /// <returns>The z-Transformed sample.</returns>
+        /// <seealso cref="!:https://en.wikipedia.org/wiki/Standard_score" />
+        public double[] ZTransformationToArray(double? standardDeviation = null)
+            => this.ZTransformationToArrayInternal(standardDeviation);
+        //---------------------------------------------------------------------
+        /// <summary>
         /// Autocorrelation
         /// </summary>
         /// <returns>The autocorrelation of the sample.</returns>
