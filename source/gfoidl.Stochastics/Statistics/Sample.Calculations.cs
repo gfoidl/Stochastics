@@ -22,18 +22,7 @@
         private double VarianceCore()
         {
             if (double.IsNaN(_varianceCore))
-            {
-                double variance = 0;
-                double[] tmp    = _values;
-                double avg      = this.Mean;
-
-                for (int i = 0; i < tmp.Length; ++i)
-                    variance += tmp[i] * tmp[i];
-
-                variance -= tmp.Length * avg * avg;
-
-                _varianceCore = variance;
-            }
+                _varianceCore = this.CalculateVarianceCore();
 
             return _varianceCore;
         }
