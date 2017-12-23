@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Numerics;
 
 namespace gfoidl.Stochastics.Benchmarks
 {
@@ -12,6 +14,8 @@ namespace gfoidl.Stochastics.Benchmarks
                 Environment.Exit(1);
             }
 
+            Console.WriteLine($"{nameof(Vector.IsHardwareAccelerated)}: {Vector.IsHardwareAccelerated}");
+
             string arg = args[0];
 
             switch (arg)
@@ -19,9 +23,18 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(CalculateDeltaBenchmarks):
                     CalculateDeltaBenchmarks.Run();
                     break;
+                case nameof(CalculateVarianceCoreBenchmarks):
+                    CalculateVarianceCoreBenchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Console.WriteLine("\nEnd.");
+                Console.ReadKey();
             }
         }
     }
