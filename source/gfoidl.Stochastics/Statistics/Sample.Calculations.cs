@@ -27,24 +27,6 @@
             return _varianceCore;
         }
         //---------------------------------------------------------------------
-        private double CalculateKurtosis()
-        {
-            double kurtosis = 0;
-            double[] tmp    = _values;
-            double avg      = this.Mean;
-            double sigma    = this.StandardDeviation;
-
-            for (int i = 0; i < tmp.Length; ++i)
-            {
-                double t = tmp[i] - avg;
-                kurtosis += t * t * t * t;
-            }
-
-            kurtosis /= tmp.Length * sigma * sigma * sigma * sigma;
-
-            return kurtosis;
-        }
-        //---------------------------------------------------------------------
         private double ZTransformation(double value, double avg, double sigma) => (value - avg) / sigma;
     }
 }
