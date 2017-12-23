@@ -15,6 +15,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Update="Statistics\Sample.*.cs" DependentUpon="Sample.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Update="Strings.Designer.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
