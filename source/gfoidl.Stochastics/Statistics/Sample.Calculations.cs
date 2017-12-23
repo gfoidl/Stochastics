@@ -27,24 +27,6 @@
             return _varianceCore;
         }
         //---------------------------------------------------------------------
-        private double CalculateSkewness()
-        {
-            double skewness = 0;
-            double[] tmp    = _values;
-            double avg      = this.Mean;
-            double sigma    = this.StandardDeviation;
-
-            for (int i = 0; i < tmp.Length; ++i)
-            {
-                double t = tmp[i] - avg;
-                skewness += t * t * t;
-            }
-
-            skewness /= tmp.Length * sigma * sigma * sigma;
-
-            return skewness;
-        }
-        //---------------------------------------------------------------------
         private double CalculateKurtosis()
         {
             double kurtosis = 0;
