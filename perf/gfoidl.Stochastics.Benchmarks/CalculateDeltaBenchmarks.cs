@@ -254,17 +254,15 @@ namespace gfoidl.Stochastics.Benchmarks
                             var avgVec   = new Vector<double>(avg);
                             var deltaVec = new Vector<double>(0);
 
-                            for (; i < n - 2 * Vector<double>.Count;)
+                            for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                             {
                                 Vector<double> vec = Unsafe.Read<Vector<double>>(arr);
                                 deltaVec += Vector.Abs(vec - avgVec);
                                 arr      += Vector<double>.Count;
-                                i        += Vector<double>.Count;
 
                                 vec = Unsafe.Read<Vector<double>>(arr);
                                 deltaVec += Vector.Abs(vec - avgVec);
                                 arr      += Vector<double>.Count;
-                                i        += Vector<double>.Count;
                             }
 
                             for (int j = 0; j < Vector<double>.Count; ++j)

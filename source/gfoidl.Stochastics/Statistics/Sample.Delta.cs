@@ -7,49 +7,50 @@ namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
-        internal const int ThresholdForDelta = 100_000;
-        //---------------------------------------------------------------------
         private double CalculateDelta()
         {
-            // Threshould determined by benchmark (roughly)
-            return this.Count < ThresholdForDelta
+            return this.Count < ThresholdForParallel
                 ? this.CalculateDeltaSimd()
                 : this.CalculateDeltaParallelizedSimd();
         }
         //---------------------------------------------------------------------
-        internal double CalculateDeltaSimd()
+        internal unsafe double CalculateDeltaSimd()
         {
             double delta = 0;
-            double[] arr = _values;
             double avg   = this.Mean;
-            int i        = 0;
+            int n        = _values.Length;
 
-            if (Vector.IsHardwareAccelerated && this.Count >= Vector<double>.Count * 2)
+            fixed (double* pArray = _values)
             {
-                var avgVec   = new Vector<double>(avg);
-                var deltaVec = new Vector<double>(0);
+                double* arr = pArray;
+                int i       = 0;
 
-                for (; i < arr.Length - 2 * Vector<double>.Count; i += Vector<double>.Count)
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
                 {
-                    var vec = new Vector<double>(arr, i);
-                    deltaVec += Vector.Abs(vec - avgVec);
+                    var avgVec   = new Vector<double>(avg);
+                    var deltaVec = new Vector<double>(0);
 
-                    i += Vector<double>.Count;
-                    vec = new Vector<double>(arr, i);
-                    deltaVec += Vector.Abs(vec - avgVec);
+                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    {
+                        Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                        deltaVec += Vector.Abs(vec - avgVec);
+
+                        vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                        deltaVec += Vector.Abs(vec - avgVec);
+                    }
+
+                    for (int j = 0; j < Vector<double>.Count; ++j)
+                        delta += deltaVec[j];
                 }
 
-                for (int j = 0; j < Vector<double>.Count; ++j)
-                    delta += deltaVec[j];
+                for (; i < n; ++i)
+                    delta += Math.Abs(pArray[i] - avg);
             }
 
-            for (; i < arr.Length; ++i)
-                delta += Math.Abs(arr[i] - avg);
-
-            return delta / arr.Length;
+            return delta / n;
         }
         //---------------------------------------------------------------------
-        internal double CalculateDeltaParallelizedSimd()
+        internal unsafe double CalculateDeltaParallelizedSimd()
         {
             double delta = 0;
             var sync     = new object();
@@ -59,35 +60,35 @@ namespace gfoidl.Stochastics.Statistics
                 range =>
                 {
                     double localDelta = 0;
-                    double[] arr      = _values;
                     double avg        = this.Mean;
-                    int i             = range.Item1;
+                    int n             = range.Item2;
 
-                    // RCE
-                    if ((uint)range.Item1 >= arr.Length || (uint)range.Item2 > arr.Length)
-                        ThrowHelper.ThrowArgumentOutOfRange(nameof(range));
-
-                    if (Vector.IsHardwareAccelerated && (range.Item2 - range.Item1) >= Vector<double>.Count * 2)
+                    fixed (double* pArray = _values)
                     {
-                        var avgVec   = new Vector<double>(avg);
-                        var deltaVec = new Vector<double>(0);
+                        int i       = range.Item1;
+                        double* arr = pArray + i;
 
-                        for (; i < range.Item2 - 2 * Vector<double>.Count; i += Vector<double>.Count)
+                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
                         {
-                            var arrVec = new Vector<double>(arr, i);
-                            deltaVec += Vector.Abs(arrVec - avgVec);
+                            var avgVec   = new Vector<double>(avg);
+                            var deltaVec = new Vector<double>(0);
 
-                            i += Vector<double>.Count;
-                            arrVec = new Vector<double>(arr, i);
-                            deltaVec += Vector.Abs(arrVec - avgVec);
+                            for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                            {
+                                Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                                deltaVec += Vector.Abs(vec - avgVec);
+
+                                vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                                deltaVec += Vector.Abs(vec - avgVec);
+                            }
+
+                            for (int j = 0; j < Vector<double>.Count; ++j)
+                                localDelta += deltaVec[j];
                         }
 
-                        for (int j = 0; j < Vector<double>.Count; ++j)
-                            localDelta += deltaVec[j];
+                        for (; i < n; ++i)
+                            localDelta += Math.Abs(pArray[i] - avg);
                     }
-
-                    for (; i < range.Item2; ++i)
-                        localDelta += Math.Abs(arr[i] - avg);
 
                     lock (sync) delta += localDelta;
                 }

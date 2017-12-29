@@ -1,63 +1,64 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
-        internal const int ThreshouldForKurtosis = 100_000;
-        //---------------------------------------------------------------------
         private double CalculateKurtosis()
         {
-            // Threshould set same as by Delta and VarianceCore.
-            // Assuming it will be similar.
-            return this.Count < ThreshouldForKurtosis
+            return this.Count < ThresholdForParallel
                 ? this.CalculateKurtosisSimd()
                 : this.CalculateKurtosisParallelizedSimd();
         }
         //---------------------------------------------------------------------
-        internal double CalculateKurtosisSimd()
+        internal unsafe double CalculateKurtosisSimd()
         {
             double kurtosis = 0;
-            double[] arr    = _values;
             double avg      = this.Mean;
-            double sigma    = this.StandardDeviation;
-            int i           = 0;
+            int n           = _values.Length;
 
-            if (Vector.IsHardwareAccelerated && this.Count >= Vector<double>.Count * 2)
+            fixed (double* pArray = _values)
             {
-                var avgVec  = new Vector<double>(avg);
-                var kurtVec = new Vector<double>(0);
+                double* arr = pArray;
+                int i       = 0;
 
-                for (; i < arr.Length - 2 * Vector<double>.Count; i += Vector<double>.Count)
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
                 {
-                    var vec = new Vector<double>(arr, i);
-                    vec -= avgVec;
-                    kurtVec += vec * vec * vec * vec;
+                    var avgVec  = new Vector<double>(avg);
+                    var kurtVec = new Vector<double>(0);
 
-                    i += Vector<double>.Count;
-                    vec = new Vector<double>(arr, i);
-                    vec -= avgVec;
-                    kurtVec += vec * vec * vec * vec;
+                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    {
+                        Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                        vec     -= avgVec;
+                        kurtVec += vec * vec * vec * vec;
+
+                        vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                        vec     -= avgVec;
+                        kurtVec += vec * vec * vec * vec;
+                    }
+
+                    for (int j = 0; j < Vector<double>.Count; ++j)
+                        kurtosis += kurtVec[j];
                 }
 
-                for (int j = 0; j < Vector<double>.Count; ++j)
-                    kurtosis += kurtVec[j];
+                for (; i < n; ++i)
+                {
+                    double t = pArray[i] - avg;
+                    kurtosis += t * t * t * t;
+                }
             }
 
-            for (; i < arr.Length; ++i)
-            {
-                double t = arr[i] - avg;
-                kurtosis += t * t * t * t;
-            }
-
-            kurtosis /= arr.Length * sigma * sigma * sigma * sigma;
+            double sigma = this.StandardDeviation;
+            kurtosis /= n * sigma * sigma * sigma * sigma;
 
             return kurtosis;
         }
         //---------------------------------------------------------------------
-        internal double CalculateKurtosisParallelizedSimd()
+        internal unsafe double CalculateKurtosisParallelizedSimd()
         {
             double kurtosis = 0;
             var sync        = new object();
@@ -67,39 +68,39 @@ namespace gfoidl.Stochastics.Statistics
                 range =>
                 {
                     double local = 0;
-                    double[] arr = _values;
                     double avg   = this.Mean;
-                    int i        = range.Item1;
+                    int n        = range.Item2;
 
-                    // RCE
-                    if ((uint)range.Item1 >= arr.Length || (uint)range.Item2 > arr.Length)
-                        ThrowHelper.ThrowArgumentOutOfRange(nameof(range));
-
-                    if (Vector.IsHardwareAccelerated && (range.Item2 - range.Item1) >= Vector<double>.Count * 2)
+                    fixed (double* pArray = _values)
                     {
-                        var avgVec  = new Vector<double>(avg);
-                        var kurtVec = new Vector<double>(0);
+                        int i       = range.Item1;
+                        double* arr = pArray + i;
 
-                        for (; i < range.Item2 - 2 * Vector<double>.Count; i += Vector<double>.Count)
+                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
                         {
-                            var vec = new Vector<double>(arr, i);
-                            vec -= avgVec;
-                            kurtVec += vec * vec * vec * vec;
+                            var avgVec  = new Vector<double>(avg);
+                            var kurtVec = new Vector<double>(0);
 
-                            i += Vector<double>.Count;
-                            vec = new Vector<double>(arr, i);
-                            vec -= avgVec;
-                            kurtVec += vec * vec * vec * vec;
+                            for (; i < range.Item2 - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                            {
+                                Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                                vec     -= avgVec;
+                                kurtVec += vec * vec * vec * vec;
+
+                                vec = VectorHelper.GetVectorWithAdvance(ref arr);
+                                vec     -= avgVec;
+                                kurtVec += vec * vec * vec * vec;
+                            }
+
+                            for (int j = 0; j < Vector<double>.Count; ++j)
+                                local += kurtVec[j];
                         }
 
-                        for (int j = 0; j < Vector<double>.Count; ++j)
-                            local += kurtVec[j];
-                    }
-
-                    for (; i < range.Item2; ++i)
-                    {
-                        double t = arr[i] - avg;
-                        local += t * t * t * t;
+                        for (; i < n; ++i)
+                        {
+                            double t = pArray[i] - avg;
+                            local += t * t * t * t;
+                        }
                     }
 
                     lock (sync) kurtosis += local;
@@ -108,6 +109,7 @@ namespace gfoidl.Stochastics.Statistics
 
             double sigma = this.StandardDeviation;
             kurtosis /= _values.Length * sigma * sigma * sigma * sigma;
+
             return kurtosis;
         }
     }

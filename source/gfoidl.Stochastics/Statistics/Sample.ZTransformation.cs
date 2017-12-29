@@ -8,8 +8,6 @@ namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
-        internal const int ThresholdForZTransformation = 100_000;
-        //---------------------------------------------------------------------
         internal IEnumerable<(double Value, double zTransformed)> ZTransformationInternal(double? standardDeviation = null)
         {
             double avg   = this.Mean;
@@ -43,13 +41,14 @@ namespace gfoidl.Stochastics.Statistics
                 return tmp;
             }
 
-            return this.Count < ThresholdForZTransformation
+            return this.Count < ThresholdForParallel
                 ? this.ZTransformationToArraySimd(sigma)
                 : this.ZTransformationToArrayParallelizedSimd(sigma);
         }
         //---------------------------------------------------------------------
         internal double[] ZTransformationToArraySimd(double sigma)
         {
+            // TODO: unsafe SIMD
             var zTrans      = new double[this.Count];
             double[] arr    = _values;
             double avg      = this.Mean;
@@ -82,6 +81,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double[] ZTransformationToArrayParallelizedSimd(double sigma)
         {
+            // TODO: unsafe SIMD
             var zTrans = new double[this.Count];
 
             Parallel.ForEach(
