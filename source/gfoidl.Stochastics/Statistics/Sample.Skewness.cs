@@ -25,15 +25,13 @@ namespace gfoidl.Stochastics.Statistics
         internal double CalculateSkewnessParallelizedSimd()
         {
             double skewness = 0;
-            var sync        = new object();
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
                     double localSkewness = this.CalculateSkewnessImpl((range.Item1, range.Item2));
-
-                    lock (sync) skewness += localSkewness;
+                    localSkewness.SafeAdd(ref skewness);
                 }
             );
 

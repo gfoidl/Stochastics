@@ -25,15 +25,13 @@ namespace gfoidl.Stochastics.Statistics
         internal double CalculateKurtosisParallelizedSimd()
         {
             double kurtosis = 0;
-            var sync        = new object();
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
                     double localKurtosis = this.CalculateKurtosisImpl((range.Item1, range.Item2));
-
-                    lock (sync) kurtosis += localKurtosis;
+                    localKurtosis.SafeAdd(ref kurtosis);
                 }
             );
 

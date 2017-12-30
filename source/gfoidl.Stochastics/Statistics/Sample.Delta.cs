@@ -24,15 +24,13 @@ namespace gfoidl.Stochastics.Statistics
         internal double CalculateDeltaParallelizedSimd()
         {
             double delta = 0;
-            var sync     = new object();
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
                     double localDelta = this.CalculateDeltaImpl((range.Item1, range.Item2));
-
-                    lock (sync) delta += localDelta;
+                    localDelta.SafeAdd(ref delta);
                 }
             );
 

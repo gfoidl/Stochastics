@@ -25,15 +25,13 @@ namespace gfoidl.Stochastics.Statistics
         internal unsafe double VarianceCoreParallelizedSimd()
         {
             double variance = 0;
-            var sync        = new object();
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
                     double localVariance = this.VarianceCoreImpl((range.Item1, range.Item2));
-
-                    lock (sync) variance += localVariance;
+                    localVariance.SafeAdd(ref variance);
                 }
             );
 
