@@ -11,7 +11,7 @@ namespace gfoidl.Stochastics.Statistics
         internal IEnumerable<double> AutoCorrelationSequential()
         {
             double[] arr = _values;
-            int n2       = arr.Length >> 1;
+            int n2       = arr.Length / 2;
 
             for (int m = 0; m < n2; ++m)
             {
@@ -27,7 +27,7 @@ namespace gfoidl.Stochastics.Statistics
         internal IEnumerable<double> AutoCorrelationSimd()
         {
             double[] arr = _values;
-            int n2       = arr.Length >> 1;
+            int n2       = arr.Length / 2;
 
             for (int m = 0; m < n2; ++m)
             {
@@ -59,7 +59,7 @@ namespace gfoidl.Stochastics.Statistics
         internal double[] AutoCorrelationToArraySimd()
         {
             int n    = _values.Length;
-            int n2   = n >> 1;
+            int n2   = n / 2;
             var corr = new double[n2];
 
             this.AutoCorrelationToArrayImpl(corr, (0, n2));
