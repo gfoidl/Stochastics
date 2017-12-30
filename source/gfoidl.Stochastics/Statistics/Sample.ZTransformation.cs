@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -46,21 +47,40 @@ namespace gfoidl.Stochastics.Statistics
                 : this.ZTransformationToArrayParallelizedSimd(sigma);
         }
         //---------------------------------------------------------------------
-        internal unsafe double[] ZTransformationToArraySimd(double sigma)
+        internal double[] ZTransformationToArraySimd(double sigma)
         {
-            var zTrans      = new double[this.Count];
+            var zTrans = new double[this.Count];
+
+            this.ZTransformationToArrayImpl(zTrans, sigma, (0, _values.Length));
+
+            return zTrans;
+        }
+        //---------------------------------------------------------------------
+        internal double[] ZTransformationToArrayParallelizedSimd(double sigma)
+        {
+            var zTrans = new double[this.Count];
+
+            Parallel.ForEach(
+                Partitioner.Create(0, _values.Length),
+                range => this.ZTransformationToArrayImpl(zTrans, sigma, (range.Item1, range.Item2))
+            );
+
+            return zTrans;
+        }
+        //---------------------------------------------------------------------
+        private unsafe void ZTransformationToArrayImpl(double[] zTrans, double sigma, (int start, int end) range)
+        {
             double avg      = this.Mean;
             double sigmaInv = 1d / sigma;
-            int n = _values.Length;
+            var (i, n)      = range;
 
             fixed (double* pSource = _values)
             fixed (double* pTarget = zTrans)
             {
-                double* sourceArr = pSource;
-                double* targetArr = pTarget;
-                int i             = 0;
+                double* sourceArr = pSource + i;
+                double* targetArr = pTarget + i;
 
-                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
                 {
                     var avgVec      = new Vector<double>(avg);
                     var sigmaInvVec = new Vector<double>(sigmaInv);
@@ -80,53 +100,6 @@ namespace gfoidl.Stochastics.Statistics
                 for (; i < n; ++i)
                     pTarget[i] = this.ZTransformation(pSource[i], avg, sigmaInv);
             }
-
-            return zTrans;
-        }
-        //---------------------------------------------------------------------
-        internal unsafe double[] ZTransformationToArrayParallelizedSimd(double sigma)
-        {
-            var zTrans = new double[this.Count];
-
-            Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
-                range =>
-                {
-                    double avg      = this.Mean;
-                    double sigmaInv = 1d / sigma;
-                    int n           = range.Item2;
-
-                    fixed (double* pSource = _values)
-                    fixed (double* pTarget = zTrans)
-                    {
-                        int i             = range.Item1;
-                        double* sourceArr = pSource + i;
-                        double* targetArr = pTarget + i;
-
-                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
-                        {
-                            var avgVec      = new Vector<double>(avg);
-                            var sigmaInvVec = new Vector<double>(sigmaInv);
-
-                            for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
-                            {
-                                Vector<double> vec       = VectorHelper.GetVectorWithAdvance(ref sourceArr);
-                                Vector<double> zTransVec = (vec - avgVec) * sigmaInvVec;
-                                zTransVec.WriteVectorWithAdvance(ref targetArr);
-
-                                vec       = VectorHelper.GetVectorWithAdvance(ref sourceArr);
-                                zTransVec = (vec - avgVec) * sigmaInvVec;
-                                zTransVec.WriteVectorWithAdvance(ref targetArr);
-                            }
-                        }
-
-                        for (; i < n; ++i)
-                            pTarget[i] = this.ZTransformation(pSource[i], avg, sigmaInv);
-                    }
-                }
-            );
-
-            return zTrans;
         }
     }
 }

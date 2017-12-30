@@ -15,15 +15,44 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal unsafe double VarianceCoreSimd()
         {
+            double variance = this.VarianceCoreImpl((0, _values.Length));
+            double avg      = this.Mean;
+            variance -= _values.Length * avg * avg;
+
+            return variance;
+        }
+        //---------------------------------------------------------------------
+        internal unsafe double VarianceCoreParallelizedSimd()
+        {
             double variance = 0;
-            int n           = _values.Length;
+            var sync        = new object();
+
+            Parallel.ForEach(
+                Partitioner.Create(0, _values.Length),
+                range =>
+                {
+                    double localVariance = VarianceCoreImpl((range.Item1, range.Item2));
+
+                    lock (sync) variance += localVariance;
+                }
+            );
+
+            double avg = this.Mean;
+            variance -= this.Count * avg * avg;
+
+            return variance;
+        }
+        //---------------------------------------------------------------------
+        private unsafe double VarianceCoreImpl((int start, int end) range)
+        {
+            double variance = 0;
+            var (i, n)      = range;
 
             fixed (double* pArray = _values)
             {
-                double* arr = pArray;
-                int i       = 0;
+                double* arr = pArray + i;
 
-                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
                 {
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
@@ -42,56 +71,6 @@ namespace gfoidl.Stochastics.Statistics
                 for (; i < n; ++i)
                     variance += pArray[i] * pArray[i];
             }
-
-            double avg = this.Mean;
-            variance -= n * avg * avg;
-
-            return variance;
-        }
-        //---------------------------------------------------------------------
-        internal unsafe double VarianceCoreParallelizedSimd()
-        {
-            double variance = 0;
-            var sync        = new object();
-
-            Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
-                range =>
-                {
-                    double local = 0;
-                    int n        = range.Item2;
-
-                    fixed (double* pArray = _values)
-                    {
-                        int i       = range.Item1;
-                        double* arr = pArray + i;
-
-                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
-                        {
-                            for (; i < range.Item2 - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
-                            {
-                                Vector<double> v1 = VectorHelper.GetVector(arr);
-                                Vector<double> v2 = VectorHelper.GetVector(arr);
-                                local += Vector.Dot(v1, v2);
-                                arr   += Vector<double>.Count;
-
-                                v1 = VectorHelper.GetVector(arr);
-                                v2 = VectorHelper.GetVector(arr);
-                                local += Vector.Dot(v1, v2);
-                                arr   += Vector<double>.Count;
-                            }
-                        }
-
-                        for (; i < range.Item2; ++i)
-                            local += pArray[i] * pArray[i];
-                    }
-
-                    lock (sync) variance += local;
-                }
-            );
-
-            double avg = this.Mean;
-            variance -= this.Count * avg * avg;
 
             return variance;
         }
