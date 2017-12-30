@@ -10,6 +10,11 @@ namespace gfoidl.Stochastics.Statistics
     /// Represents position, scatter and shape parameters of sample data.
     /// The parameters are lazy-evaluated.
     /// </summary>
+    /// <remarks>
+    /// Computation of statistical parameter is done in parallel, when
+    /// <see cref="Count" /> is greater or equal <see cref="ThresholdForParallel" />.
+    /// SIMD is used where possible and where it brings an advantage.
+    /// </remarks>
     public partial class Sample
     {
         private readonly double[] _values;
@@ -307,8 +312,20 @@ namespace gfoidl.Stochastics.Statistics
         /// </summary>
         /// <returns>The autocorrelation of the sample.</returns>
         public IEnumerable<double> AutoCorrelation() => Vector.IsHardwareAccelerated
-            ? AutoCorrelationSimd()
-            : AutoCorrelationSequential();
+            ? this.AutoCorrelationSimd()
+            : this.AutoCorrelationSequential();
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Autocorrelation
+        /// </summary>
+        /// <returns>The autocorrelation of the sample.</returns>
+        /// <remarks>
+        /// When <see cref="Count" /> is greater or equal <see cref="ThresholdForAutocorrelationParallel"/>
+        /// all CPUs are used for processing.
+        /// </remarks>
+        public double[] AutoCorrelationToArray() => this.Count < ThresholdForAutocorrelationParallel
+            ? this.AutoCorrelationToArraySimd()
+            : this.AutoCorrelationToArrayParallelSimd();
         //---------------------------------------------------------------------
         public override string ToString()
         {

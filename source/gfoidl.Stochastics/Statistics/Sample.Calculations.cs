@@ -3,7 +3,8 @@
     partial class Sample
     {
         // Threshould determined by benchmark (roughly)
-        private const int ThresholdForParallel = 75_000;
+        public const int ThresholdForParallel                = 75_000;
+        public const int ThresholdForAutocorrelationParallel = 250;
         //---------------------------------------------------------------------
         private double CalculateMedian()
         {

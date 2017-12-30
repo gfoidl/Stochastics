@@ -29,6 +29,9 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(CalculateKurtosisBenchmarks):
                     CalculateKurtosisBenchmarks.Run();
                     break;
+                case nameof(AutoCorrelationBenchmarks):
+                    AutoCorrelationBenchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;
