@@ -2,6 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <Description>Stochastic tools, distrubution, analysis</Description>
         <PackageLicenseUrl>https://github.com/gfoidl/Stochastics/blob/master/LICENSE</PackageLicenseUrl>
         <PackageProjectUrl>https://github.com/gfoidl/Stochastics</PackageProjectUrl>
@@ -16,6 +21,7 @@
 
     <ItemGroup>
         <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
     </ItemGroup>
 
     <ItemGroup>

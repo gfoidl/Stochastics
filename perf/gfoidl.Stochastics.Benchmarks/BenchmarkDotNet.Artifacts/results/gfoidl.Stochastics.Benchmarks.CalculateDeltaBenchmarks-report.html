@@ -13,38 +13,47 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet=v0.10.11, OS=Windows 7 SP1 (6.1.7601.0)
-Processor=Intel Core i7-3610QM CPU 2.30GHz (Ivy Bridge), ProcessorCount=8
-Frequency=2241054 Hz, Resolution=446.2186 ns, Timer=TSC
-.NET Core SDK=2.1.2
-  [Host]     : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
-  DefaultJob : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.3
+  [Host]     : .NET Core 2.0.4 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.4 (Framework 4.6.0.0), 64bit RyuJIT
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>    Method</th><th>N</th><th>     Mean</th><th>  Error</th><th> StdDev</th><th>Scaled</th><th>ScaledSD</th>
+<thead><tr><th>          Method</th><th>N</th><th>    Mean</th><th>   Error</th><th>  StdDev</th><th>Scaled</th><th>ScaledSD</th>
 </tr>
-</thead><tbody><tr><td>Sequential</td><td>100</td><td>103.08 ns</td><td>2.530 ns</td><td>3.108 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>      Simd</td><td>100</td><td> 77.95 ns</td><td>1.381 ns</td><td>1.418 ns</td><td>0.76</td><td>0.03</td>
-</tr><tr><td>Parallelized</td><td>100</td><td>14,260.56 ns</td><td>280.124 ns</td><td>572.218 ns</td><td>138.47</td><td>6.79</td>
-</tr><tr><td>ParallelizedSimd</td><td>100</td><td>15,109.03 ns</td><td>297.945 ns</td><td>566.871 ns</td><td>146.70</td><td>6.89</td>
-</tr><tr><td>Sequential</td><td>1000</td><td>992.65 ns</td><td>10.378 ns</td><td>8.666 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>      Simd</td><td>1000</td><td>758.28 ns</td><td>8.265 ns</td><td>7.731 ns</td><td>0.76</td><td>0.01</td>
-</tr><tr><td>Parallelized</td><td>1000</td><td>19,512.83 ns</td><td>388.174 ns</td><td>784.130 ns</td><td>19.66</td><td>0.80</td>
-</tr><tr><td>ParallelizedSimd</td><td>1000</td><td>18,146.27 ns</td><td>413.119 ns</td><td>1,218.091 ns</td><td>18.28</td><td>1.23</td>
-</tr><tr><td>Sequential</td><td>10000</td><td>10,283.10 ns</td><td>170.939 ns</td><td>159.896 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>      Simd</td><td>10000</td><td>9,173.94 ns</td><td>72.481 ns</td><td>67.798 ns</td><td>0.89</td><td>0.01</td>
-</tr><tr><td>Parallelized</td><td>10000</td><td>29,444.16 ns</td><td>696.735 ns</td><td>2,054.338 ns</td><td>2.86</td><td>0.20</td>
-</tr><tr><td>ParallelizedSimd</td><td>10000</td><td>27,063.47 ns</td><td>538.435 ns</td><td>1,464.853 ns</td><td>2.63</td><td>0.15</td>
-</tr><tr><td>Sequential</td><td>100000</td><td>99,172.89 ns</td><td>1,279.400 ns</td><td>1,134.155 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>      Simd</td><td>100000</td><td>74,260.29 ns</td><td>155.633 ns</td><td>121.508 ns</td><td>0.75</td><td>0.01</td>
-</tr><tr><td>Parallelized</td><td>100000</td><td>69,457.64 ns</td><td>1,609.421 ns</td><td>4,669.222 ns</td><td>0.70</td><td>0.05</td>
-</tr><tr><td>ParallelizedSimd</td><td>100000</td><td>62,653.87 ns</td><td>1,247.187 ns</td><td>3,393.063 ns</td><td>0.63</td><td>0.03</td>
-</tr><tr><td>Sequential</td><td>1000000</td><td>1,041,421.30 ns</td><td>6,283.693 ns</td><td>5,570.330 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>      Simd</td><td>1000000</td><td>810,299.97 ns</td><td>11,487.766 ns</td><td>9,592.804 ns</td><td>0.78</td><td>0.01</td>
-</tr><tr><td>Parallelized</td><td>1000000</td><td>419,496.96 ns</td><td>8,763.994 ns</td><td>25,004.168 ns</td><td>0.40</td><td>0.02</td>
-</tr><tr><td>ParallelizedSimd</td><td>1000000</td><td>400,718.96 ns</td><td>7,924.591 ns</td><td>18,208.066 ns</td><td>0.38</td><td>0.02</td>
+</thead><tbody><tr><td>      Sequential</td><td>100</td><td>267.0 ns</td><td>1.1646 ns</td><td>1.0894 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>            Simd</td><td>100</td><td>143.9 ns</td><td>0.4182 ns</td><td>0.3707 ns</td><td>0.54</td><td>0.00</td>
+</tr><tr><td>      UnsafeSimd</td><td>100</td><td>142.5 ns</td><td>0.5870 ns</td><td>0.5203 ns</td><td>0.53</td><td>0.00</td>
+</tr><tr><td>    Parallelized</td><td>100</td><td>13,869.9 ns</td><td>275.2562 ns</td><td>305.9465 ns</td><td>51.95</td><td>1.13</td>
+</tr><tr><td>ParallelizedSimd</td><td>100</td><td>13,806.7 ns</td><td>263.0359 ns</td><td>377.2382 ns</td><td>51.71</td><td>1.40</td>
+</tr><tr><td>ParallelizedUnsafeSimd</td><td>100</td><td>13,949.5 ns</td><td>316.9510 ns</td><td>412.1259 ns</td><td>52.25</td><td>1.52</td>
+</tr><tr><td>      Sequential</td><td>1000</td><td>2,695.1 ns</td><td>11.5088 ns</td><td>10.2022 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>            Simd</td><td>1000</td><td>1,335.6 ns</td><td>7.9871 ns</td><td>7.4711 ns</td><td>0.50</td><td>0.00</td>
+</tr><tr><td>      UnsafeSimd</td><td>1000</td><td>1,308.8 ns</td><td>3.6940 ns</td><td>3.0847 ns</td><td>0.49</td><td>0.00</td>
+</tr><tr><td>    Parallelized</td><td>1000</td><td>19,358.3 ns</td><td>203.5060 ns</td><td>158.8841 ns</td><td>7.18</td><td>0.06</td>
+</tr><tr><td>ParallelizedSimd</td><td>1000</td><td>15,647.0 ns</td><td>305.5757 ns</td><td>428.3744 ns</td><td>5.81</td><td>0.16</td>
+</tr><tr><td>ParallelizedUnsafeSimd</td><td>1000</td><td>15,267.5 ns</td><td>296.7190 ns</td><td>231.6587 ns</td><td>5.67</td><td>0.08</td>
+</tr><tr><td>      Sequential</td><td>10000</td><td>26,896.4 ns</td><td>128.1563 ns</td><td>119.8774 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>            Simd</td><td>10000</td><td>13,202.7 ns</td><td>34.2350 ns</td><td>30.3484 ns</td><td>0.49</td><td>0.00</td>
+</tr><tr><td>      UnsafeSimd</td><td>10000</td><td>13,020.3 ns</td><td>63.8175 ns</td><td>56.5726 ns</td><td>0.48</td><td>0.00</td>
+</tr><tr><td>    Parallelized</td><td>10000</td><td>31,839.6 ns</td><td>817.1674 ns</td><td>1,687.5924 ns</td><td>1.18</td><td>0.06</td>
+</tr><tr><td>ParallelizedSimd</td><td>10000</td><td>23,531.8 ns</td><td>333.9748 ns</td><td>278.8840 ns</td><td>0.87</td><td>0.01</td>
+</tr><tr><td>ParallelizedUnsafeSimd</td><td>10000</td><td>23,361.9 ns</td><td>438.2625 ns</td><td>388.5083 ns</td><td>0.87</td><td>0.01</td>
+</tr><tr><td>      Sequential</td><td>100000</td><td>264,949.6 ns</td><td>934.0504 ns</td><td>779.9743 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>            Simd</td><td>100000</td><td>134,879.3 ns</td><td>1,430.3841 ns</td><td>1,337.9820 ns</td><td>0.51</td><td>0.01</td>
+</tr><tr><td>      UnsafeSimd</td><td>100000</td><td>131,076.6 ns</td><td>817.6052 ns</td><td>682.7373 ns</td><td>0.49</td><td>0.00</td>
+</tr><tr><td>    Parallelized</td><td>100000</td><td>157,510.3 ns</td><td>2,986.4690 ns</td><td>2,793.5447 ns</td><td>0.59</td><td>0.01</td>
+</tr><tr><td>ParallelizedSimd</td><td>100000</td><td>66,818.0 ns</td><td>1,330.5960 ns</td><td>2,365.1330 ns</td><td>0.25</td><td>0.01</td>
+</tr><tr><td>ParallelizedUnsafeSimd</td><td>100000</td><td>63,187.1 ns</td><td>981.1055 ns</td><td>917.7266 ns</td><td>0.24</td><td>0.00</td>
+</tr><tr><td>      Sequential</td><td>1000000</td><td>2,793,817.3 ns</td><td>24,965.7496 ns</td><td>22,131.4846 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>            Simd</td><td>1000000</td><td>1,483,392.3 ns</td><td>28,874.7784 ns</td><td>33,252.2348 ns</td><td>0.53</td><td>0.01</td>
+</tr><tr><td>      UnsafeSimd</td><td>1000000</td><td>1,465,181.1 ns</td><td>29,278.0990 ns</td><td>41,043.8057 ns</td><td>0.52</td><td>0.01</td>
+</tr><tr><td>    Parallelized</td><td>1000000</td><td>1,248,575.2 ns</td><td>17,478.5690 ns</td><td>16,349.4627 ns</td><td>0.45</td><td>0.01</td>
+</tr><tr><td>ParallelizedSimd</td><td>1000000</td><td>421,959.5 ns</td><td>4,722.1225 ns</td><td>4,186.0382 ns</td><td>0.15</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimd</td><td>1000000</td><td>402,343.5 ns</td><td>4,310.8080 ns</td><td>4,032.3321 ns</td><td>0.14</td><td>0.00</td>
 </tr></tbody></table>
 </body>
 </html>

@@ -6,87 +6,70 @@ namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
-        internal const int ThresholdForVariance = 100_000;
-        //---------------------------------------------------------------------
         private double CalculateVarianceCore()
         {
-            // Threshould determined by benchmark (roughly)
-            return this.Count < ThresholdForVariance
+            return this.Count < ThresholdForParallel
                 ? this.VarianceCoreSimd()
                 : this.VarianceCoreParallelizedSimd();
         }
         //---------------------------------------------------------------------
-        internal double VarianceCoreSimd()
+        internal unsafe double VarianceCoreSimd()
         {
-            double variance = 0;
-            double[] arr    = _values;
+            double variance = this.VarianceCoreImpl((0, _values.Length));
             double avg      = this.Mean;
-            int i           = 0;
-
-            if (Vector.IsHardwareAccelerated && this.Count >= Vector<double>.Count * 2)
-            {
-                for (; i < arr.Length - 2 * Vector<double>.Count; i += Vector<double>.Count)
-                {
-                    var v1 = new Vector<double>(arr, i);
-                    var v2 = new Vector<double>(arr, i);
-                    variance += Vector.Dot(v1, v2);
-
-                    i += Vector<double>.Count;
-                    v1 = new Vector<double>(arr, i);
-                    v2 = new Vector<double>(arr, i);
-                    variance += Vector.Dot(v1, v2);
-                }
-            }
-
-            for (; i < arr.Length; ++i)
-                variance += arr[i] * arr[i];
-
-            variance -= arr.Length * avg * avg;
+            variance -= _values.Length * avg * avg;
 
             return variance;
         }
         //---------------------------------------------------------------------
-        internal double VarianceCoreParallelizedSimd()
+        internal unsafe double VarianceCoreParallelizedSimd()
         {
             double variance = 0;
-            var sync        = new object();
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    double local = 0;
-                    double[] arr = _values;
-                    double avg   = this.Mean;
-                    int i        = range.Item1;
-
-                    // RCE
-                    if ((uint)range.Item1 >= arr.Length || (uint)range.Item2 > arr.Length)
-                        ThrowHelper.ThrowArgumentOutOfRange(nameof(range));
-
-                    if (Vector.IsHardwareAccelerated && (range.Item2 - range.Item1) >= Vector<double>.Count * 2)
-                    {
-                        for (; i < range.Item2 - 2 * Vector<double>.Count; i += Vector<double>.Count)
-                        {
-                            var v1 = new Vector<double>(arr, i);
-                            var v2 = new Vector<double>(arr, i);
-                            local += Vector.Dot(v1, v2);
-
-                            i += Vector<double>.Count;
-                            v1 = new Vector<double>(arr, i);
-                            v2 = new Vector<double>(arr, i);
-                            local += Vector.Dot(v1, v2);
-                        }
-                    }
-
-                    for (; i < range.Item2; ++i)
-                        local += arr[i] * arr[i];
-
-                    lock (sync) variance += local;
+                    double localVariance = this.VarianceCoreImpl((range.Item1, range.Item2));
+                    localVariance.SafeAdd(ref variance);
                 }
             );
 
-            variance -= this.Count * this.Mean * this.Mean;
+            double avg = this.Mean;
+            variance -= this.Count * avg * avg;
+
+            return variance;
+        }
+        //---------------------------------------------------------------------
+        private unsafe double VarianceCoreImpl((int start, int end) range)
+        {
+            double variance = 0;
+            var (i, n)      = range;
+
+            fixed (double* pArray = _values)
+            {
+                double* arr = pArray + i;
+
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
+                {
+                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    {
+                        Vector<double> v1 = VectorHelper.GetVector(arr);
+                        Vector<double> v2 = VectorHelper.GetVector(arr);
+                        variance += Vector.Dot(v1, v2);
+                        arr      += Vector<double>.Count;
+
+                        v1 = VectorHelper.GetVector(arr);
+                        v2 = VectorHelper.GetVector(arr);
+                        variance += Vector.Dot(v1, v2);
+                        arr      += Vector<double>.Count;
+                    }
+                }
+
+                for (; i < n; ++i)
+                    variance += pArray[i] * pArray[i];
+            }
+
             return variance;
         }
     }

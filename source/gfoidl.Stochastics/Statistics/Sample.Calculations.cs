@@ -2,6 +2,9 @@
 {
     partial class Sample
     {
+        // Threshould determined by benchmark (roughly)
+        private const int ThresholdForParallel = 75_000;
+        //---------------------------------------------------------------------
         private double CalculateMedian()
         {
             int n = this.SortedValues.Count;

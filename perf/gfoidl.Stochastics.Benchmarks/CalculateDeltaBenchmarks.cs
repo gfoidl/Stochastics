@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
 namespace gfoidl.Stochastics.Benchmarks
 {
-    //[DisassemblyDiagnoser(printSource: true)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class CalculateDeltaBenchmarks
     {
         public static void Run()
@@ -15,10 +16,13 @@ namespace gfoidl.Stochastics.Benchmarks
             var benchs = new CalculateDeltaBenchmarks();
             benchs.N   = 1000;
             benchs.GlobalSetup();
-            Console.WriteLine(benchs.Sequential());
-            Console.WriteLine(benchs.Simd());
-            Console.WriteLine(benchs.Parallelized());
-            Console.WriteLine(benchs.ParallelizedSimd());
+            const int align = -25;
+            Console.WriteLine($"{nameof(benchs.Sequential),align}: {benchs.Sequential()}");
+            Console.WriteLine($"{nameof(benchs.Simd),align}: {benchs.Simd()}");
+            Console.WriteLine($"{nameof(benchs.UnsafeSimd),align}: {benchs.UnsafeSimd()}");
+            Console.WriteLine($"{nameof(benchs.Parallelized),align}: {benchs.Parallelized()}");
+            Console.WriteLine($"{nameof(benchs.ParallelizedSimd),align}: {benchs.ParallelizedSimd()}");
+            Console.WriteLine($"{nameof(benchs.ParallelizedUnsafeSimd),align}: {benchs.ParallelizedUnsafeSimd()}");
 #if !DEBUG
             BenchmarkRunner.Run<CalculateDeltaBenchmarks>();
 #endif
@@ -43,7 +47,7 @@ namespace gfoidl.Stochastics.Benchmarks
             for (int i = 0; i < this.N; ++i)
             {
                 _values[i] = rnd.NextDouble();
-                _avg += _values[i];
+                _avg      += _values[i];
             }
 
             _avg /= this.N;
@@ -78,10 +82,10 @@ namespace gfoidl.Stochastics.Benchmarks
                 for (; i < tmp.Length - 2 * Vector<double>.Count; i += Vector<double>.Count)
                 {
                     var tmpVec = new Vector<double>(tmp, i);
-                    deltaVec += Vector.Abs(tmpVec - avgVec);
+                    deltaVec  += Vector.Abs(tmpVec - avgVec);
 
-                    i += Vector<double>.Count;
-                    tmpVec = new Vector<double>(tmp, i);
+                    i        += Vector<double>.Count;
+                    tmpVec    = new Vector<double>(tmp, i);
                     deltaVec += Vector.Abs(tmpVec - avgVec);
                 }
 
@@ -96,6 +100,47 @@ namespace gfoidl.Stochastics.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
+        public unsafe double UnsafeSimd()
+        {
+            double delta = 0;
+            double avg   = this.Mean;
+            int n        = _values.Length;
+
+            fixed (double* pArray = _values)
+            {
+                double* arr = pArray;
+                int i       = 0;
+
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
+                {
+                    var avgVec   = new Vector<double>(avg);
+                    var deltaVec = new Vector<double>(0);
+
+                    for (; i < n - 2 * Vector<double>.Count;)
+                    {
+                        Vector<double> vec = Unsafe.Read<Vector<double>>(arr);
+                        deltaVec += Vector.Abs(vec - avgVec);
+                        arr      += Vector<double>.Count;
+                        i        += Vector<double>.Count;
+
+                        vec = Unsafe.Read<Vector<double>>(arr);
+                        deltaVec += Vector.Abs(vec - avgVec);
+                        arr      += Vector<double>.Count;
+                        i        += Vector<double>.Count;
+                    }
+
+                    for (int j = 0; j < Vector<double>.Count; ++j)
+                        delta += deltaVec[j];
+                }
+
+                for (; i < n; ++i)
+                    delta += Math.Abs(pArray[i] - avg);
+            }
+
+            return delta / n;
+        }
+        //---------------------------------------------------------------------
+        //[Benchmark]
         public double Parallelized()
         {
             double delta = 0;
@@ -157,10 +202,10 @@ namespace gfoidl.Stochastics.Benchmarks
                         for (; i < range.Item2 - 2 * Vector<double>.Count; i += Vector<double>.Count)
                         {
                             var arrVec = new Vector<double>(arr, i);
-                            deltaVec += Vector.Abs(arrVec - avgVec);
+                            deltaVec  += Vector.Abs(arrVec - avgVec);
 
-                            i += Vector<double>.Count;
-                            arrVec = new Vector<double>(arr, i);
+                            i        += Vector<double>.Count;
+                            arrVec    = new Vector<double>(arr, i);
                             deltaVec += Vector.Abs(arrVec - avgVec);
                         }
 
@@ -170,6 +215,63 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < range.Item2; ++i)
                         localDelta += Math.Abs(arr[i] - avg);
+
+                    lock (sync) delta += localDelta;
+#if !SEQUENTIAL
+                }
+            );
+#endif
+            return delta / _values.Length;
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public unsafe double ParallelizedUnsafeSimd()
+        {
+            double delta = 0;
+            var sync     = new object();
+
+            Partitioner<Tuple<int, int>> partitioner = Partitioner.Create(0, _values.Length);
+#if SEQUENTIAL
+            var range = Tuple.Create(0, _values.Length);
+#else
+            Parallel.ForEach(
+                partitioner,
+                range =>
+                {
+#endif
+                    double localDelta = 0;
+                    double avg        = this.Mean;
+                    int n             = range.Item2;
+
+                    fixed (double* pArray = _values)
+                    {
+                        int i         = range.Item1;
+                        //double* arr = &pArray[i];
+                        double* arr   = pArray + i;   // is the same as above
+
+                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
+                        {
+                            var avgVec   = new Vector<double>(avg);
+                            var deltaVec = new Vector<double>(0);
+
+                            for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                            {
+                                Vector<double> vec = Unsafe.Read<Vector<double>>(arr);
+                                deltaVec += Vector.Abs(vec - avgVec);
+                                arr      += Vector<double>.Count;
+
+                                vec = Unsafe.Read<Vector<double>>(arr);
+                                deltaVec += Vector.Abs(vec - avgVec);
+                                arr      += Vector<double>.Count;
+                            }
+
+                            for (int j = 0; j < Vector<double>.Count; ++j)
+                                localDelta += deltaVec[j];
+                        }
+
+                        for (; i < n; ++i)
+                            localDelta += Math.Abs(pArray[i] - avg);
+                    }
 
                     lock (sync) delta += localDelta;
 #if !SEQUENTIAL

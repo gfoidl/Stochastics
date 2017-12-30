@@ -3,16 +3,20 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DebugType>pdbonly</DebugType>
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Include="..\..\source\gfoidl.Stochastics\ThrowHelper.cs" Link="ThrowHelper.cs" />
+        <Compile Include="..\..\source\gfoidl.Stochastics\VectorHelper.cs" Link="VectorHelper.cs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.10.11" />
+        <PackageReference Include="System.Memory" Version="4.4.0-preview2-25405-01" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
     </ItemGroup>
 
 </Project>
