@@ -31,7 +31,7 @@ namespace gfoidl.Stochastics.Statistics
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    double localSkewness = CalculateSkewnessImpl((range.Item1, range.Item2));
+                    double localSkewness = this.CalculateSkewnessImpl((range.Item1, range.Item2));
 
                     lock (sync) skewness += localSkewness;
                 }

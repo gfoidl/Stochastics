@@ -31,7 +31,7 @@ namespace gfoidl.Stochastics.Statistics
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    double localVariance = VarianceCoreImpl((range.Item1, range.Item2));
+                    double localVariance = this.VarianceCoreImpl((range.Item1, range.Item2));
 
                     lock (sync) variance += localVariance;
                 }

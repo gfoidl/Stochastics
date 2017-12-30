@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace gfoidl.Stochastics.Statistics
@@ -32,7 +31,7 @@ namespace gfoidl.Stochastics.Statistics
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    double localKurtosis = CalculateKurtosisImpl((range.Item1, range.Item2));
+                    double localKurtosis = this.CalculateKurtosisImpl((range.Item1, range.Item2));
 
                     lock (sync) kurtosis += localKurtosis;
                 }

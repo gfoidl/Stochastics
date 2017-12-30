@@ -18,7 +18,7 @@ namespace gfoidl.Stochastics
             return vec;
         }
         //---------------------------------------------------------------------
-        public static void WriteVector(Vector<double> vector, double* arr)
+        public static void WriteVector(this Vector<double> vector, double* arr)
         {
             Unsafe.Write(arr, vector);
         }
