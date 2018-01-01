@@ -76,19 +76,19 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
 
             Assert.AreEqual(0, item1.Key);
             Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(5, item1.Value.End);
-            Assert.AreEqual(5, item1.Value.Size);
+            Assert.AreEqual(6, item1.Value.End);
+            Assert.AreEqual(6, item1.Value.Size);
 
             Assert.AreEqual(1, item2.Key);
             Assert.AreEqual(item1.Value.End, item2.Value.Start);
-            Assert.Less(item2.Value.Size, item1.Value.Size);
-            Assert.AreEqual(5, item2.Value.Start);
+            Assert.LessOrEqual(item2.Value.Size, item1.Value.Size);
+            Assert.AreEqual(6, item2.Value.Start);
             Assert.AreEqual(8, item2.Value.End);
-            Assert.AreEqual(3, item2.Value.Size);
+            Assert.AreEqual(2, item2.Value.Size);
 
             Assert.AreEqual(2, item3.Key);
             Assert.AreEqual(item2.Value.End, item3.Value.Start);
-            Assert.Less(item3.Value.Size, item2.Value.Size);
+            Assert.LessOrEqual(item3.Value.Size, item2.Value.Size);
             Assert.AreEqual(8, item3.Value.Start);
             Assert.AreEqual(10, item3.Value.End);
             Assert.AreEqual(2, item3.Value.Size);
@@ -142,17 +142,17 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
 
             Assert.AreEqual(1, item2.Key);
             Assert.AreEqual(item1.Value.End, item2.Value.Start);
-            Assert.Less(item1.Value.Size, item2.Value.Size);
+            Assert.LessOrEqual(item1.Value.Size, item2.Value.Size);
             Assert.AreEqual(2, item2.Value.Start);
-            Assert.AreEqual(5, item2.Value.End);
-            Assert.AreEqual(3, item2.Value.Size);
+            Assert.AreEqual(4, item2.Value.End);
+            Assert.AreEqual(2, item2.Value.Size);
 
             Assert.AreEqual(2, item3.Key);
             Assert.AreEqual(item2.Value.End, item3.Value.Start);
-            Assert.Less(item2.Value.Size, item3.Value.Size);
-            Assert.AreEqual(5, item3.Value.Start);
+            Assert.LessOrEqual(item2.Value.Size, item3.Value.Size);
+            Assert.AreEqual(4, item3.Value.Start);
             Assert.AreEqual(10, item3.Value.End);
-            Assert.AreEqual(5, item3.Value.Size);
+            Assert.AreEqual(6, item3.Value.Size);
         }
         //---------------------------------------------------------------------
         [Test]

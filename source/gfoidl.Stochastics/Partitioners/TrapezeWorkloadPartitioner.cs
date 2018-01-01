@@ -89,7 +89,7 @@ namespace gfoidl.Stochastics.Partitioners
                         {
                             double area = partitionArea * (i + 1);
                             double tmp  = Sqrt(2 * area * lambdaInv);
-                            end         = (int)Floor(tmp);
+                            end         = (int)Round(tmp);
                         }
 
                         if (increasing)
