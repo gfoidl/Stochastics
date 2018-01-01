@@ -38,13 +38,6 @@ namespace gfoidl.Stochastics.Partitioners
         public static WorkloadPartitioner Create(int size, int? partitionCount = null)
             => new StaticRangePartitioner(size, partitionCount);
         //---------------------------------------------------------------------
-        public static WorkloadPartitioner Create(int size, double lambda, int? partitionCount = null)
-        {
-            if (lambda == 0) return new StaticRangePartitioner(size, partitionCount);
-
-            return new TrapezeWorkloadPartitioner(size, lambda, partitionCount);
-        }
-        //---------------------------------------------------------------------
         public static WorkloadPartitioner Create(
             int size,
             double loadFactorAtStart,

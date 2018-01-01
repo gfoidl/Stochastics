@@ -21,34 +21,36 @@ namespace gfoidl.Stochastics.Partitioners
      *              |   |    |     |
      *              |___|____|_____| 
      *              0        n     N
+     *
      *          
      *  (0, A) is the load at the first iteration
      *  (N, B) is the load at the last iteration
      *  
-     *  The constant part with load to B can be eliminated, so the partitioning can be done on a triangle.
-     *  Thus the calculations are (greatly) simplified.
+     *  When there is no constant part of the load (say A=0 or B=0), so the partitioning can be 
+     *  done as a triangle, thus the calculations are (greatly) simplified.
+     *  
+     *  Equation for trapeze: https://latex.codecogs.com/gif.latex?%5Clambda%20%3A%3D%20%5Cfrac%7BB-A%7D%7BN%7D%20%5Cqquad%20%5CRightarrow%20%5Cquad%20X%20%3D%20A%20&plus;%20%5Clambda%20%5Ccdot%20n%20%5C%5C%20%5C%5C%20A_p%20%3D%20%5Cfrac%7BA&plus;X%7D%7B2%7D%20%5Ccdot%20n%20%5Cqquad%20%5CLeftrightarrow%20%5Cquad%202A_p%20%3D%20%28A&plus;X%29%20%5Ccdot%20n%20%3D%20%282A%20&plus;%20%5Clambda%20%5Ccdot%20n%29%20%5Ccdot%20n%20%3D%202An%20&plus;%20%5Clambda%20%5Ccdot%20n%5E2%20%5C%5C%20%5C%5C%20%5Clambda%20%5Ccdot%20n%5E2%20&plus;%202A%20n%20-%202A_p%20%3D%200%20%5C%5C%20%5C%5C%20n%5E2%20&plus;%20%5Cfrac%7B2A%7D%7B%5Clambda%7D%20%5Ccdot%20n%20-%20%5Cfrac%7B2A_p%7D%7B%5Clambda%7D%20%3D%200%20%5Cqquad%20%5Cbigg%20%5Crvert%20%5Cquad%20p%3A%3D%20%5Cfrac%7B2A%7D%7B%5Clambda%7D%20%5Cquad%20%3B%20%5Cquad%20q%3A%3D-%5Cfrac%7B2A_p%7D%7B%5Clambda%7D%20%5C%5C%20%5C%5C%20n%20%3D%20-%5Cfrac%7Bp%7D%7B2%7D%20%5Cpm%20%5Csqrt%7B%5Cleft%28%20%5Cfrac%7Bp%7D%7B2%7D%20%5Cright%20%29%5E2%20-%20q%7D%20%5Cqquad%20%5CRightarrow%20%5Cboxed%7B%20n%20%28A_p%29%20%3D%20-%5Cfrac%7BA%7D%7B%5Clambda%7D%20%5Cpm%20%5Csqrt%7B%5Cleft%28%20%5Cfrac%7BA%7D%7B%5Clambda%7D%20%5Cright%20%29%5E2%20&plus;%20%5Cfrac%7B2%7D%7B%5Clambda%7D%20%5Ccdot%20A_p%7D%7D
      */
     internal class TrapezeWorkloadPartitioner : WorkloadPartitioner
     {
+        private readonly bool   _isTriangle;
+        private readonly double _loadFactorAtStart;
         private readonly double _lambda;
         //---------------------------------------------------------------------
         public TrapezeWorkloadPartitioner(
             int    size,
-            double lambda,
+            double loadFactorAtStart,           // A in schema above
+            double loadFactorAtEnd,             // B in schema above
             int?   partitionCount = null)
             : base(size, partitionCount)
-            => _lambda = lambda;
-        //---------------------------------------------------------------------
-        public TrapezeWorkloadPartitioner(
-            int    size,
-            double loadFactorAtStart,
-            double loadFactorAtEnd,
-            int?   partitionCount = null)
-            : this(size, (loadFactorAtEnd - loadFactorAtStart) / size, partitionCount)
-        { }
+        {
+            _loadFactorAtStart = loadFactorAtStart;
+            _lambda            = (loadFactorAtEnd - loadFactorAtStart) / size;
+            _isTriangle        = loadFactorAtStart == 0 || loadFactorAtEnd == 0;
+        }
         //---------------------------------------------------------------------
         protected override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
-            => new TrapezeWorkloadPartitions(_size, _lambda, partitionCount);
+            => new TrapezeWorkloadPartitions(_size, _loadFactorAtStart, _lambda, _isTriangle, partitionCount);
         //---------------------------------------------------------------------
         private class TrapezeWorkloadPartitions : Partitions
         {
@@ -56,13 +58,28 @@ namespace gfoidl.Stochastics.Partitioners
             //-----------------------------------------------------------------
             public TrapezeWorkloadPartitions(
                 int    size,
+                double loadFactorAtStart,
                 double lambda,
+                bool   isTriangle,
                 int    partitionCount)
                 : base(size, partitionCount)
             {
                 _partitions = lambda == 0
                     ? Rectangle()
-                    : Triangle();
+                    : isTriangle
+                        ? Triangle()
+                        : Trapeze();
+                //-------------------------------------------------------------
+                Range[] Rectangle()
+                {
+                    var partitions  = new Range[partitionCount];
+                    var partitioner = new StaticRangePartitioner.StaticRangePartitions(size, partitionCount);
+
+                    for (int i = 0; i < partitions.Length; ++i)
+                        partitions[i] = partitioner.CalculateRange(i);
+
+                    return partitions;
+                }
                 //-------------------------------------------------------------
                 Range[] Triangle()
                 {
@@ -103,13 +120,38 @@ namespace gfoidl.Stochastics.Partitioners
                     return partitions;
                 }
                 //-------------------------------------------------------------
-                Range[] Rectangle()
+                Range[] Trapeze()
                 {
-                    var partitions  = new Range[partitionCount];
-                    var partitioner = new StaticRangePartitioner.StaticRangePartitions(size, partitionCount);
+                    var partitions       = new Range[partitionCount];
+                    double trapezeArea   = 0.5 * (2 * loadFactorAtStart + lambda * size) * size;
+                    double partitionArea = trapezeArea / partitionCount;
+                    double a_by_lambda   = loadFactorAtStart / lambda;
+                    double two_by_lambad = 2d / lambda;
+                    int start            = 0;
 
                     for (int i = 0; i < partitions.Length; ++i)
-                        partitions[i] = partitioner.CalculateRange(i);
+                    {
+                        int end;
+
+                        if (i == partitions.Length - 1)
+                            end = _size;
+                        else
+                        {
+                            double area = partitionArea * (i + 1);
+                            double tmp  = Sqrt(a_by_lambda * a_by_lambda + two_by_lambad * area);
+
+                            // +- in formula
+                            if (lambda > 0)
+                                tmp = -a_by_lambda + tmp;
+                            else
+                                tmp = -a_by_lambda - tmp;
+
+                            end = (int)Round(tmp);
+                        }
+
+                        partitions[i] = (start, end);
+                        start         = end;
+                    }
 
                     return partitions;
                 }
