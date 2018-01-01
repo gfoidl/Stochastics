@@ -32,6 +32,9 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(AutoCorrelationBenchmarks):
                     AutoCorrelationBenchmarks.Run();
                     break;
+                case nameof(AutoCorrelationPartitionerBenchmarks):
+                    AutoCorrelationPartitionerBenchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;

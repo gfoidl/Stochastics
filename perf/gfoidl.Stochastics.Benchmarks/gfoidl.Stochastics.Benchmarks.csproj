@@ -2,21 +2,43 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DebugType>pdbonly</DebugType>
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+        <TargetFrameworks>net471;netcoreapp2.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp.2.0'">
+        <DefineConstants>NET_CORE</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
+        <DefineConstants>NET_FULL</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="..\..\source\gfoidl.Stochastics\ThrowHelper.cs" Link="ThrowHelper.cs" />
         <Compile Include="..\..\source\gfoidl.Stochastics\VectorHelper.cs" Link="VectorHelper.cs" />
+        <Compile Include="..\..\source\gfoidl.Stochastics\Partitioners\*.cs" Link="Partitioners\%(Filename).cs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.10.11" />
         <PackageReference Include="System.Memory" Version="4.4.0-preview2-25405-01" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+        <PackageReference Include="ConcurrencyVisualizer" Version="1.0.1" />
+        <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
     </ItemGroup>
 
 </Project>
