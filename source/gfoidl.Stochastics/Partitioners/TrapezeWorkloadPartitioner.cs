@@ -74,7 +74,7 @@ namespace gfoidl.Stochastics.Partitioners
                     }
 
                     var partitions       = new Range[partitionCount];
-                    double triangleArea  = size * size * lambda * 0.5;
+                    double triangleArea  = (double)size * size * lambda * 0.5;
                     double partitionArea = triangleArea / partitionCount;
                     double lambdaInv     = 1d / lambda;
                     int start            = 0;
