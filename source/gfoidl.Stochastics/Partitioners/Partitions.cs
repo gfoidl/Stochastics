@@ -8,7 +8,7 @@ namespace gfoidl.Stochastics.Partitioners
     {
         protected readonly int _size;
         protected readonly int _partitionCount;
-        protected int          _partitionIndex;
+        protected int          _partitionIndex = -1;
         //---------------------------------------------------------------------
         protected Partitions(int size, int partitionCount)
         {
@@ -22,7 +22,7 @@ namespace gfoidl.Stochastics.Partitioners
         {
             while (true)
             {
-                int partitionIndex = Interlocked.Increment(ref _partitionIndex) - 1;
+                int partitionIndex = Interlocked.Increment(ref _partitionIndex);
 
                 if (partitionIndex > _partitionCount) yield break;
 
