@@ -33,7 +33,6 @@ namespace gfoidl.Stochastics.Partitioners
      */
     internal class TrapezeWorkloadPartitioner : WorkloadPartitioner
     {
-        private readonly bool   _isTriangle;
         private readonly double _loadFactorAtStart;
         private readonly double _lambda;
         //---------------------------------------------------------------------
@@ -46,11 +45,10 @@ namespace gfoidl.Stochastics.Partitioners
         {
             _loadFactorAtStart = loadFactorAtStart;
             _lambda            = (loadFactorAtEnd - loadFactorAtStart) / size;
-            _isTriangle        = loadFactorAtStart == 0 || loadFactorAtEnd == 0;
         }
         //---------------------------------------------------------------------
         protected override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
-            => new TrapezeWorkloadPartitions(_size, _loadFactorAtStart, _lambda, _isTriangle, partitionCount);
+            => new TrapezeWorkloadPartitions(_size, _loadFactorAtStart, _lambda, partitionCount);
         //---------------------------------------------------------------------
         private class TrapezeWorkloadPartitions : Partitions
         {
@@ -60,15 +58,12 @@ namespace gfoidl.Stochastics.Partitioners
                 int    size,
                 double loadFactorAtStart,
                 double lambda,
-                bool   isTriangle,
                 int    partitionCount)
                 : base(size, partitionCount)
             {
                 _partitions = lambda == 0
                     ? Rectangle()
-                    : isTriangle
-                        ? Triangle()
-                        : Trapeze();
+                    : Trapeze();
                 //-------------------------------------------------------------
                 Range[] Rectangle()
                 {
@@ -81,52 +76,12 @@ namespace gfoidl.Stochastics.Partitioners
                     return partitions;
                 }
                 //-------------------------------------------------------------
-                Range[] Triangle()
-                {
-                    bool increasing = true;
-                    if (lambda < 0)
-                    {
-                        increasing = false;
-                        lambda     = -lambda;
-                    }
-
-                    var partitions       = new Range[partitionCount];
-                    double triangleArea  = (double)size * size * lambda * 0.5;
-                    double partitionArea = triangleArea / partitionCount;
-                    double lambdaInv     = 1d / lambda;
-                    int start            = 0;
-
-                    for (int i = 0; i < partitions.Length; ++i)
-                    {
-                        int end;
-
-                        if (i == partitions.Length - 1)
-                            end = _size;
-                        else
-                        {
-                            double area = partitionArea * (i + 1);
-                            double tmp  = Sqrt(2 * area * lambdaInv);
-                            end         = (int)Round(tmp);
-                        }
-
-                        if (increasing)
-                            partitions[i] = (start, end);
-                        else
-                            partitions[partitionCount - 1 - i] = (size - end, size - start);
-
-                        start = end;
-                    }
-
-                    return partitions;
-                }
-                //-------------------------------------------------------------
                 Range[] Trapeze()
                 {
                     var partitions       = new Range[partitionCount];
                     double trapezeArea   = 0.5 * (2 * loadFactorAtStart + lambda * size) * size;
                     double partitionArea = trapezeArea / partitionCount;
                     double a_by_lambda   = loadFactorAtStart / lambda;
-                    double two_by_lambad = 2d / lambda;
                     int start            = 0;
 
                     for (int i = 0; i < partitions.Length; ++i)
@@ -138,7 +93,7 @@ namespace gfoidl.Stochastics.Partitioners
                         else
                         {
                             double area = partitionArea * (i + 1);
-                            double tmp  = Sqrt(a_by_lambda * a_by_lambda + two_by_lambad * area);
+                            double tmp  = Sqrt(a_by_lambda * a_by_lambda + 2d / lambda * area);
 
                             // +- in formula
                             if (lambda > 0)
