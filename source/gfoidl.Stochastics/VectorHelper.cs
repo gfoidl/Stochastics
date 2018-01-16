@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace gfoidl.Stochastics
 {
+    [DebuggerNonUserCode]
     internal static unsafe class VectorHelper
     {
         public static Vector<double> GetVector(double* arr)
