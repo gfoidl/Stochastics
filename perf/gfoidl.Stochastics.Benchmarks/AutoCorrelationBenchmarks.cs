@@ -129,7 +129,7 @@ namespace gfoidl.Stochastics.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public unsafe double[] UnsafeSimd()
+        public double[] UnsafeSimd()
         {
             int n    = _values.Length;
             int n2   = n >> 1;
@@ -141,7 +141,7 @@ namespace gfoidl.Stochastics.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public unsafe double[] UnsafeParallelSimd()
+        public double[] UnsafeParallelSimd()
         {
             var corr = new double[_values.Length / 2];
 

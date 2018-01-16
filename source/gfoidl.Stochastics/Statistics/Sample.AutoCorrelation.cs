@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
+using gfoidl.Stochastics.Partitioners;
 
 namespace gfoidl.Stochastics.Statistics
 {
@@ -69,11 +69,16 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double[] AutoCorrelationToArrayParallelSimd()
         {
-            var corr = new double[_values.Length / 2];
+            var corr                      = new double[_values.Length / 2];
+            int n                         = _values.Length;
+            var parallelOptions           = GetParallelOptions();
+            const int partitionMultiplier = 8;
+            int partitionCount            = parallelOptions.MaxDegreeOfParallelism * partitionMultiplier;
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length / 2),
-                range => this.AutoCorrelationToArrayImpl(corr, (range.Item1, range.Item2))
+                WorkloadPartitioner.Create(n / 2, loadFactorAtStart: n, loadFactorAtEnd: n / 2, partitionCount),
+                parallelOptions,
+                range => this.AutoCorrelationToArrayImpl(corr, range)
             );
 
             return corr;

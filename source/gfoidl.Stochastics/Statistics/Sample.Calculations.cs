@@ -1,10 +1,16 @@
-﻿namespace gfoidl.Stochastics.Statistics
+﻿using System;
+using System.Threading.Tasks;
+
+namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
         // Threshould determined by benchmark (roughly)
         public const int ThresholdForParallel                = 75_000;
         public const int ThresholdForAutocorrelationParallel = 250;
+        //---------------------------------------------------------------------
+        private static ParallelOptions GetParallelOptions() 
+            => new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
         //---------------------------------------------------------------------
         private double CalculateMedian()
         {
