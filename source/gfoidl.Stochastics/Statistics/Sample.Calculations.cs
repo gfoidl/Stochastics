@@ -5,9 +5,11 @@ namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
     {
+#pragma warning disable CS1591
         // Threshould determined by benchmark (roughly)
         public const int ThresholdForParallel                = 75_000;
         public const int ThresholdForAutocorrelationParallel = 250;
+#pragma warning restore CS1591
         //---------------------------------------------------------------------
         private static ParallelOptions GetParallelOptions() 
             => new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };

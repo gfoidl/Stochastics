@@ -66,7 +66,9 @@ namespace gfoidl.Stochastics.Benchmarks
             }
         }
         //---------------------------------------------------------------------
+#pragma warning disable CS0649
         private ConcurrentDictionary<int, HashSet<Range>> _ranges;
+#pragma warning restore CS0649
         private string _name;
         //---------------------------------------------------------------------
         [Params(1_000, 10_000, 20_000)]
