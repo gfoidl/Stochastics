@@ -16,16 +16,16 @@
 BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
 Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=2
 .NET Core SDK=2.1.3
-  [Host]     : .NET Core 2.0.4 (Framework 4.6.0.0), 64bit RyuJIT
+  [Host]	 : .NET Core 2.0.4 (Framework 4.6.0.0), 64bit RyuJIT
   DefaultJob : .NET Core 2.0.4 (Framework 4.6.0.0), 64bit RyuJIT
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>      Method</th><th>N</th><th>      Mean</th><th>   Error</th><th>  StdDev</th><th>Scaled</th><th>ScaledSD</th>
+<thead><tr><th>		 Method</th><th>N</th><th>		Mean</th><th>	Error</th><th>	StdDev</th><th>Scaled</th><th>ScaledSD</th>
 </tr>
 </thead><tbody><tr><td>UnsafeSequential</td><td>100</td><td>  4.623 us</td><td>0.0924 us</td><td>0.1949 us</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>  UnsafeSimd</td><td>100</td><td>  2.208 us</td><td>0.0111 us</td><td>0.0098 us</td><td>0.48</td><td>0.02</td>
+</tr><tr><td>  UnsafeSimd</td><td>100</td><td>	2.208 us</td><td>0.0111 us</td><td>0.0098 us</td><td>0.48</td><td>0.02</td>
 </tr><tr><td>UnsafeParallelSimd</td><td>100</td><td>  9.147 us</td><td>0.1064 us</td><td>0.0943 us</td><td>1.98</td><td>0.08</td>
 </tr><tr><td>UnsafeSequential</td><td>1000</td><td>412.731 us</td><td>4.4867 us</td><td>3.5029 us</td><td>1.00</td><td>0.00</td>
 </tr><tr><td>  UnsafeSimd</td><td>1000</td><td>223.901 us</td><td>0.8551 us</td><td>0.7580 us</td><td>0.54</td><td>0.00</td>
