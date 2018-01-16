@@ -31,7 +31,7 @@ namespace gfoidl.Stochastics.Partitioners
      *  
      *  Equation for trapeze: https://latex.codecogs.com/gif.latex?%5Clambda%20%3A%3D%20%5Cfrac%7BB-A%7D%7BN%7D%20%5Cqquad%20%5CRightarrow%20%5Cquad%20X%20%3D%20A%20&plus;%20%5Clambda%20%5Ccdot%20n%20%5C%5C%20%5C%5C%20A_p%20%3D%20%5Cfrac%7BA&plus;X%7D%7B2%7D%20%5Ccdot%20n%20%5Cqquad%20%5CLeftrightarrow%20%5Cquad%202A_p%20%3D%20%28A&plus;X%29%20%5Ccdot%20n%20%3D%20%282A%20&plus;%20%5Clambda%20%5Ccdot%20n%29%20%5Ccdot%20n%20%3D%202An%20&plus;%20%5Clambda%20%5Ccdot%20n%5E2%20%5C%5C%20%5C%5C%20%5Clambda%20%5Ccdot%20n%5E2%20&plus;%202A%20n%20-%202A_p%20%3D%200%20%5C%5C%20%5C%5C%20n%5E2%20&plus;%20%5Cfrac%7B2A%7D%7B%5Clambda%7D%20%5Ccdot%20n%20-%20%5Cfrac%7B2A_p%7D%7B%5Clambda%7D%20%3D%200%20%5Cqquad%20%5Cbigg%20%5Crvert%20%5Cquad%20p%3A%3D%20%5Cfrac%7B2A%7D%7B%5Clambda%7D%20%5Cquad%20%3B%20%5Cquad%20q%3A%3D-%5Cfrac%7B2A_p%7D%7B%5Clambda%7D%20%5C%5C%20%5C%5C%20n%20%3D%20-%5Cfrac%7Bp%7D%7B2%7D%20%5Cpm%20%5Csqrt%7B%5Cleft%28%20%5Cfrac%7Bp%7D%7B2%7D%20%5Cright%20%29%5E2%20-%20q%7D%20%5Cqquad%20%5CRightarrow%20%5Cboxed%7B%20n%20%28A_p%29%20%3D%20-%5Cfrac%7BA%7D%7B%5Clambda%7D%20%5Cpm%20%5Csqrt%7B%5Cleft%28%20%5Cfrac%7BA%7D%7B%5Clambda%7D%20%5Cright%20%29%5E2%20&plus;%20%5Cfrac%7B2%7D%7B%5Clambda%7D%20%5Ccdot%20A_p%7D%7D
      */
-    internal class TrapezeWorkloadPartitioner : WorkloadPartitioner
+    internal sealed class TrapezeWorkloadPartitioner : WorkloadPartitioner
     {
         private readonly double _loadFactorAtStart;
         private readonly double _lambda;
@@ -47,7 +47,7 @@ namespace gfoidl.Stochastics.Partitioners
             _lambda            = (loadFactorAtEnd - loadFactorAtStart) / size;
         }
         //---------------------------------------------------------------------
-        protected override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
+        protected sealed override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
             => new TrapezeWorkloadPartitions(_size, _loadFactorAtStart, _lambda, partitionCount);
         //---------------------------------------------------------------------
         private class TrapezeWorkloadPartitions : Partitions

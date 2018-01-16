@@ -2,13 +2,13 @@
 
 namespace gfoidl.Stochastics.Partitioners
 {
-    internal class StaticRangePartitioner : WorkloadPartitioner
+    internal sealed class StaticRangePartitioner : WorkloadPartitioner
     {
         public StaticRangePartitioner(int size, int? partitionCount = null)
             : base(size, partitionCount)
         { }
         //---------------------------------------------------------------------
-        protected override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
+        protected sealed override IEnumerable<KeyValuePair<long, Range>> GetOrderableDynamicPartitions(int partitionCount)
             => new StaticRangePartitions(_size, partitionCount);
         //---------------------------------------------------------------------
         public class StaticRangePartitions : Partitions
