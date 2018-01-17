@@ -50,19 +50,47 @@ namespace gfoidl.Stochastics.Statistics
             {
                 double* arr = pArray + i;
 
-                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
-                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
-                        Vector<double> v1 = VectorHelper.GetVector(arr);
-                        Vector<double> v2 = VectorHelper.GetVector(arr);
-                        variance += Vector.Dot(v1, v2);
-                        arr      += Vector<double>.Count;
+                        Core(arr, 0 * Vector<double>.Count, ref variance);
+                        Core(arr, 1 * Vector<double>.Count, ref variance);
+                        Core(arr, 2 * Vector<double>.Count, ref variance);
+                        Core(arr, 3 * Vector<double>.Count, ref variance);
+                        Core(arr, 4 * Vector<double>.Count, ref variance);
+                        Core(arr, 5 * Vector<double>.Count, ref variance);
+                        Core(arr, 6 * Vector<double>.Count, ref variance);
+                        Core(arr, 7 * Vector<double>.Count, ref variance);
 
-                        v1 = VectorHelper.GetVector(arr);
-                        v2 = VectorHelper.GetVector(arr);
-                        variance += Vector.Dot(v1, v2);
-                        arr      += Vector<double>.Count;
+                        arr += 8 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 4 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref variance);
+                        Core(arr, 1 * Vector<double>.Count, ref variance);
+                        Core(arr, 2 * Vector<double>.Count, ref variance);
+                        Core(arr, 3 * Vector<double>.Count, ref variance);
+
+                        arr += 4 * Vector<double>.Count;
+                        i   += 4 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 2 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref variance);
+                        Core(arr, 1 * Vector<double>.Count, ref variance);
+
+                        arr += 2 * Vector<double>.Count;
+                        i   += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref variance);
+
+                        i += Vector<double>.Count;
                     }
                 }
 
@@ -71,6 +99,12 @@ namespace gfoidl.Stochastics.Statistics
             }
 
             return variance;
+            //-----------------------------------------------------------------
+            void Core(double* arr, int offset, ref double var)
+            {
+                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                var += Vector.Dot(vec, vec);
+            }
         }
     }
 }
