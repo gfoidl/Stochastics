@@ -25,6 +25,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\..\source\gfoidl.Stochastics\ExtensionMethods.cs" Link="ExtensionMethods.cs" />
         <Compile Include="..\..\source\gfoidl.Stochastics\ThrowHelper.cs" Link="ThrowHelper.cs" />
         <Compile Include="..\..\source\gfoidl.Stochastics\VectorHelper.cs" Link="VectorHelper.cs" />
         <Compile Include="..\..\source\gfoidl.Stochastics\Partitioners\*.cs" Link="Partitioners\%(Filename).cs" />
