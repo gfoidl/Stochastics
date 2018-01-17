@@ -51,20 +51,50 @@ namespace gfoidl.Stochastics.Statistics
             {
                 double* arr = pArray + i;
 
-                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
                     var avgVec  = new Vector<double>(avg);
                     var kurtVec = new Vector<double>(0);
 
-                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
-                        vec     -= avgVec;
-                        kurtVec += vec * vec * vec * vec;
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 4 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 5 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 6 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 7 * Vector<double>.Count, avgVec, ref kurtVec);
 
-                        vec = VectorHelper.GetVectorWithAdvance(ref arr);
-                        vec     -= avgVec;
-                        kurtVec += vec * vec * vec * vec;
+                        arr += 8 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 4 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        arr += 4 * Vector<double>.Count;
+                        i   += 4 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 2 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        arr += 2 * Vector<double>.Count;
+                        i   += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        i += Vector<double>.Count;
                     }
 
                     for (int j = 0; j < Vector<double>.Count; ++j)
@@ -79,6 +109,13 @@ namespace gfoidl.Stochastics.Statistics
             }
 
             return kurtosis;
+            //-----------------------------------------------------------------
+            void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> kurtVec)
+            {
+                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                vec     -= avgVec;
+                kurtVec += vec * vec * vec * vec;
+            }
         }
     }
 }
