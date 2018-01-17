@@ -11,7 +11,7 @@ namespace gfoidl.Stochastics.Statistics
         public const int ThresholdForAutocorrelationParallel = 250;
 #pragma warning restore CS1591
         //---------------------------------------------------------------------
-        private static ParallelOptions GetParallelOptions() 
+        private static ParallelOptions GetParallelOptions()
             => new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
         //---------------------------------------------------------------------
         private double CalculateMedian()
