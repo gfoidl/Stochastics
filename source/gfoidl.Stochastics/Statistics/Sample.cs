@@ -72,7 +72,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_mean))
-                    _mean = _values.Average();
+                    _mean = this.CalculateAverage();
 
                 return _mean;
             }

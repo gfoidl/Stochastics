@@ -1,11 +1,22 @@
-﻿using gfoidl.Stochastics.Statistics;
+﻿using System;
+using System.Linq;
+using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
 namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 {
-    [TestFixture]
+    [TestFixture(10)]
+    [TestFixture(100)]
+    [TestFixture(1_000)]
+    [TestFixture(10_000)]
+    [TestFixture(100_000)]
+    [TestFixture(1_000_000)]
     public class Average
     {
+        private readonly int _size;
+        //---------------------------------------------------------------------
+        public Average(int size) => _size = size;
+        //---------------------------------------------------------------------
         [Test]
         public void One_value___is_the_Average()
         {
@@ -28,6 +39,40 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double actual = sut.Mean;
 
             Assert.AreEqual(4, actual);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Simd_and_ParallelizedSimd_produce_same_result()
+        {
+            var values = new double[_size];
+            var rnd    = new Random();
+
+            for (int i = 0; i < values.Length; ++i)
+                values[i] = rnd.NextDouble();
+
+            var sut = new Sample(values);
+
+            double actual1 = sut.CalculateAverageSimd();
+            double actual2 = sut.CalculateAverageParallelizedSimd();
+
+            Assert.AreEqual(actual1, actual2, 1e-10);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Simd_and_Linq_produce_same_result()
+        {
+            var values = new double[_size];
+            var rnd    = new Random();
+
+            for (int i = 0; i < values.Length; ++i)
+                values[i] = rnd.NextDouble();
+
+            var sut = new Sample(values);
+
+            double actual1 = sut.CalculateAverageSimd();
+            double actual2 = values.Average();
+
+            Assert.AreEqual(actual1, actual2, 1e-10);
         }
     }
 }

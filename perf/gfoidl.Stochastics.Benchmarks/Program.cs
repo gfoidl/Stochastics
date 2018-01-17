@@ -38,6 +38,9 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(LoopSimdBenchmarks):
                     LoopSimdBenchmarks.Run();
                     break;
+                case nameof(CalculateAverageBenchmarks):
+                    CalculateAverageBenchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;
