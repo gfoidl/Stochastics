@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
@@ -21,6 +22,8 @@ namespace gfoidl.Stochastics.Benchmarks
             Console.WriteLine($"{nameof(benchs.No_unrolling),align}: {benchs.No_unrolling()}");
             benchs.GlobalSetup();
             Console.WriteLine($"{nameof(benchs.Unrolled_4x),align}: {benchs.Unrolled_4x()}");
+            benchs.GlobalSetup();
+            Console.WriteLine($"{nameof(benchs.Unrolled_4x1),align}: {benchs.Unrolled_4x1()}");
             benchs.GlobalSetup();
             Console.WriteLine($"{nameof(benchs.Unrolled_8x),align}: {benchs.Unrolled_8x()}");
             benchs.GlobalSetup();
@@ -180,6 +183,56 @@ namespace gfoidl.Stochastics.Benchmarks
                         res += vec;
 
                         arr += 4 * Vector<double>.Count;
+                    }
+
+                    _res = res;
+                }
+
+                for (; i < n; ++i)
+                    pArray[i] += 42d;
+            }
+
+            return _res[0];
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public unsafe double Unrolled_4x1()
+        {
+            int n = _values.Length;
+
+            fixed (double* pArray = _values)
+            {
+                double* arr = pArray;
+                int i = 0;
+
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count * 2)
+                {
+                    Vector<double> res = _res;
+
+                    for (; i < n - 4 * Vector<double>.Count; i += 4 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref res);
+                        Core(arr, 1 * Vector<double>.Count, ref res);
+                        Core(arr, 2 * Vector<double>.Count, ref res);
+                        Core(arr, 3 * Vector<double>.Count, ref res);
+
+                        arr += 4 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 2 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref res);
+                        Core(arr, 1 * Vector<double>.Count, ref res);
+
+                        arr += 2 * Vector<double>.Count;
+                        i += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref res);
+
+                        i += Vector<double>.Count;
                     }
 
                     _res = res;
@@ -354,7 +407,7 @@ namespace gfoidl.Stochastics.Benchmarks
                         arr += 8 * Vector<double>.Count;
                     }
 
-                    for (; i < n - 4 * Vector<double>.Count; i += 4 * Vector<double>.Count)
+                    if (i < n - 4 * Vector<double>.Count)
                     {
                         Core(arr, 0 * Vector<double>.Count, ref res);
                         Core(arr, 1 * Vector<double>.Count, ref res);
@@ -362,14 +415,23 @@ namespace gfoidl.Stochastics.Benchmarks
                         Core(arr, 3 * Vector<double>.Count, ref res);
 
                         arr += 4 * Vector<double>.Count;
+                        i += 4 * Vector<double>.Count;
                     }
 
-                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    if (i < n - 2 * Vector<double>.Count)
                     {
                         Core(arr, 0 * Vector<double>.Count, ref res);
                         Core(arr, 1 * Vector<double>.Count, ref res);
 
                         arr += 2 * Vector<double>.Count;
+                        i += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref res);
+
+                        i += Vector<double>.Count;
                     }
 
                     _res = res;
@@ -380,12 +442,13 @@ namespace gfoidl.Stochastics.Benchmarks
             }
 
             return _res[0];
-            //-----------------------------------------------------------------
-            void Core(double* a, int offset, ref Vector<double> res)
-            {
-                Vector<double> vec = VectorHelper.GetVector(a + offset);
-                res += vec;
-            }
+        }
+        //---------------------------------------------------------------------
+        [DebuggerNonUserCode]
+        private static unsafe void Core(double* a, int offset, ref Vector<double> res)
+        {
+            Vector<double> vec = VectorHelper.GetVector(a + offset);
+            res += vec;
         }
     }
 }
