@@ -23,7 +23,9 @@ namespace gfoidl.Stochastics.Benchmarks
             Console.WriteLine($"{nameof(benchs.Sequential),align}: {GetString(benchs.Sequential())}");
             Console.WriteLine($"{nameof(benchs.UnsafeSequential),align}: {GetString(benchs.UnsafeSequential())}");
             Console.WriteLine($"{nameof(benchs.UnsafeSimd),align}: {GetString(benchs.UnsafeSimd())}");
+            Console.WriteLine($"{nameof(benchs.UnsafeSimdUnrolled),align}: {GetString(benchs.UnsafeSimdUnrolled())}");
             Console.WriteLine($"{nameof(benchs.UnsafeParallelSimd),align}: {GetString(benchs.UnsafeParallelSimd())}");
+            Console.WriteLine($"{nameof(benchs.UnsafeParallelSimdUnrolled),align}: {GetString(benchs.UnsafeParallelSimdUnrolled())}");
 #if !DEBUG
             BenchmarkRunner.Run<AutoCorrelationBenchmarks>();
 #endif
@@ -104,7 +106,7 @@ namespace gfoidl.Stochastics.Benchmarks
         //---------------------------------------------------------------------
         private void ThrowIndexOutOfRange() => throw new ArgumentOutOfRangeException();
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public unsafe double[] UnsafeSequential()
         {
             int n    = _values.Length;
@@ -128,7 +130,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return corr;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark(Baseline = true)]
         public double[] UnsafeSimd()
         {
             int n    = _values.Length;
@@ -140,7 +142,19 @@ namespace gfoidl.Stochastics.Benchmarks
             return corr;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
+        public double[] UnsafeSimdUnrolled()
+        {
+            int n    = _values.Length;
+            int n2   = n >> 1;
+            var corr = new double[n2];
+
+            this.AutoCorrelationToArrayImplUnrolled(corr, (0, n2));
+
+            return corr;
+        }
+        //---------------------------------------------------------------------
+        [Benchmark(Baseline = true)]
         public double[] UnsafeParallelSimd()
         {
             var corr = new double[_values.Length / 2];
@@ -148,6 +162,19 @@ namespace gfoidl.Stochastics.Benchmarks
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length / 2),
                 range => this.AutoCorrelationToArrayImpl(corr, (range.Item1, range.Item2))
+            );
+
+            return corr;
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public double[] UnsafeParallelSimdUnrolled()
+        {
+            var corr = new double[_values.Length / 2];
+
+            Parallel.ForEach(
+                Partitioner.Create(0, _values.Length / 2),
+                range => this.AutoCorrelationToArrayImplUnrolled(corr, (range.Item1, range.Item2))
             );
 
             return corr;
@@ -172,6 +199,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                         for (; k < n - 2 * Vector<double>.Count; k += 2 * Vector<double>.Count)
                         {
+#pragma warning disable CS0618
                             Vector<double> kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
                             Vector<double> kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
                             r_xx += Vector.Dot(kVec, kmVec);
@@ -179,6 +207,7 @@ namespace gfoidl.Stochastics.Benchmarks
                             kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
                             kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
                             r_xx += Vector.Dot(kVec, kmVec);
+#pragma warning restore CS0618
                         }
                     }
 
@@ -187,6 +216,83 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     pCorr[m] = r_xx / (n - m);
                 }
+            }
+        }
+        //---------------------------------------------------------------------
+        private unsafe void AutoCorrelationToArrayImplUnrolled(double[] corr, (int Start, int End) range)
+        {
+            int n = _values.Length;
+
+            fixed (double* pArray = _values)
+            fixed (double* pCorr = corr)
+            {
+                for (int m = range.Start; m < range.End; ++m)
+                {
+                    double r_xx = 0;
+                    int k       = m;
+
+                    if (Vector.IsHardwareAccelerated && (n - m) >= Vector<double>.Count * 2)
+                    {
+                        double* a_k  = &pArray[k];
+                        double* a_km = pArray;
+
+                        for (; k < n - 8 * Vector<double>.Count; k += 8 * Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 2 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 3 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 4 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 5 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 6 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 7 * Vector<double>.Count, ref r_xx);
+
+                            a_k  += 8 * Vector<double>.Count;
+                            a_km += 8 * Vector<double>.Count;
+                        }
+
+                        if (k < n - 4 * Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 2 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 3 * Vector<double>.Count, ref r_xx);
+
+                            a_k  += 4 * Vector<double>.Count;
+                            a_km += 4 * Vector<double>.Count;
+                            k    += 4 * Vector<double>.Count;
+                        }
+
+                        if (k < n - 2 * Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+
+                            a_k  += 2 * Vector<double>.Count;
+                            a_km += 2 * Vector<double>.Count;
+                            k    += 2 * Vector<double>.Count;
+                        }
+
+                        if (k < n - Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+
+                            k += Vector<double>.Count;
+                        }
+                    }
+
+                    for (; k < n; ++k)
+                        r_xx += pArray[k] * pArray[k - m];
+
+                    pCorr[m] = r_xx / (n - m);
+                }
+            }
+            //-----------------------------------------------------------------
+            void Core(double* a_k, double* a_km, int offset, ref double r_xx)
+            {
+                Vector<double> kVec  = VectorHelper.GetVector(a_k + offset);
+                Vector<double> kmVec = VectorHelper.GetVector(a_km + offset);
+                r_xx += Vector.Dot(kVec, kmVec);
             }
         }
     }

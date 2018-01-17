@@ -96,20 +96,53 @@ namespace gfoidl.Stochastics.Statistics
                     double r_xx = 0;
                     int k       = m;
 
-                    if (Vector.IsHardwareAccelerated && (n - m) >= Vector<double>.Count * 2)
+                    if (Vector.IsHardwareAccelerated && (n - m) >= Vector<double>.Count)
                     {
                         double* a_k  = &pArray[k];
                         double* a_km = pArray;
 
-                        for (; k < n - 2 * Vector<double>.Count; k += 2 * Vector<double>.Count)
+                        for (; k < n - 8 * Vector<double>.Count; k += 8 * Vector<double>.Count)
                         {
-                            Vector<double> kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
-                            Vector<double> kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
-                            r_xx += Vector.Dot(kVec, kmVec);
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 2 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 3 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 4 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 5 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 6 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 7 * Vector<double>.Count, ref r_xx);
 
-                            kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
-                            kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
-                            r_xx += Vector.Dot(kVec, kmVec);
+                            a_k  += 8 * Vector<double>.Count;
+                            a_km += 8 * Vector<double>.Count;
+                        }
+
+                        if (k < n - 4 * Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 2 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 3 * Vector<double>.Count, ref r_xx);
+
+                            a_k  += 4 * Vector<double>.Count;
+                            a_km += 4 * Vector<double>.Count;
+                            k    += 4 * Vector<double>.Count;
+                        }
+
+                        if (k < n - 2 * Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+                            Core(a_k, a_km, 1 * Vector<double>.Count, ref r_xx);
+
+                            a_k  += 2 * Vector<double>.Count;
+                            a_km += 2 * Vector<double>.Count;
+                            k    += 2 * Vector<double>.Count;
+                        }
+
+                        if (k < n - Vector<double>.Count)
+                        {
+                            Core(a_k, a_km, 0 * Vector<double>.Count, ref r_xx);
+
+                            k += Vector<double>.Count;
                         }
                     }
 
@@ -118,6 +151,13 @@ namespace gfoidl.Stochastics.Statistics
 
                     pCorr[m] = r_xx / (n - m);
                 }
+            }
+            //-----------------------------------------------------------------
+            void Core(double* a_k, double* a_km, int offset, ref double r_xx)
+            {
+                Vector<double> kVec  = VectorHelper.GetVector(a_k + offset);
+                Vector<double> kmVec = VectorHelper.GetVector(a_km + offset);
+                r_xx += Vector.Dot(kVec, kmVec);
             }
         }
         #endregion
