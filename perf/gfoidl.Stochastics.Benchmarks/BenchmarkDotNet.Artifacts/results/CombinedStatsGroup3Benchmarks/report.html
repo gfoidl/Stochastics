@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>CombinedStatsGroup3Benchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>  Method</th><th>N</th><th>  Mean</th><th>  Error</th><th> StdDev</th><th>Scaled</th><th>ScaledSD</th>
+</tr>
+</thead><tbody><tr><td>EachSeparate</td><td>100</td><td>415.8 ns</td><td>4.1748 ns</td><td>3.9052 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>SimdSequential</td><td>100</td><td>203.1 ns</td><td>0.6954 ns</td><td>0.6164 ns</td><td>0.49</td><td>0.00</td>
+</tr><tr><td>SimdParallel</td><td>100</td><td>19,301.0 ns</td><td>274.3979 ns</td><td>243.2466 ns</td><td>46.43</td><td>0.70</td>
+</tr><tr><td>EachSeparate</td><td>1000</td><td>2,387.2 ns</td><td>10.3893 ns</td><td>9.7181 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>SimdSequential</td><td>1000</td><td>1,672.4 ns</td><td>1.7651 ns</td><td>1.5647 ns</td><td>0.70</td><td>0.00</td>
+</tr><tr><td>SimdParallel</td><td>1000</td><td>18,579.0 ns</td><td>294.2237 ns</td><td>260.8217 ns</td><td>7.78</td><td>0.11</td>
+</tr><tr><td>EachSeparate</td><td>10000</td><td>21,963.3 ns</td><td>79.6382 ns</td><td>70.5971 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>SimdSequential</td><td>10000</td><td>16,307.7 ns</td><td>38.3462 ns</td><td>35.8691 ns</td><td>0.74</td><td>0.00</td>
+</tr><tr><td>SimdParallel</td><td>10000</td><td>21,677.5 ns</td><td>297.9120 ns</td><td>264.0912 ns</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>EachSeparate</td><td>50000</td><td>150,579.4 ns</td><td>6,245.7260 ns</td><td>6,134.1374 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>SimdSequential</td><td>50000</td><td>83,006.0 ns</td><td>129.9797 ns</td><td>121.5831 ns</td><td>0.55</td><td>0.02</td>
+</tr><tr><td>SimdParallel</td><td>50000</td><td>57,336.5 ns</td><td>1,097.9892 ns</td><td>1,348.4294 ns</td><td>0.38</td><td>0.02</td>
+</tr><tr><td>EachSeparate</td><td>100000</td><td>227,887.2 ns</td><td>1,879.8884 ns</td><td>1,569.7918 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>SimdSequential</td><td>100000</td><td>166,408.4 ns</td><td>690.2975 ns</td><td>645.7047 ns</td><td>0.73</td><td>0.01</td>
+</tr><tr><td>SimdParallel</td><td>100000</td><td>85,729.1 ns</td><td>880.7130 ns</td><td>823.8194 ns</td><td>0.38</td><td>0.00</td>
+</tr></tbody></table>
+</body>
+</html>
