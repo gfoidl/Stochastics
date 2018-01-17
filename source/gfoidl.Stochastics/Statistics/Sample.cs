@@ -248,7 +248,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_skewness))
-                    _skewness = this.CalculateSkewness();
+                    this.CalculateSkewnessAndKurtosis();
 
                 return _skewness;
             }
@@ -269,7 +269,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_kurtosis))
-                    _kurtosis = this.CalculateKurtosis();
+                    this.CalculateSkewnessAndKurtosis();
 
                 return _kurtosis;
             }
