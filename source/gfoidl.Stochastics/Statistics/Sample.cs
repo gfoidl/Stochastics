@@ -102,7 +102,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_max))
-                    _max = _values.Max();
+                    this.GetMinMax();
 
                 return _max;
             }
@@ -117,7 +117,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_min))
-                    _min = _values.Min();
+                    this.GetMinMax();
 
                 return _min;
             }

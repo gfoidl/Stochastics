@@ -9,6 +9,7 @@ namespace gfoidl.Stochastics.Statistics
         // Threshould determined by benchmark (roughly)
         public const int ThresholdForParallel                = 50_000;
         public const int ThresholdForAutocorrelationParallel = 250;
+        public const int ThresholdForMinMax                  = 75_000;
 #pragma warning restore CS1591
         //---------------------------------------------------------------------
         private static ParallelOptions GetParallelOptions()

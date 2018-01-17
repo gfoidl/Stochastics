@@ -20,6 +20,9 @@ namespace gfoidl.Stochastics
             return value;
         }
         //---------------------------------------------------------------------
+        public static bool InterlockedExchangeIfGreater(this double comparison, ref double location)
+            => InterlockedExchangeIfGreater(comparison, ref location, comparison);
+        //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InterlockedExchangeIfGreater(this double comparison, ref double location, double newValue)
         {
@@ -34,6 +37,9 @@ namespace gfoidl.Stochastics
 
             return true;
         }
+        //---------------------------------------------------------------------
+        public static bool InterlockedExchangeIfSmaller(this double comparison, ref double location)
+            => InterlockedExchangeIfSmaller(comparison, ref location, comparison);
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InterlockedExchangeIfSmaller(this double comparison, ref double location, double newValue)
