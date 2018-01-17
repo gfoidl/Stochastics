@@ -41,6 +41,9 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(CalculateAverageBenchmarks):
                     CalculateAverageBenchmarks.Run();
                     break;
+                case nameof(CombinedStatsGroup2Benchmarks):
+                    CombinedStatsGroup2Benchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;
