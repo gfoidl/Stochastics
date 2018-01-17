@@ -16,15 +16,16 @@ namespace gfoidl.Stochastics.Benchmarks
             var benchs = new CalculateDeltaBenchmarks();
             benchs.N   = 1000;
             benchs.GlobalSetup();
-            const int align = -25;
+            const int align = -35;
             Console.WriteLine($"{nameof(benchs.Sequential),align}: {benchs.Sequential()}");
             Console.WriteLine($"{nameof(benchs.Simd),align}: {benchs.Simd()}");
             Console.WriteLine($"{nameof(benchs.UnsafeSimd),align}: {benchs.UnsafeSimd()}");
             Console.WriteLine($"{nameof(benchs.Parallelized),align}: {benchs.Parallelized()}");
             Console.WriteLine($"{nameof(benchs.ParallelizedSimd),align}: {benchs.ParallelizedSimd()}");
             Console.WriteLine($"{nameof(benchs.ParallelizedUnsafeSimd),align}: {benchs.ParallelizedUnsafeSimd()}");
+            Console.WriteLine($"{nameof(benchs.ParallelizedUnsafeSimdUnrolled),align}: {benchs.ParallelizedUnsafeSimdUnrolled()}");
 #if !DEBUG
-            BenchmarkRunner.Run<CalculateDeltaBenchmarks>();
+            //BenchmarkRunner.Run<CalculateDeltaBenchmarks>();
 #endif
         }
         //---------------------------------------------------------------------
@@ -53,7 +54,7 @@ namespace gfoidl.Stochastics.Benchmarks
             _avg /= this.N;
         }
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public double Sequential()
         {
             double delta = 0;
@@ -66,7 +67,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return delta / tmp.Length;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public double Simd()
         {
             double delta = 0;
@@ -99,7 +100,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return delta / tmp.Length;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public unsafe double UnsafeSimd()
         {
             double delta = 0;
@@ -170,7 +171,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return delta / _values.Length;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public double ParallelizedSimd()
         {
             double delta = 0;
@@ -224,7 +225,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return delta / _values.Length;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public unsafe double ParallelizedUnsafeSimd()
         {
             double delta = 0;
@@ -279,6 +280,99 @@ namespace gfoidl.Stochastics.Benchmarks
             );
 #endif
             return delta / _values.Length;
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public unsafe double ParallelizedUnsafeSimdUnrolled()
+        {
+            double delta = 0;
+            var sync = new object();
+
+            Partitioner<Tuple<int, int>> partitioner = Partitioner.Create(0, _values.Length);
+#if SEQUENTIAL
+            var range = Tuple.Create(0, _values.Length);
+#else
+            Parallel.ForEach(
+                partitioner,
+                range =>
+                {
+#endif
+                    double localDelta = 0;
+                    double avg        = this.Mean;
+                    int n             = range.Item2;
+
+                    fixed (double* pArray = _values)
+                    {
+                        int i = range.Item1;
+                        //double* arr = &pArray[i];
+                        double* arr = pArray + i;     // is the same as above
+
+                        if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
+                        {
+                            var avgVec   = new Vector<double>(avg);
+                            var deltaVec = new Vector<double>(0);
+
+                            for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
+                            {
+                                Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 4 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 5 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 6 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 7 * Vector<double>.Count, avgVec, ref deltaVec);
+
+                                arr += 8 * Vector<double>.Count;
+                            }
+
+                            if (i < n - 4 * Vector<double>.Count)
+                            {
+                                Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec);
+
+                                arr += 4 * Vector<double>.Count;
+                                i   += 4 * Vector<double>.Count;
+                            }
+
+                            if (i < n - 2 * Vector<double>.Count)
+                            {
+                                Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
+                                Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
+
+                                arr += 2 * Vector<double>.Count;
+                                i   += 2 * Vector<double>.Count;
+                            }
+
+                            if (i < n - Vector<double>.Count)
+                            {
+                                Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
+
+                                i += Vector<double>.Count;
+                            }
+
+                            for (int j = 0; j < Vector<double>.Count; ++j)
+                                localDelta += deltaVec[j];
+                        }
+
+                        for (; i < n; ++i)
+                            localDelta += Math.Abs(pArray[i] - avg);
+                    }
+
+                    lock (sync) delta += localDelta;
+#if !SEQUENTIAL
+                }
+            );
+#endif
+            return delta / _values.Length;
+            //-----------------------------------------------------------------
+            void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> deltaVec)
+            {
+                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                deltaVec += Vector.Abs(vec - avgVec);
+            }
         }
     }
 }

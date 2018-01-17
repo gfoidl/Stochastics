@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>LoopSimdBenchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>        Method</th><th>N</th><th>   Mean</th><th>  Error</th><th> StdDev</th><th>Scaled</th><th>ScaledSD</th>
+</tr>
+</thead><tbody><tr><td>          Base</td><td>100</td><td>53.67 ns</td><td>0.3049 ns</td><td>0.2852 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>Simd_without_advance</td><td>100</td><td>54.04 ns</td><td>0.4142 ns</td><td>0.3874 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>  No_unrolling</td><td>100</td><td>55.61 ns</td><td>0.5692 ns</td><td>0.5046 ns</td><td>1.04</td><td>0.01</td>
+</tr><tr><td>   Unrolled_4x</td><td>100</td><td>54.01 ns</td><td>0.2552 ns</td><td>0.2262 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>  Unrolled_4x1</td><td>100</td><td>54.56 ns</td><td>0.1128 ns</td><td>0.0881 ns</td><td>1.02</td><td>0.01</td>
+</tr><tr><td>   Unrolled_8x</td><td>100</td><td>54.05 ns</td><td>0.3171 ns</td><td>0.2966 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x1</td><td>100</td><td>54.35 ns</td><td>0.2542 ns</td><td>0.2378 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x2</td><td>100</td><td>54.81 ns</td><td>0.1693 ns</td><td>0.1501 ns</td><td>1.02</td><td>0.01</td>
+</tr><tr><td>          Base</td><td>1000</td><td>567.70 ns</td><td>1.9656 ns</td><td>1.7425 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>Simd_without_advance</td><td>1000</td><td>576.84 ns</td><td>12.8848 ns</td><td>12.0525 ns</td><td>1.02</td><td>0.02</td>
+</tr><tr><td>  No_unrolling</td><td>1000</td><td>570.92 ns</td><td>2.6097 ns</td><td>2.4411 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>   Unrolled_4x</td><td>1000</td><td>566.00 ns</td><td>1.5739 ns</td><td>1.4722 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>  Unrolled_4x1</td><td>1000</td><td>568.56 ns</td><td>2.0907 ns</td><td>1.8534 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>   Unrolled_8x</td><td>1000</td><td>564.71 ns</td><td>2.2863 ns</td><td>2.1387 ns</td><td>0.99</td><td>0.00</td>
+</tr><tr><td>  Unrolled_8x1</td><td>1000</td><td>565.49 ns</td><td>1.2372 ns</td><td>1.1573 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>  Unrolled_8x2</td><td>1000</td><td>567.44 ns</td><td>1.1833 ns</td><td>0.9881 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>          Base</td><td>10000</td><td>5,680.82 ns</td><td>27.4599 ns</td><td>25.6860 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>Simd_without_advance</td><td>10000</td><td>5,686.86 ns</td><td>20.8272 ns</td><td>19.4818 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>  No_unrolling</td><td>10000</td><td>5,692.97 ns</td><td>32.2182 ns</td><td>28.5606 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>   Unrolled_4x</td><td>10000</td><td>5,664.86 ns</td><td>23.2020 ns</td><td>21.7031 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>  Unrolled_4x1</td><td>10000</td><td>5,698.19 ns</td><td>38.6689 ns</td><td>34.2790 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>   Unrolled_8x</td><td>10000</td><td>5,660.52 ns</td><td>14.1480 ns</td><td>11.0458 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>  Unrolled_8x1</td><td>10000</td><td>5,661.45 ns</td><td>19.5941 ns</td><td>18.3284 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x2</td><td>10000</td><td>5,658.44 ns</td><td>14.6742 ns</td><td>13.7263 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>          Base</td><td>100000</td><td>57,180.08 ns</td><td>305.0972 ns</td><td>285.3881 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>Simd_without_advance</td><td>100000</td><td>57,126.25 ns</td><td>464.7109 ns</td><td>434.6908 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>  No_unrolling</td><td>100000</td><td>57,590.06 ns</td><td>436.0883 ns</td><td>386.5808 ns</td><td>1.01</td><td>0.01</td>
+</tr><tr><td>   Unrolled_4x</td><td>100000</td><td>56,760.30 ns</td><td>77.6699 ns</td><td>68.8523 ns</td><td>0.99</td><td>0.00</td>
+</tr><tr><td>  Unrolled_4x1</td><td>100000</td><td>57,261.69 ns</td><td>448.0849 ns</td><td>419.1388 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>   Unrolled_8x</td><td>100000</td><td>56,744.02 ns</td><td>130.9660 ns</td><td>116.0979 ns</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x1</td><td>100000</td><td>57,083.83 ns</td><td>407.0528 ns</td><td>380.7574 ns</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x2</td><td>100000</td><td>56,827.49 ns</td><td>232.1431 ns</td><td>217.1468 ns</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>          Base</td><td>1000000</td><td>581,135.04 ns</td><td>9,134.9781 ns</td><td>8,097.9194 ns</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>Simd_without_advance</td><td>1000000</td><td>576,717.22 ns</td><td>9,721.8907 ns</td><td>9,093.8617 ns</td><td>0.99</td><td>0.02</td>
+</tr><tr><td>  No_unrolling</td><td>1000000</td><td>579,045.26 ns</td><td>6,565.1629 ns</td><td>5,819.8453 ns</td><td>1.00</td><td>0.02</td>
+</tr><tr><td>   Unrolled_4x</td><td>1000000</td><td>580,625.54 ns</td><td>9,482.7439 ns</td><td>8,870.1636 ns</td><td>1.00</td><td>0.02</td>
+</tr><tr><td>  Unrolled_4x1</td><td>1000000</td><td>578,028.53 ns</td><td>7,997.7420 ns</td><td>7,481.0921 ns</td><td>0.99</td><td>0.02</td>
+</tr><tr><td>   Unrolled_8x</td><td>1000000</td><td>573,065.35 ns</td><td>4,558.8864 ns</td><td>4,041.3337 ns</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x1</td><td>1000000</td><td>574,172.82 ns</td><td>3,133.5396 ns</td><td>2,931.1146 ns</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>  Unrolled_8x2</td><td>1000000</td><td>576,068.96 ns</td><td>8,881.1168 ns</td><td>8,307.4013 ns</td><td>0.99</td><td>0.02</td>
+</tr></tbody></table>
+</body>
+</html>

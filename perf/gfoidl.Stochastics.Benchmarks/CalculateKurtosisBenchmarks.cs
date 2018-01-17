@@ -10,12 +10,13 @@ namespace gfoidl.Stochastics.Benchmarks
     {
         public static void Run()
         {
-            var benchs      = new CalculateKurtosisBenchmarks();
-            benchs.N        = 1000;
+            var benchs = new CalculateKurtosisBenchmarks();
+            benchs.N   = 1000;
             benchs.GlobalSetup();
-            const int align = -25;
+            const int align = -35;
             Console.WriteLine($"{nameof(benchs.Sequential),align}: {benchs.Sequential()}");
             Console.WriteLine($"{nameof(benchs.UnsafeSimd),align}: {benchs.UnsafeSimd()}");
+            Console.WriteLine($"{nameof(benchs.UnsafeSimdUnrolled),align}: {benchs.UnsafeSimdUnrolled()}");
 #if !DEBUG
             BenchmarkRunner.Run<CalculateKurtosisBenchmarks>();
 #endif
@@ -47,7 +48,7 @@ namespace gfoidl.Stochastics.Benchmarks
             _avg /= this.N;
         }
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        //[Benchmark(Baseline = true)]
         public double Sequential()
         {
             double kurtosis = 0;
@@ -66,7 +67,7 @@ namespace gfoidl.Stochastics.Benchmarks
             return kurtosis;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public unsafe double UnsafeSimd()
         {
             double kurtosis = 0;
@@ -85,6 +86,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
+#pragma warning disable CS0618
                         Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         vec     -= avgVec;
                         kurtVec += vec * vec * vec * vec;
@@ -92,6 +94,7 @@ namespace gfoidl.Stochastics.Benchmarks
                         vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         vec     -= avgVec;
                         kurtVec += vec * vec * vec * vec;
+#pragma warning restore CS0618
                     }
 
                     for (int j = 0; j < Vector<double>.Count; ++j)
@@ -109,6 +112,88 @@ namespace gfoidl.Stochastics.Benchmarks
             kurtosis /= n * sigma * sigma * sigma * sigma;
 
             return kurtosis;
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public unsafe double UnsafeSimdUnrolled()
+        {
+            double kurtosis = 0;
+            double avg      = this.Mean;
+            int n           = _values.Length;
+
+            fixed (double* pArray = _values)
+            {
+                double* arr = pArray;
+                int i       = 0;
+
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
+                {
+                    var avgVec  = new Vector<double>(avg);
+                    var kurtVec = new Vector<double>(0);
+
+                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 4 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 5 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 6 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 7 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        arr += 8 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 4 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        arr += 4 * Vector<double>.Count;
+                        i   += 4 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 2 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        arr += 2 * Vector<double>.Count;
+                        i   += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref kurtVec);
+
+                        i += Vector<double>.Count;
+                    }
+
+                    for (int j = 0; j < Vector<double>.Count; ++j)
+                        kurtosis += kurtVec[j];
+                }
+
+                for (; i < n; ++i)
+                {
+                    double t = pArray[i] - avg;
+                    kurtosis += t * t * t * t;
+                }
+            }
+
+            double sigma = this.StandardDeviation;
+            kurtosis /= n * sigma * sigma * sigma * sigma;
+
+            return kurtosis;
+            //-----------------------------------------------------------------
+            void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> kurtVec)
+            {
+                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                vec     -= avgVec;
+                kurtVec += vec * vec * vec * vec;
+            }
         }
     }
 }

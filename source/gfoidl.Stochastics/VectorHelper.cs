@@ -1,8 +1,11 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace gfoidl.Stochastics
 {
+    [DebuggerNonUserCode]
     internal static unsafe class VectorHelper
     {
         public static Vector<double> GetVector(double* arr)
@@ -10,6 +13,7 @@ namespace gfoidl.Stochastics
             return Unsafe.Read<Vector<double>>(arr);
         }
         //---------------------------------------------------------------------
+        [Obsolete("Use GetVector + offset instead")]
         public static Vector<double> GetVectorWithAdvance(ref double* arr)
         {
             Vector<double> vec = Unsafe.Read<Vector<double>>(arr);
@@ -23,6 +27,7 @@ namespace gfoidl.Stochastics
             Unsafe.Write(arr, vector);
         }
         //---------------------------------------------------------------------
+        [Obsolete("Use WriteVector + offset instead")]
         public static void WriteVectorWithAdvance(this Vector<double> vector, ref double* arr)
         {
             Unsafe.Write(arr, vector);

@@ -79,25 +79,65 @@ namespace gfoidl.Stochastics.Statistics
                 double* sourceArr = pSource + i;
                 double* targetArr = pTarget + i;
 
-                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count * 2)
+                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
                     var avgVec      = new Vector<double>(avg);
                     var sigmaInvVec = new Vector<double>(sigmaInv);
 
-                    for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
+                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
-                        Vector<double> vec       = VectorHelper.GetVectorWithAdvance(ref sourceArr);
-                        Vector<double> zTransVec = (vec - avgVec) * sigmaInvVec;
-                        zTransVec.WriteVectorWithAdvance(ref targetArr);
+                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 4 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 5 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 6 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 7 * Vector<double>.Count, avgVec, sigmaInvVec);
 
-                        vec       = VectorHelper.GetVectorWithAdvance(ref sourceArr);
-                        zTransVec = (vec - avgVec) * sigmaInvVec;
-                        zTransVec.WriteVectorWithAdvance(ref targetArr);
+                        sourceArr += 8 * Vector<double>.Count;
+                        targetArr += 8 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 4 * Vector<double>.Count)
+                    {
+                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
+
+                        sourceArr += 4 * Vector<double>.Count;
+                        targetArr += 4 * Vector<double>.Count;
+                        i += 4 * Vector<double>.Count;
+                    }
+
+                    if (i < n - 2 * Vector<double>.Count)
+                    {
+                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+
+                        sourceArr += 2 * Vector<double>.Count;
+                        targetArr += 2 * Vector<double>.Count;
+                        i += 2 * Vector<double>.Count;
+                    }
+
+                    if (i < n - Vector<double>.Count)
+                    {
+                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+
+                        i += Vector<double>.Count;
                     }
                 }
 
                 for (; i < n; ++i)
                     pTarget[i] = this.ZTransformation(pSource[i], avg, sigmaInv);
+            }
+            //-----------------------------------------------------------------
+            void Core(double* sourceArr, double* targetArr, int offset, Vector<double> avgVec, Vector<double> sigmaInvVec)
+            {
+                Vector<double> vec       = VectorHelper.GetVector(sourceArr + offset);
+                Vector<double> zTransVec = (vec - avgVec) * sigmaInvVec;
+                zTransVec.WriteVector(targetArr + offset);
             }
         }
     }

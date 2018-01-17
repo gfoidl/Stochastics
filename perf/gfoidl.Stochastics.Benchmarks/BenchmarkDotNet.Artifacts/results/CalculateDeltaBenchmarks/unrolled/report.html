@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>CalculateDeltaBenchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>                  Method</th><th>N</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Scaled</th><th>ScaledSD</th>
+</tr>
+</thead><tbody><tr><td>  ParallelizedUnsafeSimd</td><td>100</td><td>21.89 us</td><td>0.7062 us</td><td>2.0712 us</td><td>21.58 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimdUnrolled</td><td>100</td><td>21.07 us</td><td>0.4978 us</td><td>1.4601 us</td><td>21.09 us</td><td>0.97</td><td>0.11</td>
+</tr><tr><td>  ParallelizedUnsafeSimd</td><td>1000</td><td>19.09 us</td><td>0.3780 us</td><td>0.9690 us</td><td>18.87 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimdUnrolled</td><td>1000</td><td>19.11 us</td><td>0.3714 us</td><td>0.5326 us</td><td>19.14 us</td><td>1.00</td><td>0.06</td>
+</tr><tr><td>  ParallelizedUnsafeSimd</td><td>10000</td><td>27.21 us</td><td>0.5433 us</td><td>1.4964 us</td><td>26.84 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimdUnrolled</td><td>10000</td><td>26.94 us</td><td>0.5121 us</td><td>0.6289 us</td><td>26.80 us</td><td>0.99</td><td>0.06</td>
+</tr><tr><td>  ParallelizedUnsafeSimd</td><td>100000</td><td>72.00 us</td><td>1.4257 us</td><td>3.0074 us</td><td>71.44 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimdUnrolled</td><td>100000</td><td>69.91 us</td><td>1.3516 us</td><td>1.8500 us</td><td>69.84 us</td><td>0.97</td><td>0.05</td>
+</tr><tr><td>  ParallelizedUnsafeSimd</td><td>1000000</td><td>422.23 us</td><td>4.2912 us</td><td>3.8040 us</td><td>423.28 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedUnsafeSimdUnrolled</td><td>1000000</td><td>419.31 us</td><td>8.1985 us</td><td>14.1420 us</td><td>412.90 us</td><td>0.99</td><td>0.03</td>
+</tr></tbody></table>
+</body>
+</html>
