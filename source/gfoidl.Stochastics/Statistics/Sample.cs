@@ -72,7 +72,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_mean))
-                    _mean = this.CalculateAverage();
+                    this.CalculateAverageAndVarianceCore();
 
                 return _mean;
             }

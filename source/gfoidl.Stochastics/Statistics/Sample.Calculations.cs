@@ -28,16 +28,19 @@ namespace gfoidl.Stochastics.Statistics
                 return _sortedValues[n >> 1];
         }
         //---------------------------------------------------------------------
-        private double CalculateVariance()       => this.VarianceCore() / this.Count;
-        private double CalculateSampleVariance() => this.VarianceCore() / (this.Count - 1d);
+        private double CalculateVariance()       => this.VarianceCore / this.Count;
+        private double CalculateSampleVariance() => this.VarianceCore / (this.Count - 1d);
         //---------------------------------------------------------------------
         private double _varianceCore = double.NaN;
-        private double VarianceCore()
+        private double VarianceCore
         {
-            if (double.IsNaN(_varianceCore))
-                _varianceCore = this.CalculateVarianceCore();
+            get
+            {
+                if (double.IsNaN(_varianceCore))
+                    this.CalculateAverageAndVarianceCore();
 
-            return _varianceCore;
+                return _varianceCore;
+            }
         }
     }
 }

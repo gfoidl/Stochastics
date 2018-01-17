@@ -52,10 +52,10 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            double actual1 = sut.CalculateAverageSimd();
-            double actual2 = sut.CalculateAverageParallelizedSimd();
+            double actual1 = sut.CalculateAverageAndVarianceCoreSimd()            .avg;
+            double actual2 = sut.CalculateAverageAndVarianceCoreParallelizedSimd().avg;
 
-            Assert.AreEqual(actual1, actual2, 1e-10);
+            Assert.AreEqual(actual1, actual2, 1e-7);
         }
         //---------------------------------------------------------------------
         [Test]
@@ -69,8 +69,8 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            double actual1 = sut.CalculateAverageSimd();
-            double actual2 = values.Average();
+            double actual1 = values.Average();
+            double actual2 = sut.CalculateAverageAndVarianceCoreSimd().avg / _size;
 
             Assert.AreEqual(actual1, actual2, 1e-10);
         }
