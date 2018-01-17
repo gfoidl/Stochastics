@@ -41,6 +41,9 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(CalculateAverageBenchmarks):
                     CalculateAverageBenchmarks.Run();
                     break;
+                case nameof(CombinedStatsGroup1Benchmarks):
+                    CombinedStatsGroup1Benchmarks.Run();
+                    break;
                 case nameof(CombinedStatsGroup2Benchmarks):
                     CombinedStatsGroup2Benchmarks.Run();
                     break;
