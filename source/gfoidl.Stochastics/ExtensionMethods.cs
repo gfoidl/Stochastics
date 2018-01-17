@@ -10,14 +10,50 @@ namespace gfoidl.Stochastics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double SafeAdd(this double amount, ref double value)
         {
-            double tmp = double.NaN;
+            double snapshot = double.NaN;
 
             do
             {
-                tmp = value;
-            } while (tmp != Interlocked.CompareExchange(ref value, value + amount, tmp));
+                snapshot = value;
+            } while (snapshot != Interlocked.CompareExchange(ref value, value + amount, snapshot));
 
             return value;
+        }
+        //---------------------------------------------------------------------
+        public static bool InterlockedExchangeIfGreater(this double comparison, ref double location)
+            => InterlockedExchangeIfGreater(comparison, ref location, comparison);
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InterlockedExchangeIfGreater(this double comparison, ref double location, double newValue)
+        {
+            double snapshot = double.NaN;
+
+            do
+            {
+                snapshot = location;
+
+                if (snapshot > comparison) return false;
+            } while (snapshot != Interlocked.CompareExchange(ref location, newValue, snapshot));
+
+            return true;
+        }
+        //---------------------------------------------------------------------
+        public static bool InterlockedExchangeIfSmaller(this double comparison, ref double location)
+            => InterlockedExchangeIfSmaller(comparison, ref location, comparison);
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool InterlockedExchangeIfSmaller(this double comparison, ref double location, double newValue)
+        {
+            double snapshot = double.NaN;
+
+            do
+            {
+                snapshot = location;
+
+                if (snapshot < comparison) return false;
+            } while (snapshot != Interlocked.CompareExchange(ref location, newValue, snapshot));
+
+            return true;
         }
     }
 }

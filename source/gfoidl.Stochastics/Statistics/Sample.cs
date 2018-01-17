@@ -72,7 +72,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_mean))
-                    _mean = this.CalculateAverage();
+                    this.CalculateAverageAndVarianceCore();
 
                 return _mean;
             }
@@ -102,7 +102,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_max))
-                    _max = _values.Max();
+                    this.GetMinMax();
 
                 return _max;
             }
@@ -117,7 +117,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_min))
-                    _min = _values.Min();
+                    this.GetMinMax();
 
                 return _min;
             }
@@ -248,7 +248,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_skewness))
-                    _skewness = this.CalculateSkewness();
+                    this.CalculateSkewnessAndKurtosis();
 
                 return _skewness;
             }
@@ -269,7 +269,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 if (double.IsNaN(_kurtosis))
-                    _kurtosis = this.CalculateKurtosis();
+                    this.CalculateSkewnessAndKurtosis();
 
                 return _kurtosis;
             }

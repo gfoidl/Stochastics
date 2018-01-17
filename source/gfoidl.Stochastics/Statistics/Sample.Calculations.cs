@@ -9,6 +9,9 @@ namespace gfoidl.Stochastics.Statistics
         // Threshould determined by benchmark (roughly)
         public const int ThresholdForParallel                = 50_000;
         public const int ThresholdForAutocorrelationParallel = 250;
+        public const int ThresholdForMinMax                  = 75_000;
+        public const int ThresholdForAverageAndVarianceCore  = 75_000;
+        public const int ThresholdForSkewnessAndKurtosis     = 35_000;
 #pragma warning restore CS1591
         //---------------------------------------------------------------------
         private static ParallelOptions GetParallelOptions()
@@ -27,16 +30,19 @@ namespace gfoidl.Stochastics.Statistics
                 return _sortedValues[n >> 1];
         }
         //---------------------------------------------------------------------
-        private double CalculateVariance()       => this.VarianceCore() / this.Count;
-        private double CalculateSampleVariance() => this.VarianceCore() / (this.Count - 1d);
+        private double CalculateVariance()       => this.VarianceCore / this.Count;
+        private double CalculateSampleVariance() => this.VarianceCore / (this.Count - 1d);
         //---------------------------------------------------------------------
         private double _varianceCore = double.NaN;
-        private double VarianceCore()
+        private double VarianceCore
         {
-            if (double.IsNaN(_varianceCore))
-                _varianceCore = this.CalculateVarianceCore();
+            get
+            {
+                if (double.IsNaN(_varianceCore))
+                    this.CalculateAverageAndVarianceCore();
 
-            return _varianceCore;
+                return _varianceCore;
+            }
         }
     }
 }

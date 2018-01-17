@@ -11,34 +11,32 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
     [TestFixture(10_000)]
     [TestFixture(100_000)]
     [TestFixture(1_000_000)]
-    public class Average
+    public class MinMax
     {
         private readonly int _size;
         //---------------------------------------------------------------------
-        public Average(int size) => _size = size;
+        public MinMax(int size) => _size = size;
         //---------------------------------------------------------------------
         [Test]
-        public void One_value___is_the_Average()
+        public void One_value___is_min_and_max()
         {
             double[] values = { 42 };
 
             var sut = new Sample(values);
 
-            double actual = sut.Mean;
-
-            Assert.AreEqual(42, actual);
+            Assert.AreEqual(42, sut.Min);
+            Assert.AreEqual(42, sut.Max);
         }
         //---------------------------------------------------------------------
         [Test]
-        public void Values___correct_Average()
+        public void Values___correct_MinMax()
         {
             double[] values = { 2, 4, 10, 0 };
 
             var sut = new Sample(values);
 
-            double actual = sut.Mean;
-
-            Assert.AreEqual(4, actual);
+            Assert.AreEqual(0, sut.Min);
+            Assert.AreEqual(10, sut.Max);
         }
         //---------------------------------------------------------------------
         [Test]
@@ -52,10 +50,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            double actual1 = sut.CalculateAverageAndVarianceCoreSimd()            .avg;
-            double actual2 = sut.CalculateAverageAndVarianceCoreParallelizedSimd().avg;
+            (double min, double max) actual1 = sut.GetMinMaxSimd();
+            (double min, double max) actual2 = sut.GetMinMaxParallelizedSimd();
 
-            Assert.AreEqual(actual1, actual2, 1e-7);
+            Assert.AreEqual(actual1.min, actual2.min, 1e-10);
+            Assert.AreEqual(actual1.max, actual2.max, 1e-10);
         }
         //---------------------------------------------------------------------
         [Test]
@@ -69,10 +68,12 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            double actual1 = values.Average();
-            double actual2 = sut.CalculateAverageAndVarianceCoreSimd().avg / _size;
+            (double min, double max) actual1 = sut.GetMinMaxSimd();
+            double min = values.Min();
+            double max = values.Max();
 
-            Assert.AreEqual(actual1, actual2, 1e-10);
+            Assert.AreEqual(min, actual1.min, 1e-10);
+            Assert.AreEqual(max, actual1.max, 1e-10);
         }
     }
 }
