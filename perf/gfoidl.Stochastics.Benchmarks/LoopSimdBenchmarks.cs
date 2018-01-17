@@ -70,11 +70,13 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
+#pragma warning disable CS0618
                         Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         res += vec;
 
                         vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         res += vec;
+#pragma warning restore CS0618
                     }
 
                     _res = res;

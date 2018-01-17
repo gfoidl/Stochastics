@@ -239,6 +239,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                         for (; k < n - 2 * Vector<double>.Count; k += 2 * Vector<double>.Count)
                         {
+#pragma warning disable CS0618
                             Vector<double> kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
                             Vector<double> kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
                             r_xx += Vector.Dot(kVec, kmVec);
@@ -246,6 +247,7 @@ namespace gfoidl.Stochastics.Benchmarks
                             kVec  = VectorHelper.GetVectorWithAdvance(ref a_k);
                             kmVec = VectorHelper.GetVectorWithAdvance(ref a_km);
                             r_xx += Vector.Dot(kVec, kmVec);
+#pragma warning restore CS0618
                         }
                     }
 

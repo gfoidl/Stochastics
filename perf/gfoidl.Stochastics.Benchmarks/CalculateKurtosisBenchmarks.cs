@@ -86,6 +86,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
+#pragma warning disable CS0618
                         Vector<double> vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         vec     -= avgVec;
                         kurtVec += vec * vec * vec * vec;
@@ -93,6 +94,7 @@ namespace gfoidl.Stochastics.Benchmarks
                         vec = VectorHelper.GetVectorWithAdvance(ref arr);
                         vec     -= avgVec;
                         kurtVec += vec * vec * vec * vec;
+#pragma warning restore CS0618
                     }
 
                     for (int j = 0; j < Vector<double>.Count; ++j)
