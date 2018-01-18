@@ -108,15 +108,15 @@ namespace gfoidl.Stochastics.Statistics
 
                     for (int j = 0; j < Vector<double>.Count; ++j)
                     {
-                        min = Math.Min(min, minVec[j]);
-                        max = Math.Max(max, maxVec[j]);
+                        if (minVec[j] < min) min = minVec[j];
+                        if (maxVec[j] > max) max = maxVec[j];
                     }
                 }
 
                 for (; i < n; ++i)
                 {
-                    min = Math.Min(min, pArray[i]);
-                    max = Math.Max(max, pArray[i]);
+                    if (pArray[i] < min) min = pArray[i];
+                    if (pArray[i] > max) max = pArray[i];
                 }
             }
 
