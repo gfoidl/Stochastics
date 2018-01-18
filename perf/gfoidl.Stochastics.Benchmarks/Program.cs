@@ -50,6 +50,12 @@ namespace gfoidl.Stochastics.Benchmarks
                 case nameof(CombinedStatsGroup3Benchmarks):
                     CombinedStatsGroup3Benchmarks.Run();
                     break;
+                case nameof(EnumerableWrapperBenchmarks):
+                    EnumerableWrapperBenchmarks.Run();
+                    break;
+                case nameof(ListWrapperBenchmarks):
+                    ListWrapperBenchmarks.Run();
+                    break;
                 default:
                     Console.WriteLine($"unknown benchmark '{arg}'");
                     break;
