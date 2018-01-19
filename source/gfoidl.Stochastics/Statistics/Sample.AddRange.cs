@@ -9,6 +9,12 @@ namespace gfoidl.Stochastics.Statistics
         {
             if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
 
+            if (values is double[] array)
+            {
+                _values = array;
+                return;
+            }
+
             double min       = double.MaxValue;
             double max       = double.MinValue;
             double avg       = 0;

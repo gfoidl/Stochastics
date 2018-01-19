@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>AddRangeBenchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th> Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Scaled</th><th>ScaledSD</th>
+</tr>
+</thead><tbody><tr><td>Default</td><td>23.32 us</td><td>0.4539 us</td><td>0.4246 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>AddRange</td><td>189.78 us</td><td>4.3587 us</td><td>3.8639 us</td><td>8.14</td><td>0.21</td>
+</tr><tr><td>AddRangeArray</td><td>11.59 us</td><td>0.0520 us</td><td>0.0461 us</td><td>0.50</td><td>0.01</td>
+</tr></tbody></table>
+</body>
+</html>
