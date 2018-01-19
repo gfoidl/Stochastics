@@ -10,9 +10,9 @@ using BenchmarkDotNet.Running;
 namespace gfoidl.Stochastics.Benchmarks
 {
     //[DisassemblyDiagnoser(printSource: true)]
-    public class CalculateVarianceCoreBenchmarks
+    public class CalculateVarianceCoreBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs = new CalculateVarianceCoreBenchmarks();
             benchs.N = 1000;

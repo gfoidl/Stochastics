@@ -6,9 +6,9 @@ using BenchmarkDotNet.Running;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class CalculateKurtosisBenchmarks
+    public class CalculateKurtosisBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs = new CalculateKurtosisBenchmarks();
             benchs.N   = 1000;

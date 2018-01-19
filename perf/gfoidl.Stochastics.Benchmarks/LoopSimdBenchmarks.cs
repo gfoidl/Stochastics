@@ -7,9 +7,9 @@ using BenchmarkDotNet.Running;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class LoopSimdBenchmarks
+    public class LoopSimdBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs  = new LoopSimdBenchmarks();
             benchs.N        = 1234;
