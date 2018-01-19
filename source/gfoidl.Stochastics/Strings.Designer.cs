@@ -61,6 +61,15 @@ namespace gfoidl.Stochastics {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Sample must be initialized. Either by the constructor-overload with &apos;values&apos;, or by the standard-ctor and a call to &apos;AddRange&apos;..
+        /// </summary>
+        internal static string Sample_must_be_initialized {
+            get {
+                return ResourceManager.GetString("Sample_must_be_initialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value must be greater than 0..
         /// </summary>
         internal static string Value_must_be_greater_than_zero {

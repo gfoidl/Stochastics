@@ -10,6 +10,8 @@ namespace gfoidl.Stochastics.Statistics
         #region IEnumerable
         internal IEnumerable<double> AutoCorrelationSequential()
         {
+            this.EnsureValuesInitialized();
+
             double[] arr = _values;
             int n2       = arr.Length / 2;
 
@@ -26,6 +28,8 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal IEnumerable<double> AutoCorrelationSimd()
         {
+            this.EnsureValuesInitialized();
+
             double[] arr = _values;
             int n2       = arr.Length / 2;
 
@@ -58,6 +62,8 @@ namespace gfoidl.Stochastics.Statistics
         #region ToArray
         internal double[] AutoCorrelationToArraySimd()
         {
+            this.EnsureValuesInitialized();
+
             int n    = _values.Length;
             int n2   = n / 2;
             var corr = new double[n2];
@@ -69,6 +75,8 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double[] AutoCorrelationToArrayParallelSimd()
         {
+            this.EnsureValuesInitialized();
+
             var corr                      = new double[_values.Length / 2];
             int n                         = _values.Length;
             var parallelOptions           = GetParallelOptions();

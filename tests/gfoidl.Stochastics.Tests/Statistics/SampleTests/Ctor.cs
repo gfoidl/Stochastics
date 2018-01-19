@@ -52,5 +52,16 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             CollectionAssert.AreEqual(_rawValues, actual);
         }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Default_Ctor_Count___throws_InvalidOperation()
+        {
+            var sut = new Sample();
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                int count = sut.Count;
+            });
+        }
     }
 }
