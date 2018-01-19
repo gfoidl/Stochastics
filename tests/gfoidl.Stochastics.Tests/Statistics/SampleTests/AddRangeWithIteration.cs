@@ -6,14 +6,14 @@ using NUnit.Framework;
 namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 {
     [TestFixture]
-    public class AddRange
+    public class AddRangeWithIteration
     {
         [Test]
         public void Values_is_null___throws_ArgumentNull()
         {
             var sut = new Sample();
 
-            Assert.Throws<ArgumentNullException>(() => sut.AddRange(null));
+            Assert.Throws<ArgumentNullException>(() => sut.AddRangeWithIteration(null));
         }
         //---------------------------------------------------------------------
         [Test]
@@ -28,7 +28,7 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             var expected = new Sample(values);
             var sut      = new Sample();
 
-            sut.AddRange(values.Select(i => i));
+            sut.AddRangeWithIteration(values.Select(i => i)).ToList();
 
             CollectionAssert.AreEqual(expected.Values, sut.Values, nameof(sut.Values));
             Assert.AreEqual(expected.Mean, sut.Mean, 1e-10, nameof(sut.Mean));
