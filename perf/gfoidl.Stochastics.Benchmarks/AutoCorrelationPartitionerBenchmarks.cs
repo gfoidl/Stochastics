@@ -21,9 +21,9 @@ using Microsoft.ConcurrencyVisualizer.Instrumentation;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class AutoCorrelationPartitionerBenchmarks
+    public class AutoCorrelationPartitionerBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs = new AutoCorrelationPartitionerBenchmarks();
 #if DEBUG

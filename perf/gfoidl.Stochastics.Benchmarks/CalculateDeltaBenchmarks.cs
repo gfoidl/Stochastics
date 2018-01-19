@@ -9,9 +9,9 @@ using BenchmarkDotNet.Running;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class CalculateDeltaBenchmarks
+    public class CalculateDeltaBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs = new CalculateDeltaBenchmarks();
             benchs.N   = 1000;

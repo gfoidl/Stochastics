@@ -11,9 +11,9 @@ using BenchmarkDotNet.Running;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class AutoCorrelationBenchmarks
+    public class AutoCorrelationBenchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs      = new AutoCorrelationBenchmarks();
             benchs.N        = 1000;

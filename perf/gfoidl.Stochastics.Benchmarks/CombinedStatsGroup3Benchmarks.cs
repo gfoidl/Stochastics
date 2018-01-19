@@ -11,9 +11,9 @@ using gfoidl.Stochastics.Statistics;
 namespace gfoidl.Stochastics.Benchmarks
 {
     [DisassemblyDiagnoser(printSource: true)]
-    public class CombinedStatsGroup3Benchmarks
+    public class CombinedStatsGroup3Benchmarks : IBenchmark
     {
-        public static void Run()
+        public void Run()
         {
             var benchs      = new CombinedStatsGroup3Benchmarks();
             benchs.N        = 1000;
