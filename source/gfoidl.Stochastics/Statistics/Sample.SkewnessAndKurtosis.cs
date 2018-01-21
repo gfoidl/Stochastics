@@ -8,6 +8,8 @@ namespace gfoidl.Stochastics.Statistics
     {
         private void CalculateSkewnessAndKurtosis()
         {
+            this.EnsureValuesInitialized();
+
             var (skewness, kurtosis) = this.Count < ThresholdForSkewnessAndKurtosis
                 ? this.CalculateSkewnessAndKurtosisSimd()
                 : this.CalculateSkewnessAndKurtosisParallelizedSimd();

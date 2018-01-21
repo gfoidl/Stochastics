@@ -36,6 +36,14 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
         }
         //---------------------------------------------------------------------
         [Test]
+        public void Empty_values___OK()
+        {
+            double[] arr = Array.Empty<double>();
+
+            var sut = new Sample(arr);
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void Values_given___correct_Count()
         {
             var sut = new Sample(_values);
@@ -51,6 +59,17 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             ICollection<double> actual = sut.Values;
 
             CollectionAssert.AreEqual(_rawValues, actual);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Default_Ctor_Count___throws_InvalidOperation()
+        {
+            var sut = new Sample();
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                int count = sut.Count;
+            });
         }
     }
 }

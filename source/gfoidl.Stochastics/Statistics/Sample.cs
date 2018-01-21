@@ -17,7 +17,7 @@ namespace gfoidl.Stochastics.Statistics
     /// </remarks>
     public partial class Sample
     {
-        private readonly double[] _values;
+        private double[] _values;
         //---------------------------------------------------------------------
         /// <summary>
         /// Sample.
@@ -27,7 +27,20 @@ namespace gfoidl.Stochastics.Statistics
         /// <summary>
         /// Sample size.
         /// </summary>
-        public int Count => _values.Length;
+        public int Count
+        {
+            get
+            {
+                this.EnsureValuesInitialized();
+
+                return _values.Length;
+            }
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Creates a new instance of <see cref="Sample" />
+        /// </summary>
+        public Sample() { }
         //---------------------------------------------------------------------
         /// <summary>
         /// Creates a new instance of <see cref="Sample" />
@@ -38,10 +51,15 @@ namespace gfoidl.Stochastics.Statistics
         {
             if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
 
-            if (values is double[] tmp)
-                _values = tmp;
+            if (values is double[] array)
+                _values = array;
             else
                 _values = values.ToArray();
+        }
+        //---------------------------------------------------------------------
+        private void EnsureValuesInitialized()
+        {
+            if (_values == null) ThrowHelper.ThrowSampleNotInitialized();
         }
         //---------------------------------------------------------------------
         private double[] _sortedValues;
@@ -54,6 +72,8 @@ namespace gfoidl.Stochastics.Statistics
             {
                 if (_sortedValues == null)
                 {
+                    this.EnsureValuesInitialized();
+
                     _sortedValues = new double[_values.Length];
                     _values.CopyTo(_sortedValues, 0);
                     Array.Sort(_sortedValues);
@@ -331,6 +351,8 @@ namespace gfoidl.Stochastics.Statistics
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
+            this.EnsureValuesInitialized();
+
             var sb = new StringBuilder();
 
             foreach(var pi in typeof(Sample).GetProperties())

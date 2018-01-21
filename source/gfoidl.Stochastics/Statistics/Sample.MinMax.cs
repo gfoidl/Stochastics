@@ -9,6 +9,8 @@ namespace gfoidl.Stochastics.Statistics
     {
         private void GetMinMax()
         {
+            this.EnsureValuesInitialized();
+
             if (this.Count == 1)
             {
                 _min = _values[0];

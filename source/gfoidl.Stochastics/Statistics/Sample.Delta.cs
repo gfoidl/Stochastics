@@ -9,6 +9,8 @@ namespace gfoidl.Stochastics.Statistics
     {
         private double CalculateDelta()
         {
+            this.EnsureValuesInitialized();
+
             return this.Count < ThresholdForParallel
                 ? this.CalculateDeltaSimd()
                 : this.CalculateDeltaParallelizedSimd();

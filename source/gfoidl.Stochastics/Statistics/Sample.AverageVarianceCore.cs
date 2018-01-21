@@ -9,6 +9,8 @@ namespace gfoidl.Stochastics.Statistics
     {
         private void CalculateAverageAndVarianceCore()
         {
+            this.EnsureValuesInitialized();
+
             var (avg, variance) = this.Count < ThresholdForParallel
                 ? this.CalculateAverageAndVarianceCoreSimd()
                 : this.CalculateAverageAndVarianceCoreParallelizedSimd();
