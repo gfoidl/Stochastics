@@ -79,6 +79,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _mean;
             }
+            internal set => _mean = value;
         }
         //---------------------------------------------------------------------
         private double _median = double.NaN;
@@ -109,6 +110,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _max;
             }
+            internal set => _max = value;
         }
         //---------------------------------------------------------------------
         private double _min = double.NaN;
@@ -124,6 +126,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _min;
             }
+            internal set => _min = value;
         }
         //---------------------------------------------------------------------
         private double _range = double.NaN;
