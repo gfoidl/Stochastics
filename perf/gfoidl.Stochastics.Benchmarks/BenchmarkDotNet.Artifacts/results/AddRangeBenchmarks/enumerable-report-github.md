@@ -10,6 +10,6 @@ Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
 ```
 |        Method |      Mean |     Error |    StdDev | Scaled | ScaledSD |
 |-------------- |----------:|----------:|----------:|-------:|---------:|
-|       Default |  47.16 us | 0.8892 us | 1.2465 us |   1.00 |     0.00 |
-|      AddRange | 187.82 us | 3.7229 us | 5.6852 us |   3.99 |     0.16 |
-| AddRangeArray |  11.60 us | 0.0401 us | 0.0313 us |   0.25 |     0.01 |
+|       Default | 300.69 us | 5.4612 us | 5.1084 us |   1.00 |     0.00 |
+|      AddRange | 281.22 us | 2.5388 us | 2.3748 us |   0.94 |     0.02 |
+| AddRangeArray |  31.07 us | 0.2158 us | 0.2018 us |   0.10 |     0.00 |

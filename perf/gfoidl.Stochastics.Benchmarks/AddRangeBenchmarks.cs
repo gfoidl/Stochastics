@@ -48,7 +48,8 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark(Baseline = true)]
         public (double min, double max, double avg) Default()
         {
-            var sample = new Sample(_list.Select(i => i));
+            //var sample = new Sample(_list);
+            var sample = new Sample(this.GetItems());
 
             return (sample.Min, sample.Max, sample.Mean);
         }
@@ -57,7 +58,8 @@ namespace gfoidl.Stochastics.Benchmarks
         public (double min, double max, double avg) AddRange()
         {
             var sample = new Sample();
-            sample.AddRange(_list.Select(i => i));
+            //sample.AddRange(_list);
+            sample.AddRange(this.GetItems());
 
             return (sample.Min, sample.Max, sample.Mean);
         }
@@ -69,6 +71,15 @@ namespace gfoidl.Stochastics.Benchmarks
             sample.AddRange(_array);
 
             return (sample.Min, sample.Max, sample.Mean);
+        }
+        //---------------------------------------------------------------------
+        private IEnumerable<double> GetItems()
+        {
+            var rnd = new Random(0);
+            int n   = this.N;
+
+            for (int i = 0; i < n; ++i)
+                yield return rnd.NextDouble();
         }
     }
 }
