@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using gfoidl.Stochastics.Builders;
 
 namespace gfoidl.Stochastics.Statistics
@@ -64,6 +65,7 @@ namespace gfoidl.Stochastics.Statistics
             }
         }
         //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void AddItem(
             double item,
             ref ArrayBuilder<double> arrayBuilder,

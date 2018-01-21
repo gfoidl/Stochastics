@@ -28,6 +28,7 @@ namespace gfoidl.Stochastics.Builders
             _buffers     = new List<T[]>();
         }
         //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(T item)
         {
             T[] buffer = _currentBuffer;
