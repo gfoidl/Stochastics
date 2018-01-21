@@ -44,6 +44,9 @@ namespace gfoidl.Stochastics.Statistics
                 _values = values.ToArray();
         }
         //---------------------------------------------------------------------
+        public static implicit operator Sample(double[] values)     => new Sample(values);
+        public static implicit operator Sample(List<double> values) => new Sample(values);
+        //---------------------------------------------------------------------
         private double[] _sortedValues;
         /// <summary>
         /// Sample data, sorted ascending.
