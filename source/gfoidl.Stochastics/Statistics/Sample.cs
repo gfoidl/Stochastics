@@ -338,7 +338,7 @@ namespace gfoidl.Stochastics.Statistics
 
             foreach(var pi in typeof(Sample).GetProperties())
             {
-                if (pi.Name == nameof(this.Values) || pi.Name == nameof(this.SortedValues))
+                if (pi.Name == nameof(this.Values) || pi.Name == nameof(this.SortedValues) || pi.Name == "Item")
                     continue;
 
                 sb.AppendFormat("{0,-23}", pi.Name).Append(": ").Append(pi.GetValue(this)).AppendLine();
