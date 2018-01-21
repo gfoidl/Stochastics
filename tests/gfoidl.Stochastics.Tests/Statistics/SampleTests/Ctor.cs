@@ -36,6 +36,14 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
         }
         //---------------------------------------------------------------------
         [Test]
+        public void Empty_values___OK()
+        {
+            double[] arr = Array.Empty<double>();
+
+            var sut = new Sample(arr);
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void Values_given___correct_Count()
         {
             var sut = new Sample(_values);

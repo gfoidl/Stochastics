@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
@@ -14,6 +15,19 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             var sut = new Sample();
 
             Assert.Throws<ArgumentNullException>(() => sut.AddRange(null));
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Empty_values___OK()
+        {
+            var sut = new Sample();
+
+            sut.AddRange(GetValues());
+            //-----------------------------------------------------------------
+            IEnumerable<double> GetValues()
+            {
+                yield break;
+            }
         }
         //---------------------------------------------------------------------
         [Test]
