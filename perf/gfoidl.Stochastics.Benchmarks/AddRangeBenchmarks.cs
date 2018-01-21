@@ -1,4 +1,7 @@
-﻿using System;
+﻿//#define ITERATOR
+//#define LINQ
+//-----------------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
@@ -48,9 +51,13 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark(Baseline = true)]
         public (double min, double max, double avg) Default()
         {
-            //var sample = new Sample(_list);
+#if ITERATOR
             var sample = new Sample(this.GetItems());
-
+#elif LINQ
+            var sample = new Sample(_list.Select(i => i));
+#else
+            var sample = new Sample(_list);
+#endif
             return (sample.Min, sample.Max, sample.Mean);
         }
         //---------------------------------------------------------------------
@@ -58,9 +65,13 @@ namespace gfoidl.Stochastics.Benchmarks
         public (double min, double max, double avg) AddRange()
         {
             var sample = new Sample();
-            //sample.AddRange(_list);
+#if ITERATOR
             sample.AddRange(this.GetItems());
-
+#elif LINQ
+            sample.AddRange(_list.Select(i => i));
+#else
+            sample.AddRange(_list);
+#endif
             return (sample.Min, sample.Max, sample.Mean);
         }
         //---------------------------------------------------------------------

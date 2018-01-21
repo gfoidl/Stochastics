@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using gfoidl.Stochastics.Builders;
 
@@ -12,6 +13,14 @@ namespace gfoidl.Stochastics.Statistics
 
             if (values is double[] array)
             {
+                _values = array;
+                return;
+            }
+            else if (values is ICollection<double> collection)
+            {
+                int n = collection.Count;
+                array = new double[n];
+                collection.CopyTo(array, 0);
                 _values = array;
                 return;
             }
