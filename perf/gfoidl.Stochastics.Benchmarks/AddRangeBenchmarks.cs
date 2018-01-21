@@ -1,4 +1,5 @@
-﻿//#define ITERATOR
+﻿//#define BENCH_ARRAY
+//#define ITERATOR
 //#define LINQ
 //-----------------------------------------------------------------------------
 using System;
@@ -75,7 +76,9 @@ namespace gfoidl.Stochastics.Benchmarks
             return (sample.Min, sample.Max, sample.Mean);
         }
         //---------------------------------------------------------------------
+#if BENCH_ARRAY
         [Benchmark]
+#endif
         public (double min, double max, double avg) AddRangeArray()
         {
             var sample = new Sample();
