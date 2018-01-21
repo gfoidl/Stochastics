@@ -40,7 +40,7 @@ namespace gfoidl.Stochastics.Benchmarks
             for (int i = 0; i < this.N; ++i)
             {
                 double val = rnd.NextDouble();
-                _array[i] = val;
+                _array[i]  = val;
                 _list.Add(val);
             }
         }
@@ -57,7 +57,7 @@ namespace gfoidl.Stochastics.Benchmarks
         public (double min, double max, double avg) AddRange()
         {
             var sample = new Sample();
-            sample.AddRange(_list);
+            sample.AddRange(_list.Select(i => i));
 
             return (sample.Min, sample.Max, sample.Mean);
         }

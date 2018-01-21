@@ -21,8 +21,14 @@ namespace gfoidl.Stochastics.Statistics
             int count        = 0;
             var arrayBuilder = new ArrayBuilder<double>(true);
 
-            foreach (double item in values)
-                AddItem(item, ref arrayBuilder, ref count, ref min, ref max, ref avg);
+            using (IEnumerator<double> enumerator = values.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    double item = enumerator.Current;
+                    AddItem(item, ref arrayBuilder, ref count, ref min, ref max, ref avg);
+                }
+            }
 
             _values = arrayBuilder.ToArray();
             _min    = min;

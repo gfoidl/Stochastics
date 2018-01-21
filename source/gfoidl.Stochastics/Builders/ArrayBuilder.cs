@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 /*
  * Inspired from https://github.com/dotnet/corefx/blob/master/src/Common/src/System/Collections/Generic/LargeArrayBuilder.cs
@@ -9,8 +10,8 @@ namespace gfoidl.Stochastics.Builders
 {
     internal struct ArrayBuilder<T>
     {
-        private const int StartCapacity   = 8;
-        private const int ResizeThreshold = 16;
+        private const int StartCapacity   = 4;
+        private const int ResizeThreshold = 8;
         private readonly int _maxCapacity;
         private T[]          _firstBuffer;
         private List<T[]>    _buffers;
@@ -29,11 +30,24 @@ namespace gfoidl.Stochastics.Builders
         //---------------------------------------------------------------------
         public void Add(T item)
         {
-            if (_index == _currentBuffer.Length)
-                this.AllocateBuffer();
+            T[] buffer = _currentBuffer;
+            int index  = _index;
 
-            _currentBuffer[_index++] = item;
+            if ((uint)index >= (uint)buffer.Length)
+                this.AddWithBufferAllocation(item);
+            else
+                buffer[index] = item;
+
+            _index++;
             _count++;
+        }
+        //---------------------------------------------------------------------
+        // Cold-path
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AddWithBufferAllocation(T item)
+        {
+            this.AllocateBuffer();
+            _currentBuffer[_index] = item;
         }
         //---------------------------------------------------------------------
         public T[] ToArray()
