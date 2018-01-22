@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using gfoidl.Stochastics.Builders;
+using gfoidl.Stochastics.Enumerators;
 
 namespace gfoidl.Stochastics.Statistics
 {
@@ -43,23 +44,38 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         public IEnumerable<double> AddWithYield(IEnumerable<double> values)
         {
-            double min = double.MaxValue;
-            double max = double.MinValue;
-            double sum = 0;
+            if (values is double[] array)
+                return this.AddWithYield(array);
 
-            foreach (double item in values)
+            return Core();
+            //-----------------------------------------------------------------
+            IEnumerable<double> Core()
             {
-                this.AddCore(item, ref min, ref max, ref sum);
+                double min = double.MaxValue;
+                double max = double.MinValue;
+                double sum = 0;
 
-                yield return item;
-            }
+                foreach (double item in values)
+                {
+                    this.AddCore(item, ref min, ref max, ref sum);
+                    yield return item;
+                }
 
-            if (_canUseStats)
-            {
-                _min = min;
-                _max = max;
-                _sum = sum;
+                if (_canUseStats)
+                {
+                    _min = min;
+                    _max = max;
+                    _sum = sum;
+                }
             }
+        }
+        //---------------------------------------------------------------------
+        public ArrayEnumerable<double> AddWithYield(double[] array)
+        {
+            _arrayBuilder.AddRange(array);
+            _canUseStats = false;
+
+            return new ArrayEnumerable<double>(array);
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
