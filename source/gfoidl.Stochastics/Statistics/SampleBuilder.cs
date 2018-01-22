@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using gfoidl.Stochastics.Builders;
 
 namespace gfoidl.Stochastics.Statistics
@@ -29,13 +30,7 @@ namespace gfoidl.Stochastics.Statistics
             double sum = 0;
 
             foreach (double item in values)
-            {
-                _arrayBuilder.Add(item);
-
-                sum += item;
-                if (item < min) min = item;
-                if (item > max) max = item;
-            }
+                this.AddCore(item, ref min, ref max, ref sum);
 
             _min = min;
             _max = max;
@@ -50,11 +45,7 @@ namespace gfoidl.Stochastics.Statistics
 
             foreach (double item in values)
             {
-                _arrayBuilder.Add(item);
-
-                sum += item;
-                if (item < min) min = item;
-                if (item > max) max = item;
+                this.AddCore(item, ref min, ref max, ref sum);
 
                 yield return item;
             }
@@ -62,6 +53,16 @@ namespace gfoidl.Stochastics.Statistics
             _min = min;
             _max = max;
             _sum = sum;
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AddCore(double item, ref double min, ref double max, ref double sum)
+        {
+            _arrayBuilder.Add(item);
+
+            sum += item;
+            if (item < min) min = item;
+            if (item > max) max = item;
         }
         //---------------------------------------------------------------------
         public Sample GetSample()
