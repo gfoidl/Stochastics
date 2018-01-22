@@ -59,6 +59,12 @@ namespace gfoidl.Stochastics.Builders
         {
             Debug.Assert(items != null);
 
+            if (items is T[] array)
+            {
+                this.AddRange(array);
+                return;
+            }
+
             using (IEnumerator<T> enumerator = items.GetEnumerator())
             {
                 T[] destination = _currentBuffer;
@@ -81,6 +87,43 @@ namespace gfoidl.Stochastics.Builders
                 // Final update to _count and _index.
                 _count += index - _index;
                 _index = index;
+            }
+        }
+        //---------------------------------------------------------------------
+        private void AddRange(T[] items)
+        {
+            if (_index >= _currentBuffer.Length)
+            {
+                if (_currentBuffer != _firstBuffer && _currentBuffer.Length > 0)
+                    _buffers.Add(_currentBuffer);
+
+                _currentBuffer = new T[items.Length];
+                items.CopyTo(_currentBuffer, 0);
+
+                _index  = _currentBuffer.Length;
+                _count += _currentBuffer.Length;
+            }
+            else
+            {
+                int toCopy = Math.Min(items.Length, _currentBuffer.Length - _index);
+                Array.Copy(items, 0, _currentBuffer, _index, toCopy);
+                _count += toCopy;
+
+                int remaining  = items.Length - toCopy;
+
+                if (remaining > 0)
+                {
+                    if (_currentBuffer != _firstBuffer)
+                        _buffers.Add(_currentBuffer);
+
+                    _currentBuffer = new T[remaining];
+                    Array.Copy(items, toCopy, _currentBuffer, 0, remaining);
+
+                    _index  = _currentBuffer.Length;
+                    _count += _currentBuffer.Length;
+                }
+                else
+                    _index += toCopy;
             }
         }
         //---------------------------------------------------------------------
@@ -157,7 +200,7 @@ namespace gfoidl.Stochastics.Builders
                 }
 
                 _currentBuffer = new T[newCapacity];
-                _index = 0;
+                _index         = 0;
             }
         }
         //---------------------------------------------------------------------
