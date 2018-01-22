@@ -33,9 +33,12 @@ namespace gfoidl.Stochastics.Statistics
             foreach (double item in values)
                 this.AddCore(item, ref min, ref max, ref sum);
 
-            _min = min;
-            _max = max;
-            _sum = sum;
+            if (_canUseStats)
+            {
+                _min = min;
+                _max = max;
+                _sum = sum;
+            }
         }
         //---------------------------------------------------------------------
         public IEnumerable<double> AddWithYield(IEnumerable<double> values)
@@ -51,9 +54,12 @@ namespace gfoidl.Stochastics.Statistics
                 yield return item;
             }
 
-            _min = min;
-            _max = max;
-            _sum = sum;
+            if (_canUseStats)
+            {
+                _min = min;
+                _max = max;
+                _sum = sum;
+            }
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,9 +67,12 @@ namespace gfoidl.Stochastics.Statistics
         {
             _arrayBuilder.Add(item);
 
-            sum += item;
-            if (item < min) min = item;
-            if (item > max) max = item;
+            if (_canUseStats)
+            {
+                sum += item;
+                if (item < min) min = item;
+                if (item > max) max = item;
+            }
         }
         //---------------------------------------------------------------------
         public Sample GetSample()
