@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace gfoidl.Stochastics.Enumerators
 {
+#pragma warning disable CS1591
     public struct ArrayEnumerable<T> : IEnumerable<T>
     {
         private readonly T[] _array;
@@ -45,4 +46,5 @@ namespace gfoidl.Stochastics.Enumerators
         //-----------------------------------------------------------------
         public void Reset() => _index = -1;
     }
+#pragma warning restore CS1591
 }
