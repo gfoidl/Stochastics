@@ -14,14 +14,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         public SampleBuilder() => _arrayBuilder = new ArrayBuilder<double>(true);
         //---------------------------------------------------------------------
-        public void Add(double item)
-        {
-            _arrayBuilder.Add(item);
-
-            _sum += item;
-            if (item < _min) _min = item;
-            if (item > _max) _max = item;
-        }
+        public void Add(double item) => this.AddCore(item, ref _min, ref _max, ref _sum);
         //---------------------------------------------------------------------
         public void Add(IEnumerable<double> values)
         {
