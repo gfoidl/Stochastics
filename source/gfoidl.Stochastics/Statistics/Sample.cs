@@ -44,8 +44,10 @@ namespace gfoidl.Stochastics.Statistics
                 _values = values.ToArray();
         }
         //---------------------------------------------------------------------
+#pragma warning disable CS1591
         public static implicit operator Sample(double[] values)     => new Sample(values);
         public static implicit operator Sample(List<double> values) => new Sample(values);
+#pragma warning restore CS1591
         //---------------------------------------------------------------------
         private double[] _sortedValues;
         /// <summary>
