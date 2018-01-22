@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 /*
@@ -8,6 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace gfoidl.Stochastics.Builders
 {
+    [DebuggerDisplay("Count: {Count}")]
     internal struct ArrayBuilder<T>
     {
         private const int StartCapacity   = 4;
@@ -27,6 +29,8 @@ namespace gfoidl.Stochastics.Builders
             _firstBuffer = _currentBuffer = new T[StartCapacity];
             _buffers     = new List<T[]>();
         }
+        //---------------------------------------------------------------------
+        public int Count => _count;
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(T item)

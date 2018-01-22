@@ -5,44 +5,76 @@ namespace gfoidl.Stochastics.Statistics
 {
     public class SampleBuilder
     {
-        private double[] _values;
-        private double _min;
-        private double _max;
-        private double _avg;
+        // Must not be readonly, cf. https://gist.github.com/gfoidl/14b07dfe8ee5cb093f216f8a85759d88
+        private ArrayBuilder<double> _arrayBuilder;
+        private double _min = double.MaxValue;
+        private double _max = double.MinValue;
+        private double _sum;
         //---------------------------------------------------------------------
-        public IEnumerable<double> Add(IEnumerable<double> values)
+        public SampleBuilder() => _arrayBuilder = new ArrayBuilder<double>(true);
+        //---------------------------------------------------------------------
+        public void Add(double item)
         {
-            var arrayBuilder = new ArrayBuilder<double>(true);
-            int count        = 0;
-            double min       = double.MaxValue;
-            double max       = double.MinValue;
-            double avg       = 0;
+            _arrayBuilder.Add(item);
+
+            _sum += item;
+            if (item < _min) _min = item;
+            if (item > _max) _max = item;
+        }
+        //---------------------------------------------------------------------
+        public void Add(IEnumerable<double> values)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            double sum = 0;
 
             foreach (double item in values)
             {
-                arrayBuilder.Add(item);
+                _arrayBuilder.Add(item);
 
-                count++;
-                avg += item;
+                sum += item;
+                if (item < min) min = item;
+                if (item > max) max = item;
+            }
+
+            _min = min;
+            _max = max;
+            _sum = sum;
+        }
+        //---------------------------------------------------------------------
+        public IEnumerable<double> AddWithYield(IEnumerable<double> values)
+        {
+            double min = double.MaxValue;
+            double max = double.MinValue;
+            double sum = 0;
+
+            foreach (double item in values)
+            {
+                _arrayBuilder.Add(item);
+
+                sum += item;
                 if (item < min) min = item;
                 if (item > max) max = item;
 
                 yield return item;
             }
 
-            _values = arrayBuilder.ToArray();
-            _min    = min;
-            _max    = max;
-            _avg    = avg / count;
+            _min = min;
+            _max = max;
+            _sum = sum;
         }
         //---------------------------------------------------------------------
         public Sample GetSample()
         {
-            return new Sample(_values)
+            ref var arrayBuilder = ref _arrayBuilder;
+
+            double[] values = arrayBuilder.ToArray();
+
+            return new Sample(values)
             {
                 Min  = _min,
                 Max  = _max,
-                Mean = _avg
+                Mean = _sum / arrayBuilder.Count
             };
         }
     }
@@ -50,6 +82,6 @@ namespace gfoidl.Stochastics.Statistics
     public static class SampleBuilderExtensions
     {
         public static IEnumerable<double> AddToSampleBuilder(this IEnumerable<double> values, SampleBuilder sampleBuilder)
-            => sampleBuilder.Add(values);
+            => sampleBuilder.AddWithYield(values);
     }
 }
