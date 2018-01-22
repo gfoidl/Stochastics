@@ -8,9 +8,10 @@ namespace gfoidl.Stochastics.Statistics
     {
         // Must not be readonly, cf. https://gist.github.com/gfoidl/14b07dfe8ee5cb093f216f8a85759d88
         private ArrayBuilder<double> _arrayBuilder;
-        private double _min = double.MaxValue;
-        private double _max = double.MinValue;
-        private double _sum;
+        private double               _min = double.MaxValue;
+        private double               _max = double.MinValue;
+        private double               _sum;
+        private bool                 _canUseStats = true;
         //---------------------------------------------------------------------
         public SampleBuilder() => _arrayBuilder = new ArrayBuilder<double>(true);
         //---------------------------------------------------------------------
@@ -18,6 +19,13 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         public void Add(IEnumerable<double> values)
         {
+            if (values is double[] array)
+            {
+                _arrayBuilder.AddRange(array);
+                _canUseStats = false;
+                return;
+            }
+
             double min = double.MaxValue;
             double max = double.MinValue;
             double sum = 0;
@@ -64,12 +72,16 @@ namespace gfoidl.Stochastics.Statistics
 
             double[] values = arrayBuilder.ToArray();
 
-            return new Sample(values)
+            var sample = new Sample(values);
+
+            if (_canUseStats)
             {
-                Min  = _min,
-                Max  = _max,
-                Mean = _sum / arrayBuilder.Count
-            };
+                sample.Min  = _min;
+                sample.Max  = _max;
+                sample.Mean = _sum / arrayBuilder.Count;
+            }
+
+            return sample;
         }
     }
     //-------------------------------------------------------------------------
