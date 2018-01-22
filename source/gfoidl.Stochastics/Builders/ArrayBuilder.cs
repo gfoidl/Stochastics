@@ -90,8 +90,10 @@ namespace gfoidl.Stochastics.Builders
             }
         }
         //---------------------------------------------------------------------
-        private void AddRange(T[] items)
+        public void AddRange(T[] items)
         {
+            Debug.Assert(items != null);
+
             if (_index >= _currentBuffer.Length)
             {
                 if (_currentBuffer != _firstBuffer && _currentBuffer.Length > 0)
@@ -132,7 +134,7 @@ namespace gfoidl.Stochastics.Builders
         private void AddWithBufferAllocation(T item, ref T[] destination, ref int index)
         {
             _count += index - _index;
-            _index = index;
+            _index  = index;
             AllocateBuffer();
             destination = _currentBuffer;
             index       = _index;
