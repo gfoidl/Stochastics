@@ -33,7 +33,9 @@ namespace gfoidl.Stochastics.Statistics
         protected override bool IsOutlier((double Value, double zTransformed) value)
         {
             double tsus        = Math.Abs(value.zTransformed);
-            double probOutside = 1 - Erf(tsus * _sqrt2Inv);
+            //double probOutside = 1 - Erf(tsus * _sqrt2Inv);
+            // Erfc = 1 - Erf -> so use this :-)
+            double probOutside = Erfc(tsus * _sqrt2Inv);
 
             return this.Sample.Count * probOutside < 0.5;
         }
