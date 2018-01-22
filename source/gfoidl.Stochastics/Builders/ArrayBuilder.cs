@@ -55,6 +55,47 @@ namespace gfoidl.Stochastics.Builders
             _currentBuffer[_index] = item;
         }
         //---------------------------------------------------------------------
+        public void AddRange(IEnumerable<T> items)
+        {
+            Debug.Assert(items != null);
+
+            using (IEnumerator<T> enumerator = items.GetEnumerator())
+            {
+                T[] destination = _currentBuffer;
+                int index       = _index;
+
+                // Continuously read in items from the enumerator, updating _count
+                // and _index when we run out of space.
+                while (enumerator.MoveNext())
+                {
+                    T item = enumerator.Current;
+
+                    if ((uint)index >= (uint)destination.Length)
+                        this.AddWithBufferAllocation(item, ref destination, ref index);
+                    else
+                        destination[index] = item;
+
+                    index++;
+                }
+
+                // Final update to _count and _index.
+                _count += index - _index;
+                _index = index;
+            }
+        }
+        //---------------------------------------------------------------------
+        // Non-inline to improve code quality as uncommon path
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AddWithBufferAllocation(T item, ref T[] destination, ref int index)
+        {
+            _count += index - _index;
+            _index = index;
+            AllocateBuffer();
+            destination = _currentBuffer;
+            index       = _index;
+            _currentBuffer[index] = item;
+        }
+        //---------------------------------------------------------------------
         public T[] ToArray()
         {
             if (this.TryMove(out T[] array))
