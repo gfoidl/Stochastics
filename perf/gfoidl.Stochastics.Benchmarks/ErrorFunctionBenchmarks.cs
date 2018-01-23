@@ -1,37 +1,103 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
 namespace gfoidl.Stochastics.Benchmarks
 {
-    [DisassemblyDiagnoser(printSource: true)]
+    //[DisassemblyDiagnoser(printSource: true)]
     public class ErrorFunctionBenchmarks : IBenchmark
     {
         public void Run()
         {
+            const int align = -15;
             var benchs = new ErrorFunctionBenchmarks();
-            Console.WriteLine(benchs.Erf1());
-            Console.WriteLine(benchs.Erf2());
-            Console.WriteLine(benchs.Erf2Caching());
-            Console.WriteLine(benchs.Erf2Caching1());
+            Console.WriteLine($"{nameof(benchs.Erf1),align}: {benchs.Erf1()}");
+            Console.WriteLine($"{nameof(benchs.Erf2),align}: {benchs.Erf2()}");
+            Console.WriteLine($"{nameof(benchs.Erf2Caching),align}: {benchs.Erf2Caching()}");
+            Console.WriteLine($"{nameof(benchs.Erf2Caching1),align}: {benchs.Erf2Caching1()}");
+            Console.WriteLine($"{nameof(benchs.ErfCpp),align}: {benchs.ErfCpp()}");
+            Console.WriteLine($"{nameof(benchs.ErfCpp_Vector),align}: {benchs.ErfCpp_Vector()}");
 #if !DEBUG
             BenchmarkRunner.Run<ErrorFunctionBenchmarks>();
 #endif
         }
         //---------------------------------------------------------------------
         [Benchmark(Baseline = true)]
-        public double Erf1() => Erf1(0.25);
+        public double Erf1()
+        {
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += Erf1(0.1 * i);
+
+            return e;
+        }
         //---------------------------------------------------------------------
         [Benchmark]
-        public double Erf2() => Erf2(0.25);
+        public double Erf2()
+        {
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += Erf2(0.1 * i);
+
+            return e;
+        }
+        //---------------------------------------------------------------------
+        //[Benchmark]
+        public double Erf2Caching()
+        {
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += Erf2Caching(0.1 * i);
+
+            return e;
+        }
+        //---------------------------------------------------------------------
+        //[Benchmark]
+        public double Erf2Caching1()
+        {
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += Erf2Caching1(0.1 * i);
+
+            return e;
+        }
         //---------------------------------------------------------------------
         [Benchmark]
-        public double Erf2Caching() => Erf2Caching(0.25);
+        public double ErfCpp()
+        {
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += gaussian_error_function(0.1 * i);
+
+            return e;
+        }
         //---------------------------------------------------------------------
         [Benchmark]
-        public double Erf2Caching1() => Erf2Caching1(0.25);
+        public unsafe double ErfCpp_Vector()
+        {
+            double* values = stackalloc double[10];
+            double* result = stackalloc double[10];
+
+            for (int i = 0; i < 10; ++i)
+                values[i] = 0.1 * i;
+
+            gaussian_error_function_vector(values, result, 10);
+
+            double e = 0;
+
+            for (int i = 0; i < 10; ++i)
+                e += result[i];
+
+            return e;
+        }
         //---------------------------------------------------------------------
         // https://www.johndcook.com/blog/csharp_erf/
         public static double Erf1(double x)
@@ -227,5 +293,11 @@ namespace gfoidl.Stochastics.Benchmarks
                 return erf;
             }
         }
+        //---------------------------------------------------------------------
+        [DllImport("gfoidl-Stochastics-Native")]
+        private static extern double gaussian_error_function(double x);
+        //---------------------------------------------------------------------
+        [DllImport("gfoidl-Stochastics-Native")]
+        private static extern unsafe void gaussian_error_function_vector(double* values, double* result, int n);
     }
 }

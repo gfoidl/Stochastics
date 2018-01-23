@@ -9,9 +9,9 @@ Frequency=2742191 Hz, Resolution=364.6719 ns, Timer=TSC
 
 
 ```
-|       Method |     Mean |     Error |    StdDev | Scaled | ScaledSD |
-|------------- |---------:|----------:|----------:|-------:|---------:|
-|         Erf1 | 13.38 ns | 0.2774 ns | 0.3084 ns |   1.00 |     0.00 |
-|         Erf2 | 12.92 ns | 0.2918 ns | 0.4457 ns |   0.97 |     0.04 |
-|  Erf2Caching | 26.48 ns | 0.5341 ns | 0.4996 ns |   1.98 |     0.06 |
-| Erf2Caching1 | 15.55 ns | 0.2163 ns | 0.2023 ns |   1.16 |     0.03 |
+|        Method |     Mean |    Error |   StdDev | Scaled | ScaledSD |
+|-------------- |---------:|---------:|---------:|-------:|---------:|
+|          Erf1 | 151.0 ns | 3.031 ns | 3.491 ns |   1.00 |     0.00 |
+|          Erf2 | 140.4 ns | 2.583 ns | 4.386 ns |   0.93 |     0.04 |
+|        ErfCpp | 146.3 ns | 2.345 ns | 2.194 ns |   0.97 |     0.03 |
+| ErfCpp_Vector | 109.6 ns | 2.147 ns | 2.556 ns |   0.73 |     0.02 |
