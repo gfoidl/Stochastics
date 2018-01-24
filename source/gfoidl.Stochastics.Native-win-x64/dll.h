@@ -5,7 +5,7 @@
 // DLL_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 #ifdef GFOIDLSTOCHASTICSNATIVE_EXPORTS
-#define DLL_API __declspec(dllexport)
+    #define DLL_API __declspec(dllexport)
 #else
-#define DLL_API __declspec(dllimport)
+    #define DLL_API __declspec(dllimport)
 #endif
