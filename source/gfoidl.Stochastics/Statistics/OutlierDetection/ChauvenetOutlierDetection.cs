@@ -8,7 +8,7 @@ namespace gfoidl.Stochastics.Statistics
     /// </summary>
     public class ChauvenetOutlierDetection : OutlierDetection
     {
-        private static readonly double _sqrt2Inv = 1d / Math.Sqrt(2);
+        private double[] _tsusSqrt2Inv;
         //---------------------------------------------------------------------
         /// <summary>
         /// Creates a new instance of <see cref="ChauvenetOutlierDetection" />
