@@ -50,12 +50,9 @@ namespace gfoidl.Stochastics.Statistics
         /// <returns>The outliers of the <see cref="P:gfoidl.Stochastics.Statistics.OutlierDetection.Sample" />.</returns>
         public override IEnumerable<double> GetOutliers()
         {
-            double[] sample           = this.Sample.Values;
-            double[] tsusSqrt2Inv = this.GetTsusSqrt2Inv();
-            double[] probOutside  = Erfc(tsusSqrt2Inv);
-
-            var arrayBuilder = new ArrayBuilder<double>(true);
-            int n            = this.Sample.Count;
+            var (sample, probOutside) = this.GetProbOutside();
+            var arrayBuilder          = new ArrayBuilder<double>(true);
+            int n                     = this.Sample.Count;
 
             for (int i = 0; i < probOutside.Length; ++i)
             {
@@ -72,12 +69,9 @@ namespace gfoidl.Stochastics.Statistics
         /// <returns>The values of the <see cref="P:gfoidl.Stochastics.Statistics.OutlierDetection.Sample" /> without outliers.</returns>
         public override IEnumerable<double> GetValuesWithoutOutliers()
         {
-            double[] sample           = this.Sample.Values;
-            double[] tsusSqrt2Inv = this.GetTsusSqrt2Inv();
-            double[] probOutside  = Erfc(tsusSqrt2Inv);
-
-            var arrayBuilder = new ArrayBuilder<double>(true);
-            int n            = this.Sample.Count;
+            var (sample, probOutside) = this.GetProbOutside();
+            var arrayBuilder          = new ArrayBuilder<double>(true);
+            int n                     = this.Sample.Count;
 
             for (int i = 0; i < probOutside.Length; ++i)
             {
@@ -86,6 +80,15 @@ namespace gfoidl.Stochastics.Statistics
             }
 
             return arrayBuilder.ToEnumerable();
+        }
+        //---------------------------------------------------------------------
+        private (double[] sample, double[] probOutside) GetProbOutside()
+        {
+            double[] sample       = this.Sample.Values;
+            double[] tsusSqrt2Inv = this.GetTsusSqrt2Inv();
+            double[] probOutside  = Erfc(tsusSqrt2Inv);
+
+            return (sample, probOutside);
         }
         //---------------------------------------------------------------------
         private static bool IsOutlier(double probOutside, double n) => n * probOutside < 0.5;
