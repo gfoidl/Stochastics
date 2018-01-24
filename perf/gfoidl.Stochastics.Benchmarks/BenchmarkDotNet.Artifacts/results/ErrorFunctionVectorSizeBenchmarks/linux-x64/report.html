@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>ErrorFunctionVectorSizeBenchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=2
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>    Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Scaled</th>
+</tr>
+</thead><tbody><tr><td>   NetBase</td><td>38.71 ms</td><td>0.0823 ms</td><td>0.0730 ms</td><td>1.00</td>
+</tr><tr><td>ErfCpp_Vector_8</td><td>33.28 ms</td><td>0.1596 ms</td><td>0.1493 ms</td><td>0.86</td>
+</tr><tr><td>ErfCpp_Vector_10</td><td>33.36 ms</td><td>0.1355 ms</td><td>0.1267 ms</td><td>0.86</td>
+</tr><tr><td>ErfCpp_Vector_16</td><td>33.06 ms</td><td>0.0656 ms</td><td>0.0614 ms</td><td>0.85</td>
+</tr><tr><td>ErfCpp_Vector_32</td><td>32.85 ms</td><td>0.0682 ms</td><td>0.0604 ms</td><td>0.85</td>
+</tr><tr><td>ErfCpp_Vector_64</td><td>32.72 ms</td><td>0.0544 ms</td><td>0.0509 ms</td><td>0.85</td>
+</tr></tbody></table>
+</body>
+</html>
