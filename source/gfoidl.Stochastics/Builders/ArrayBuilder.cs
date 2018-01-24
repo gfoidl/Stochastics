@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using gfoidl.Stochastics.Enumerators;
 
 /*
  * Inspired from https://github.com/dotnet/corefx/blob/master/src/Common/src/System/Collections/Generic/LargeArrayBuilder.cs
@@ -151,6 +152,8 @@ namespace gfoidl.Stochastics.Builders
 
             return array;
         }
+        //---------------------------------------------------------------------
+        public ArrayEnumerable<T> ToEnumerable() => new ArrayEnumerable<T>(this.ToArray());
         //---------------------------------------------------------------------
         private bool TryMove(out T[] array)
         {
