@@ -25,13 +25,12 @@ namespace gfoidl.Stochastics.Tests.SpecialFunctionsTests
         }
         //---------------------------------------------------------------------
         [Test]
-        public unsafe void Erf_Vector_given___correct_result()
+        public void Erf_Vector_given___correct_result()
         {
             (double x, double erf)[] testData = TestData().ToArray();
 
-            double* values  = stackalloc double[testData.Length];
-            double* results = stackalloc double[testData.Length];
-            var expected    = new double[testData.Length];
+            var values   = new double[testData.Length];
+            var expected     = new double[testData.Length];
 
             for (int i = 0; i < testData.Length; ++i)
             {
@@ -39,20 +38,19 @@ namespace gfoidl.Stochastics.Tests.SpecialFunctionsTests
                 expected[i] = testData[i].erf;
             }
 
-            Erf(values, results, testData.Length);
+            double[] results = Erf(values);
 
             for (int i = 0; i < testData.Length; ++i)
                 Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);
         }
         //---------------------------------------------------------------------
         [Test]
-        public unsafe void Erfc_Vector_given___correct_result()
+        public void Erfc_Vector_given___correct_result()
         {
             (double x, double erf)[] testData = TestData().ToArray();
 
-            double* values  = stackalloc double[testData.Length];
-            double* results = stackalloc double[testData.Length];
-            var expected    = new double[testData.Length];
+            var values   = new double[testData.Length];
+            var expected     = new double[testData.Length];
 
             for (int i = 0; i < testData.Length; ++i)
             {
@@ -60,7 +58,7 @@ namespace gfoidl.Stochastics.Tests.SpecialFunctionsTests
                 expected[i] = 1d - testData[i].erf;
             }
 
-            Erfc(values, results, testData.Length);
+            double[] results = Erfc(values);
 
             for (int i = 0; i < testData.Length; ++i)
                 Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);

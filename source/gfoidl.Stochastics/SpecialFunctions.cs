@@ -26,6 +26,7 @@ namespace gfoidl.Stochastics
         /// </summary>
         /// <param name="x">The argument.</param>
         /// <returns>The value of the gaussian error function by <paramref name="x" />.</returns>
+        /// <seealso cref="Erf(double[])" />
         // https://math.stackexchange.com/questions/263216/error-function-erf-with-better-precision/1889960#1889960
         public static double Erf(double x)
         {
@@ -189,6 +190,7 @@ namespace gfoidl.Stochastics
         /// </summary>
         /// <param name="x">The argument.</param>
         /// <returns>The value of the complementare error funnction by <paramref name="x" />.</returns>
+        /// <seealso cref="Erfc(double[])" />
         public static double Erfc(double x)
         {
             if (_erfNativeLinux)
@@ -359,6 +361,46 @@ namespace gfoidl.Stochastics
                 else
                     return 2.0 - tiny;
             }
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Returns the values of the gaussian error function at the arguments given
+        /// by <paramref name="values" />.
+        /// </summary>
+        /// <param name="values">The arguments.</param>
+        /// <returns>erf</returns>
+        /// <seealso cref="Erf(double)" />
+        public static unsafe double[] Erf(double[] values)
+        {
+            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+
+            var results = new double[values.Length];
+
+            fixed (double* pValues  = values)
+            fixed (double* pResults = results)
+                Erf(pValues, pResults, values.Length);
+
+            return results;
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Returns the values of the complementary error function at the arguments given
+        /// by <paramref name="values" />.
+        /// </summary>
+        /// <param name="values">The arguments.</param>
+        /// <returns>erfc</returns>
+        /// <seealso cref="Erfc(double)" />
+        public static unsafe double[] Erfc(double[] values)
+        {
+            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+
+            var results = new double[values.Length];
+
+            fixed (double* pValues  = values)
+            fixed (double* pResults = results)
+                Erfc(pValues, pResults, values.Length);
+
+            return results;
         }
         //---------------------------------------------------------------------
         internal static unsafe void Erf(double* values, double* result, int size)
