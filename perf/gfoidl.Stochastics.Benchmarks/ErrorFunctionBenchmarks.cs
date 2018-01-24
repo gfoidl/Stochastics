@@ -211,7 +211,9 @@ namespace gfoidl.Stochastics.Benchmarks
             if (double.IsPositiveInfinity(x))
                 return 1.0;
 
+#pragma warning disable CS0168 // Variable is declared but never used
             int n0, hx, ix, i;
+#pragma warning restore CS0168 // Variable is declared but never used
             double R, S, P, Q, s, y, z, r;
             unsafe
             {

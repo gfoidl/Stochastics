@@ -120,7 +120,9 @@ namespace gfoidl.Stochastics
             if (double.IsPositiveInfinity(x))
                 return 1.0;
 
+#pragma warning disable CS0168 // Variable is declared but never used
             int n0, hx, ix, i;
+#pragma warning restore CS0168 // Variable is declared but never used
             double R, S, P, Q, s, y, z, r;
             unsafe
             {
@@ -207,8 +209,10 @@ namespace gfoidl.Stochastics
             const double erx = 8.45062911510467529297e-01;
 
             // Coefficients for approximation to erf on [0, 0.84375]
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             const double efx = 1.28379167095512586316e-01; /* 0x3FC06EBA; 0x8214DB69 */
             const double efx8 = 1.02703333676410069053e+00; /* 0x3FF06EBA; 0x8214DB69 */
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
             const double pp0 = 1.28379167095512558561e-01; /* 0x3FC06EBA; 0x8214DB68 */
             const double pp1 = -3.25042107247001499370e-01; /* 0xBFD4CD7D; 0x691CB913 */
             const double pp2 = -2.84817495755985104766e-02; /* 0xBF9D2A51; 0xDBD7194F */
