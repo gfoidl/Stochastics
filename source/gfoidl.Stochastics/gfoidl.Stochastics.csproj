@@ -29,6 +29,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="..\..\native-out\gfoidl-Stochastics-Native.dll" PackagePath="runtimes/win-x64/native" Visible="false" />
+        <Content Include="..\..\native-out\libgfoidl-Stochastics-Native.so" PackagePath="runtimes/linux-x64/native" Visible="false" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Update="Statistics\Sample.*.cs" DependentUpon="Sample.cs" />
     </ItemGroup>
 
