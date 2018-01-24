@@ -1,4 +1,6 @@
-﻿using static System.Math;
+﻿using System.Runtime.InteropServices;
+using gfoidl.Stochastics.Native;
+using static System.Math;
 
 namespace gfoidl.Stochastics
 {
@@ -7,6 +9,18 @@ namespace gfoidl.Stochastics
     /// </summary>
     public static class SpecialFunctions
     {
+        private static readonly bool _erfNative;
+        private static readonly bool _erfNativeLinux;
+        //---------------------------------------------------------------------
+        static SpecialFunctions()
+        {
+            _erfNative =
+                RuntimeInformation.OSArchitecture == Architecture.X64
+                && (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
+
+            _erfNativeLinux = _erfNative && RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        }
+        //---------------------------------------------------------------------
         /// <summary>
         /// Returns the value of the gaussian error function at <paramref name="x" />.
         /// </summary>
@@ -15,6 +29,9 @@ namespace gfoidl.Stochastics
         // https://math.stackexchange.com/questions/263216/error-function-erf-with-better-precision/1889960#1889960
         public static double Erf(double x)
         {
+            if (_erfNativeLinux)
+                return NativeMethods.gaussian_error_function(x);
+
             /*
             Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
             *
@@ -172,6 +189,9 @@ namespace gfoidl.Stochastics
         /// <returns>The value of the complementare error funnction by <paramref name="x" />.</returns>
         public static double Erfc(double x)
         {
+            if (_erfNativeLinux)
+                return NativeMethods.gaussian_error_function_complementary(x);
+
             /*
             Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
             *
@@ -334,6 +354,31 @@ namespace gfoidl.Stochastics
                     return tiny * tiny;
                 else
                     return 2.0 - tiny;
+            }
+        }
+        //---------------------------------------------------------------------
+        internal static unsafe void Erf(double* values, double* result, int size)
+        {
+            // Is a JIT compile-time constant, due the cctor. Note only a static readonly field my not be
+            // sufficient (on the first access). See https://github.com/dotnet/coreclr/issues/1193
+            // So the not taken branch(es) will be removed.
+            if (_erfNative)
+                NativeMethods.gaussian_error_function_vector(values, result, size);
+            else
+            {
+                for (int i = 0; i < size; ++i)
+                    result[i] = Erf(values[i]);
+            }
+        }
+        //---------------------------------------------------------------------
+        internal static unsafe void Erfc(double* values, double* result, int size)
+        {
+            if (_erfNative)
+                NativeMethods.gaussian_error_function_complementary_vector(values, result, size);
+            else
+            {
+                for (int i = 0; i < size; ++i)
+                    result[i] = Erfc(values[i]);
             }
         }
     }
