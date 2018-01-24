@@ -34,7 +34,7 @@ namespace gfoidl.Stochastics.Statistics
         /// Gets the outliers of the <see cref="Sample" />.
         /// </summary>
         /// <returns>The outliers of the <see cref="Sample" />.</returns>
-        public IEnumerable<double> GetOutliers() =>
+        public virtual IEnumerable<double> GetOutliers() =>
             this.Sample.ZTransformationInternal()
                        .Where(this.IsOutlier)
                        .Select(t => t.Value);
@@ -43,7 +43,7 @@ namespace gfoidl.Stochastics.Statistics
         /// Gets the values of the <see cref="Sample" /> without outliers.
         /// </summary>
         /// <returns>The values of the <see cref="Sample" /> without outliers.</returns>
-        public IEnumerable<double> GetValuesWithoutOutliers() =>
+        public virtual IEnumerable<double> GetValuesWithoutOutliers() =>
             this.Sample.ZTransformationInternal()
                        .Where(t => !this.IsOutlier(t))
                        .Select(t => t.Value);

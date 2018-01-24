@@ -22,7 +22,7 @@ namespace gfoidl.Stochastics.Statistics
         /// <summary>
         /// Sample.
         /// </summary>
-        public ICollection<double> Values => _values;
+        public double[] Values => _values;
         //---------------------------------------------------------------------
         /// <summary>
         /// Sample size.
