@@ -161,7 +161,7 @@ namespace gfoidl.Stochastics.Statistics
                 }
 
                 for (; i < n; ++i)
-                    tsus[i] = Abs(zTrans[i]) * Sqrt2Inv;
+                    pTarget[i] = Abs(pSource[i]) * Sqrt2Inv;
             }
 
             return tsusSqrt2Inv;
