@@ -48,7 +48,7 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
         {
             var sut = new Sample(_values);
 
-            ICollection<double> actual = sut.Values;
+            IEnumerable<double> actual = sut.Values;
 
             CollectionAssert.AreEqual(_rawValues, actual);
         }
