@@ -18,12 +18,17 @@ namespace gfoidl.Stochastics.Enumerators
         public ArrayEnumerator<T> GetEnumerator()     => new ArrayEnumerator<T>(_array);
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => this.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()       => this.GetEnumerator();
+        //---------------------------------------------------------------------
+        public static implicit operator ArrayEnumerable<T>(T[] array)       => new ArrayEnumerable<T>(array);
+        public static implicit operator T[] (ArrayEnumerable<T> enumerable) => enumerable._array;
     }
     //---------------------------------------------------------------------
     public struct ArrayEnumerator<T> : IEnumerator<T>
     {
         private readonly T[] _array;
         private int          _index;
+        //---------------------------------------------------------------------
+        internal T[] Array => _array;
         //---------------------------------------------------------------------
         public ArrayEnumerator(T[] array)
         {
