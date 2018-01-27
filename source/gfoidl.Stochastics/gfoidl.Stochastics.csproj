@@ -12,7 +12,7 @@
         <PackageProjectUrl>https://github.com/gfoidl/Stochastics</PackageProjectUrl>
         <RepositoryUrl>https://github.com/gfoidl/Stochastics</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>Stochastics Statistics</PackageTags>
+        <PackageTags>stochastics;statistics;outliers;error-function;Chauvenet</PackageTags>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
