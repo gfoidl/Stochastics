@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using gfoidl.Stochastics.Native;
 using static System.Math;
 
@@ -9,11 +10,14 @@ namespace gfoidl.Stochastics
     /// </summary>
     public static class SpecialFunctions
     {
+        private static readonly bool _isDotNetCore;
         private static readonly bool _erfNative;
         private static readonly bool _erfNativeLinux;
         //---------------------------------------------------------------------
         static SpecialFunctions()
         {
+            _isDotNetCore = RuntimeHelper.IsRunningOnDotNetCore();
+
             _erfNative =
                 RuntimeInformation.OSArchitecture == Architecture.X64
                 && (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
@@ -30,7 +34,7 @@ namespace gfoidl.Stochastics
         // https://math.stackexchange.com/questions/263216/error-function-erf-with-better-precision/1889960#1889960
         public static double Erf(double x)
         {
-            if (_erfNativeLinux)
+            if (_isDotNetCore && _erfNativeLinux)
                 return NativeMethods.gaussian_error_function(x);
 
             /*
@@ -193,7 +197,7 @@ namespace gfoidl.Stochastics
         /// <seealso cref="Erfc(double[])" />
         public static double Erfc(double x)
         {
-            if (_erfNativeLinux)
+            if (_isDotNetCore && _erfNativeLinux)
                 return NativeMethods.gaussian_error_function_complementary(x);
 
             /*
@@ -408,7 +412,7 @@ namespace gfoidl.Stochastics
             // Is a JIT compile-time constant, due the cctor. Note only a static readonly field my not be
             // sufficient (on the first access). See https://github.com/dotnet/coreclr/issues/1193
             // So the not taken branch(es) will be removed.
-            if (_erfNative)
+            if (_isDotNetCore && _erfNative)
                 NativeMethods.gaussian_error_function_vector(values, result, size);
             else
             {
@@ -419,7 +423,7 @@ namespace gfoidl.Stochastics
         //---------------------------------------------------------------------
         internal static unsafe void Erfc(double* values, double* result, int size)
         {
-            if (_erfNative)
+            if (_isDotNetCore && _erfNative)
                 NativeMethods.gaussian_error_function_complementary_vector(values, result, size);
             else
             {
