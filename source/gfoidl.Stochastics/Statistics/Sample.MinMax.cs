@@ -106,6 +106,7 @@ namespace gfoidl.Stochastics.Statistics
                         i += Vector<double>.Count;
                     }
 
+                    // Reduction
                     for (int j = 0; j < Vector<double>.Count; ++j)
                     {
                         if (minVec[j] < min) min = minVec[j];
