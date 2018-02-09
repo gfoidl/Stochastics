@@ -100,8 +100,8 @@ namespace gfoidl.Stochastics.Statistics
                         i += Vector<double>.Count;
                     }
 
-                    for (int j = 0; j < Vector<double>.Count; ++j)
-                        avg += avgVec[j];
+                    // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
+                    avg += Vector.Dot(avgVec, Vector<double>.One);
                 }
 
                 for (; i < n; ++i)

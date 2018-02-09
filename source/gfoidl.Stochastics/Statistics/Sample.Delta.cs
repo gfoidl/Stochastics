@@ -93,8 +93,8 @@ namespace gfoidl.Stochastics.Statistics
                         i += Vector<double>.Count;
                     }
 
-                    for (int j = 0; j < Vector<double>.Count; ++j)
-                        delta += deltaVec[j];
+                    // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
+                    delta += Vector.Dot(deltaVec, Vector<double>.One);
                 }
 
                 for (; i < n; ++i)
