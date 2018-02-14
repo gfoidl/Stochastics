@@ -376,7 +376,7 @@ namespace gfoidl.Stochastics
         /// <seealso cref="Erf(double)" />
         public static unsafe double[] Erf(double[] values)
         {
-            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
 
             var results = new double[values.Length];
 
@@ -396,7 +396,7 @@ namespace gfoidl.Stochastics
         /// <seealso cref="Erfc(double)" />
         public static unsafe double[] Erfc(double[] values)
         {
-            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
 
             var results = new double[values.Length];
 

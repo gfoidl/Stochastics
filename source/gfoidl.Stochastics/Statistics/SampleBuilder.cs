@@ -40,7 +40,7 @@ namespace gfoidl.Stochastics.Statistics
         /// </exception>
         public void Add(IEnumerable<double> values)
         {
-            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
 
             if (values is double[] array)
             {
@@ -78,7 +78,7 @@ namespace gfoidl.Stochastics.Statistics
         /// </exception>
         public IEnumerable<double> AddWithYield(IEnumerable<double> values)
         {
-            if (values == null) ThrowHelper.ThrowArgumentNull(nameof(values));
+            if (values == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
 
             if (values is double[] array)
                 return this.AddWithYield(array);
@@ -116,7 +116,7 @@ namespace gfoidl.Stochastics.Statistics
         /// </exception>
         public ArrayEnumerable<double> AddWithYield(double[] array)
         {
-            if (array == null) ThrowHelper.ThrowArgumentNull(nameof(array));
+            if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);
 
             _arrayBuilder.AddRange(array);
             _canUseStats = false;
@@ -179,8 +179,8 @@ namespace gfoidl.Stochastics.Statistics
         /// </exception>
         public static IEnumerable<double> AddToSampleBuilder(this IEnumerable<double> values, SampleBuilder sampleBuilder)
         {
-            if (values        == null) ThrowHelper.ThrowArgumentNull(nameof(values));
-            if (sampleBuilder == null) ThrowHelper.ThrowArgumentNull(nameof(sampleBuilder));
+            if (values        == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
+            if (sampleBuilder == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.sampleBuilder);
 
             return sampleBuilder.AddWithYield(values);
         }

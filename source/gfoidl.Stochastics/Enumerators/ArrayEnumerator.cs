@@ -10,7 +10,7 @@ namespace gfoidl.Stochastics.Enumerators
         //---------------------------------------------------------------------
         public ArrayEnumerable(T[] array)
         {
-            if (array == null) ThrowHelper.ThrowArgumentNull(nameof(array));
+            if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);
 
             _array = array;
         }
@@ -32,7 +32,7 @@ namespace gfoidl.Stochastics.Enumerators
         //---------------------------------------------------------------------
         public ArrayEnumerator(T[] array)
         {
-            if (array == null) ThrowHelper.ThrowArgumentNull(nameof(array));
+            if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);
 
             _array = array;
             _index = -1;

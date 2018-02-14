@@ -159,7 +159,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     // RCE
                     if ((uint)range.Item1 >= arr.Length || (uint)range.Item2 > arr.Length)
-                        ThrowHelper.ThrowArgumentOutOfRange(nameof(range));
+                        ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.range);
 
                     for (int i = range.Item1; i < range.Item2; ++i)
                         localDelta += Math.Abs(arr[i] - avg);
@@ -193,7 +193,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     // RCE
                     if ((uint)range.Item1 >= arr.Length || (uint)range.Item2 > arr.Length)
-                        ThrowHelper.ThrowArgumentOutOfRange(nameof(range));
+                        ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.range);
 
                     if (Vector.IsHardwareAccelerated && (range.Item2 - range.Item1) >= Vector<double>.Count * 2)
                     {
