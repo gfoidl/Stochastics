@@ -21,7 +21,7 @@ namespace gfoidl.Stochastics.Statistics
                 double[] values = _values;
 
                 if ((uint)index >= (uint)values.Length)
-                    ThrowHelper.ThrowArgumentOutOfRange(nameof(index));
+                    ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.index);
 
                 return values[index];
             }

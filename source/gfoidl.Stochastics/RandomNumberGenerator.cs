@@ -69,7 +69,7 @@ namespace gfoidl.Stochastics
         public double ExponentialDistributed(double lambda)
         {
             if (Math.Abs(lambda - 0) < Accuracy.Epsilon)
-                throw new ArgumentOutOfRangeException(nameof(lambda), Strings.Value_must_be_greater_than_zero);
+                ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.lambda, ThrowHelper.ExceptionResource.Value_must_be_greater_than_zero);
 
             _ez = -(1d / lambda) * Math.Log(Uniform() + 1e-12, 2d);
 
