@@ -10,13 +10,13 @@ namespace gfoidl.Stochastics
     {
         public static Vector<double> GetVector(double* arr)
         {
-            return Unsafe.Read<Vector<double>>(arr);
+            return Unsafe.ReadUnaligned<Vector<double>>(arr);
         }
         //---------------------------------------------------------------------
         [Obsolete("Use GetVector + offset instead")]
         public static Vector<double> GetVectorWithAdvance(ref double* arr)
         {
-            Vector<double> vec = Unsafe.Read<Vector<double>>(arr);
+            Vector<double> vec = Unsafe.ReadUnaligned<Vector<double>>(arr);
             arr += Vector<double>.Count;
 
             return vec;
@@ -24,13 +24,13 @@ namespace gfoidl.Stochastics
         //---------------------------------------------------------------------
         public static void WriteVector(this Vector<double> vector, double* arr)
         {
-            Unsafe.Write(arr, vector);
+            Unsafe.WriteUnaligned(arr, vector);
         }
         //---------------------------------------------------------------------
         [Obsolete("Use WriteVector + offset instead")]
         public static void WriteVectorWithAdvance(this Vector<double> vector, ref double* arr)
         {
-            Unsafe.Write(arr, vector);
+            Unsafe.WriteUnaligned(arr, vector);
             arr += Vector<double>.Count;
         }
     }
