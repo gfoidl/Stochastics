@@ -15,10 +15,6 @@
         <PackageTags>stochastics;statistics;outliers;error-function;Chauvenet</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile>bin\Release\netstandard2.0\gfoidl.Stochastics.xml</DocumentationFile>
     </PropertyGroup>

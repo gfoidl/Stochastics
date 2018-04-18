@@ -14,7 +14,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using gfoidl.Stochastics.Partitioners;
 
-#if NET_FULL
+#if NET471
 using Microsoft.ConcurrencyVisualizer.Instrumentation;
 #endif
 
@@ -217,7 +217,7 @@ namespace gfoidl.Stochastics.Benchmarks
         //---------------------------------------------------------------------
         private unsafe void AutoCorrelationToArrayImpl(double[] corr, (int Start, int End) range)
         {
-#if NET_FULL
+#if NET471
             var span = Markers.EnterSpan(1, "Range: {0}", range);
 #endif
             this.AddRange(range);
@@ -257,7 +257,7 @@ namespace gfoidl.Stochastics.Benchmarks
                     pCorr[m] = r_xx / (n - m);
                 }
             }
-#if NET_FULL
+#if NET471
             span.Leave();
 #endif
         }
