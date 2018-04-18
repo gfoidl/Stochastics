@@ -101,7 +101,7 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    avg += Vector.Dot(avgVec, Vector<double>.One);
+                    avg += avgVec.ReduceSum();
                 }
 
                 for (; i < n; ++i)
