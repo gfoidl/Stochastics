@@ -2,7 +2,7 @@ version: 2
 defaults: &defaults
     working_directory: ~/repo
     docker:
-        - image: microsoft/dotnet:2.0.5-sdk-2.1.4
+        - image: microsoft/dotnet:2.1-sdk
           environment:
             DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
             DOTNET_CLI_TELEMETRY_OPTOUT: 1
