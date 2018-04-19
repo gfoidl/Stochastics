@@ -39,10 +39,10 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            double actual1 = sut.CalculateAverageAndVarianceCoreSimd()            .variance;
-            double actual2 = sut.CalculateAverageAndVarianceCoreParallelizedSimd().variance;
+            sut.CalculateAverageAndVarianceCoreSimd(out double sAvg, out double sVariance);
+            sut.CalculateAverageAndVarianceCoreParallelizedSimd(out double pAvg, out double pVariance);
 
-            Assert.AreEqual(actual1, actual2, 1e-7);
+            Assert.AreEqual(sVariance, pVariance, 1e-7);
         }
     }
 }

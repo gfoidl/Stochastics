@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -16,45 +15,41 @@ namespace gfoidl.Stochastics.Statistics
             }
             else
             {
-                var (min, max) = this.Count < ThresholdForMinMax
-                    ? this.GetMinMaxSimd()
-                    : this.GetMinMaxParallelizedSimd();
-
-                _min = min;
-                _max = max;
+                if (this.Count < ThresholdForMinMax)
+                    this.GetMinMaxSimd(out _min, out _max);
+                else
+                    this.GetMinMaxParallelizedSimd(out _min, out _max);
             }
         }
         //---------------------------------------------------------------------
-        internal (double min, double max) GetMinMaxSimd()
+        internal void GetMinMaxSimd(out double min, out double max)
         {
-            var (min, max) = this.GetMinMaxImpl((0, this.Count));
-
-            return (min, max);
+            this.GetMinMaxImpl(0, this.Count, out min, out max);
         }
         //---------------------------------------------------------------------
-        internal (double min, double max) GetMinMaxParallelizedSimd()
+        internal void GetMinMaxParallelizedSimd(out double min, out double max)
         {
-            double min = double.MaxValue;
-            double max = double.MinValue;
+            double tmpMin = double.MaxValue;
+            double tmpMax = double.MinValue;
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    var (localMin, localMax) = this.GetMinMaxImpl((range.Item1, range.Item2));
-                    localMin.InterlockedExchangeIfSmaller(ref min);
-                    localMax.InterlockedExchangeIfGreater(ref max);
+                    this.GetMinMaxImpl(range.Item1, range.Item2, out double localMin, out double localMax);
+                    localMin.InterlockedExchangeIfSmaller(ref tmpMin);
+                    localMax.InterlockedExchangeIfGreater(ref tmpMax);
                 }
             );
 
-            return (min, max);
+            min = tmpMin;
+            max = tmpMax;
         }
         //---------------------------------------------------------------------
-        private unsafe (double min, double max) GetMinMaxImpl((int start, int end) range)
+        private unsafe void GetMinMaxImpl(int i, int n, out double min, out double max)
         {
-            double min = double.MaxValue;
-            double max = double.MinValue;
-            var (i, n) = range;
+            min = double.MaxValue;
+            max = double.MinValue;
 
             fixed (double* pArray = _values)
             {
@@ -116,8 +111,6 @@ namespace gfoidl.Stochastics.Statistics
                     if (pArray[i] > max) max = pArray[i];
                 }
             }
-
-            return (min, max);
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec)
             {

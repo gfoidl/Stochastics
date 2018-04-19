@@ -16,7 +16,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double CalculateDeltaSimd()
         {
-            double delta = this.CalculateDeltaImpl((0, _values.Length));
+            double delta = this.CalculateDeltaImpl(0, _values.Length);
 
             return delta / _values.Length;
         }
@@ -29,7 +29,7 @@ namespace gfoidl.Stochastics.Statistics
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    double localDelta = this.CalculateDeltaImpl((range.Item1, range.Item2));
+                    double localDelta = this.CalculateDeltaImpl(range.Item1, range.Item2);
                     localDelta.SafeAdd(ref delta);
                 }
             );
@@ -37,11 +37,10 @@ namespace gfoidl.Stochastics.Statistics
             return delta / _values.Length;
         }
         //---------------------------------------------------------------------
-        private unsafe double CalculateDeltaImpl((int start, int end) range)
+        private unsafe double CalculateDeltaImpl(int i, int n)
         {
             double delta = 0;
             double avg   = this.Mean;
-            var (i, n)   = range;
 
             fixed (double* pArray = _values)
             {
