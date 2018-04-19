@@ -51,9 +51,9 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         private unsafe void CalculateSkewnessAndKurtosisImpl(int i, int n, out double skewness, out double kurtosis)
         {
-            skewness   = 0;
-            kurtosis   = 0;
-            double avg = this.Mean;
+            double tmpSkewness   = 0;
+            double tmpKurtosis   = 0;
+            double avg           = this.Mean;
 
             fixed (double* pArray = _values)
             {
@@ -107,17 +107,20 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    skewness += skewVec.ReduceSum();
-                    kurtosis += kurtVec.ReduceSum();
+                    tmpSkewness += skewVec.ReduceSum();
+                    tmpKurtosis += kurtVec.ReduceSum();
                 }
 
                 for (; i < n; ++i)
                 {
                     double t  = pArray[i] - avg;
                     double t1 = t * t * t;
-                    skewness += t1;
-                    kurtosis += t1 * t;
+                    tmpSkewness += t1;
+                    tmpKurtosis += t1 * t;
                 }
+
+                skewness = tmpSkewness;
+                kurtosis = tmpKurtosis;
             }
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> skewVec, ref Vector<double> kurtVec)

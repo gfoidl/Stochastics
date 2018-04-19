@@ -48,8 +48,8 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         private unsafe void GetMinMaxImpl(int i, int n, out double min, out double max)
         {
-            min = double.MaxValue;
-            max = double.MinValue;
+            double tmpMin = double.MaxValue;
+            double tmpMax = double.MinValue;
 
             fixed (double* pArray = _values)
             {
@@ -57,8 +57,8 @@ namespace gfoidl.Stochastics.Statistics
 
                 if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
-                    var minVec = new Vector<double>(min);
-                    var maxVec = new Vector<double>(max);
+                    var minVec = new Vector<double>(tmpMin);
+                    var maxVec = new Vector<double>(tmpMax);
 
                     for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
@@ -102,14 +102,17 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction
-                    VectorHelper.ReduceMinMax(minVec, maxVec, ref min, ref max);
+                    VectorHelper.ReduceMinMax(minVec, maxVec, ref tmpMin, ref tmpMax);
                 }
 
                 for (; i < n; ++i)
                 {
-                    if (pArray[i] < min) min = pArray[i];
-                    if (pArray[i] > max) max = pArray[i];
+                    if (pArray[i] < tmpMin) tmpMin = pArray[i];
+                    if (pArray[i] > tmpMax) tmpMax = pArray[i];
                 }
+
+                min = tmpMin;
+                max = tmpMax;
             }
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec)
