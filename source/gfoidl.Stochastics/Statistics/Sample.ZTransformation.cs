@@ -4,6 +4,10 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
+#if DEBUG_ASSERT
+using System.Diagnostics;
+#endif
+
 namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
@@ -75,61 +79,74 @@ namespace gfoidl.Stochastics.Statistics
             fixed (double* pSource = _values)
             fixed (double* pTarget = zTrans)
             {
-                double* sourceArr = pSource + i;
-                double* targetArr = pTarget + i;
+                double* source = pSource + i;
+                double* target = pTarget + i;
+                n             -= i;
+                i              = 0;
+                double* end    = source + n;
 
                 if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
                     var avgVec      = new Vector<double>(avg);
                     var sigmaInvVec = new Vector<double>(sigmaInv);
 
-                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
+                    // https://github.com/gfoidl/Stochastics/issues/46
+                    int m = n & ~(8 * Vector<double>.Count - 1);
+                    for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 4 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 5 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 6 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 7 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 4 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 5 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 6 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 7 * Vector<double>.Count, avgVec, sigmaInvVec);
 
-                        sourceArr += 8 * Vector<double>.Count;
-                        targetArr += 8 * Vector<double>.Count;
+                        source += 8 * Vector<double>.Count;
+                        target += 8 * Vector<double>.Count;
                     }
 
-                    if (i < n - 4 * Vector<double>.Count)
+                    m = n & ~(4 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
 
-                        sourceArr += 4 * Vector<double>.Count;
-                        targetArr += 4 * Vector<double>.Count;
-                        i += 4 * Vector<double>.Count;
+                        source += 4 * Vector<double>.Count;
+                        target += 4 * Vector<double>.Count;
+                        i      += 4 * Vector<double>.Count;
                     }
 
-                    if (i < n - 2 * Vector<double>.Count)
+                    m = n & ~(2 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(sourceArr, targetArr, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
 
-                        sourceArr += 2 * Vector<double>.Count;
-                        targetArr += 2 * Vector<double>.Count;
-                        i += 2 * Vector<double>.Count;
+                        source += 2 * Vector<double>.Count;
+                        target += 2 * Vector<double>.Count;
+                        i      += 2 * Vector<double>.Count;
                     }
 
-                    if (i < n - Vector<double>.Count)
+                    m = n & ~(1 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(sourceArr, targetArr, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
 
-                        i += Vector<double>.Count;
+                        source += 1 * Vector<double>.Count;
+                        target += 1 * Vector<double>.Count;
                     }
                 }
 
-                for (; i < n; ++i)
-                    pTarget[i] = this.ZTransformation(pSource[i], avg, sigmaInv);
+                while (source < end)
+                {
+                    *target = this.ZTransformation(*source, avg, sigmaInv);
+                    source++;
+                    target++;
+                }
             }
             //-----------------------------------------------------------------
             void Core(double* sourceArr, double* targetArr, int offset, Vector<double> avgVec, Vector<double> sigmaInvVec)

@@ -3,6 +3,10 @@ using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
 
+#if DEBUG_ASSERT
+using System.Diagnostics;
+#endif
+
 namespace gfoidl.Stochastics.Statistics
 {
     partial class Sample
@@ -45,67 +49,81 @@ namespace gfoidl.Stochastics.Statistics
             fixed (double* pArray = _values)
             {
                 double* arr = pArray + i;
+                n          -= i;
+                i           = 0;
+                double* end = arr + n;
 
-                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
                 {
                     var avgVec   = new Vector<double>(avg);
-                    var deltaVec = new Vector<double>(0);
+                    var deltaVec = Vector<double>.Zero;
 
-                    for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
+                    // https://github.com/gfoidl/Stochastics/issues/46
+                    int m = n & ~(8 * Vector<double>.Count - 1);
+                    for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 4 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 5 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 6 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 7 * Vector<double>.Count, avgVec, ref deltaVec);
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 4 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 5 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 6 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 7 * Vector<double>.Count, avgVec, ref deltaVec, end);
 
                         arr += 8 * Vector<double>.Count;
                     }
 
-                    if (i < n - 4 * Vector<double>.Count)
+                    m = n & ~(4 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec);
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 2 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 3 * Vector<double>.Count, avgVec, ref deltaVec, end);
 
                         arr += 4 * Vector<double>.Count;
                         i   += 4 * Vector<double>.Count;
                     }
 
-                    if (i < n - 2 * Vector<double>.Count)
+                    m = n & ~(2 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec);
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec, end);
+                        Core(arr, 1 * Vector<double>.Count, avgVec, ref deltaVec, end);
 
                         arr += 2 * Vector<double>.Count;
                         i   += 2 * Vector<double>.Count;
                     }
 
-                    if (i < n - Vector<double>.Count)
+                    m = n & ~(1 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec);
+                        Core(arr, 0 * Vector<double>.Count, avgVec, ref deltaVec, end);
 
-                        i += Vector<double>.Count;
+                        arr += 1 * Vector<double>.Count;
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
                     delta += deltaVec.ReduceSum();
                 }
 
-                for (; i < n; ++i)
-                    delta += Math.Abs(pArray[i] - avg);
+                while (arr < end)
+                {
+                    delta += Math.Abs(*arr - avg);
+                    arr++;
+                }
             }
 
             return delta;
             //-----------------------------------------------------------------
-            void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> deltaVec)
+            void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> deltaVec, double* end)
             {
+#if DEBUG_ASSERT
+                Debug.Assert(arr + offset < end);
+#endif
                 Vector<double> vec = VectorHelper.GetVector(arr + offset);
-                deltaVec += Vector.Abs(vec - avgVec);
+                deltaVec          += Vector.Abs(vec - avgVec);
             }
         }
     }

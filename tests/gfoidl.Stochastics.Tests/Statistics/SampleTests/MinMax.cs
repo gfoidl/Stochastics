@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 {
+    [TestFixture(3)]
     [TestFixture(10)]
     [TestFixture(100)]
     [TestFixture(101)]
@@ -36,8 +37,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            Assert.AreEqual(0, sut.Min);
-            Assert.AreEqual(10, sut.Max);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, sut.Min);
+                Assert.AreEqual(10, sut.Max);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -54,8 +58,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             sut.GetMinMaxSimd(out double sMin, out double sMax);
             sut.GetMinMaxParallelizedSimd(out double pMin, out double pMax);
 
-            Assert.AreEqual(sMin, pMin, 1e-10);
-            Assert.AreEqual(sMax, pMax, 1e-10);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(sMin, pMin, 1e-10);
+                Assert.AreEqual(sMax, pMax, 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -73,8 +80,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double min = values.Min();
             double max = values.Max();
 
-            Assert.AreEqual(min, actualMin, 1e-10);
-            Assert.AreEqual(max, actualMax, 1e-10);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(min, actualMin, 1e-10);
+                Assert.AreEqual(max, actualMax, 1e-10);
+            });
         }
     }
 }
