@@ -6,6 +6,7 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 {
     [TestFixture(10)]
     [TestFixture(100)]
+    [TestFixture(101)]
     [TestFixture(1_000)]
     [TestFixture(10_000)]
     [TestFixture(100_000)]
