@@ -50,7 +50,7 @@ namespace gfoidl.Stochastics.Statistics
         {
             var zTrans = new double[this.Count];
 
-            this.ZTransformationToArrayImpl(zTrans, sigma, (0, _values.Length));
+            this.ZTransformationToArrayImpl(zTrans, sigma, 0, _values.Length);
 
             return zTrans;
         }
@@ -61,17 +61,16 @@ namespace gfoidl.Stochastics.Statistics
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
-                range => this.ZTransformationToArrayImpl(zTrans, sigma, (range.Item1, range.Item2))
+                range => this.ZTransformationToArrayImpl(zTrans, sigma, range.Item1, range.Item2)
             );
 
             return zTrans;
         }
         //---------------------------------------------------------------------
-        private unsafe void ZTransformationToArrayImpl(double[] zTrans, double sigma, (int start, int end) range)
+        private unsafe void ZTransformationToArrayImpl(double[] zTrans, double sigma, int i, int n)
         {
             double avg      = this.Mean;
             double sigmaInv = 1d / sigma;
-            var (i, n)      = range;
 
             fixed (double* pSource = _values)
             fixed (double* pTarget = zTrans)

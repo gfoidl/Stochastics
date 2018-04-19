@@ -27,11 +27,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            (double skewness, double kurtosis) actual1 = sut.CalculateSkewnessAndKurtosisSimd();
-            (double skewness, double kurtosis) actual2 = sut.CalculateSkewnessAndKurtosisParallelizedSimd();
+            sut.CalculateSkewnessAndKurtosisSimd(out double sSkewness, out double sKurtosis);
+            sut.CalculateSkewnessAndKurtosisParallelizedSimd(out double pSkewness, out double pKurtosis);
 
-            Assert.AreEqual(actual1.skewness, actual2.skewness, 1e-7);
-            Assert.AreEqual(actual1.kurtosis, actual2.kurtosis, 1e-7);
+            Assert.AreEqual(sSkewness, pSkewness, 1e-7);
+            Assert.AreEqual(sKurtosis, pKurtosis, 1e-7);
         }
     }
 }

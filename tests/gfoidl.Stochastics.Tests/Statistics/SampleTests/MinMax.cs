@@ -50,11 +50,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            (double min, double max) actual1 = sut.GetMinMaxSimd();
-            (double min, double max) actual2 = sut.GetMinMaxParallelizedSimd();
+            sut.GetMinMaxSimd(out double sMin, out double sMax);
+            sut.GetMinMaxParallelizedSimd(out double pMin, out double pMax);
 
-            Assert.AreEqual(actual1.min, actual2.min, 1e-10);
-            Assert.AreEqual(actual1.max, actual2.max, 1e-10);
+            Assert.AreEqual(sMin, pMin, 1e-10);
+            Assert.AreEqual(sMax, pMax, 1e-10);
         }
         //---------------------------------------------------------------------
         [Test]
@@ -68,12 +68,12 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            (double min, double max) actual1 = sut.GetMinMaxSimd();
+            sut.GetMinMaxSimd(out double actualMin, out double actualMax);
             double min = values.Min();
             double max = values.Max();
 
-            Assert.AreEqual(min, actual1.min, 1e-10);
-            Assert.AreEqual(max, actual1.max, 1e-10);
+            Assert.AreEqual(min, actualMin, 1e-10);
+            Assert.AreEqual(max, actualMax, 1e-10);
         }
     }
 }

@@ -8,50 +8,52 @@ namespace gfoidl.Stochastics.Statistics
     {
         private void CalculateSkewnessAndKurtosis()
         {
-            var (skewness, kurtosis) = this.Count < ThresholdForSkewnessAndKurtosis
-                ? this.CalculateSkewnessAndKurtosisSimd()
-                : this.CalculateSkewnessAndKurtosisParallelizedSimd();
+            double skewness = 0;
+            double kurtosis = 0;
+
+            if (this.Count < ThresholdForSkewnessAndKurtosis)
+                this.CalculateSkewnessAndKurtosisSimd(out skewness, out kurtosis);
+            else
+                this.CalculateSkewnessAndKurtosisParallelizedSimd(out skewness, out kurtosis);
 
             double sigma = this.StandardDeviation;
             double t     = _values.Length * sigma * sigma * sigma;
-            skewness /= t;
-            kurtosis /= t * sigma;
+            skewness    /= t;
+            kurtosis    /= t * sigma;
 
             _skewness = skewness;
             _kurtosis = kurtosis;
         }
         //---------------------------------------------------------------------
-        internal (double skewness, double kurtosis) CalculateSkewnessAndKurtosisSimd()
+        internal void CalculateSkewnessAndKurtosisSimd(out double skewness, out double kurtosis)
         {
-            var (skewness, kurtosis) = this.CalculateSkewnessAndKurtosisImpl((0, this.Count));
-
-            return (skewness, kurtosis);
+            this.CalculateSkewnessAndKurtosisImpl(0, this.Count, out skewness, out kurtosis);
         }
         //---------------------------------------------------------------------
-        internal (double skewness, double kurtosis) CalculateSkewnessAndKurtosisParallelizedSimd()
+        internal void CalculateSkewnessAndKurtosisParallelizedSimd(out double skewness, out double kurtosis)
         {
-            double skewness = 0;
-            double kurtosis = 0;
+            double tmpSkewness = 0;
+            double tmpKurtosis = 0;
 
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
                 {
-                    var (localSkewness, localKurtosis) = this.CalculateSkewnessAndKurtosisImpl((range.Item1, range.Item2));
-                    localSkewness.SafeAdd(ref skewness);
-                    localKurtosis.SafeAdd(ref kurtosis);
+                    this.CalculateSkewnessAndKurtosisImpl(range.Item1, range.Item2, out double localSkewness, out double localKurtosis);
+                    localSkewness.SafeAdd(ref tmpSkewness);
+                    localKurtosis.SafeAdd(ref tmpKurtosis);
                 }
             );
 
-            return (skewness, kurtosis);
+            skewness = tmpSkewness;
+            kurtosis = tmpKurtosis;
         }
         //---------------------------------------------------------------------
-        private unsafe (double skewness, double kurtosis) CalculateSkewnessAndKurtosisImpl((int start, int end) range)
+        private unsafe void CalculateSkewnessAndKurtosisImpl(int i, int n, out double skewness, out double kurtosis)
         {
-            double skewness = 0;
-            double kurtosis = 0;
-            double avg      = this.Mean;
-            var (i, n)      = range;
+            double tmpSkewness   = 0;
+            double tmpKurtosis   = 0;
+            double avg           = this.Mean;
 
             fixed (double* pArray = _values)
             {
@@ -105,20 +107,21 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    skewness += skewVec.ReduceSum();
-                    kurtosis += kurtVec.ReduceSum();
+                    tmpSkewness += skewVec.ReduceSum();
+                    tmpKurtosis += kurtVec.ReduceSum();
                 }
 
                 for (; i < n; ++i)
                 {
                     double t  = pArray[i] - avg;
                     double t1 = t * t * t;
-                    skewness += t1;
-                    kurtosis += t1 * t;
+                    tmpSkewness += t1;
+                    tmpKurtosis += t1 * t;
                 }
-            }
 
-            return (skewness, kurtosis);
+                skewness = tmpSkewness;
+                kurtosis = tmpKurtosis;
+            }
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> skewVec, ref Vector<double> kurtVec)
             {
