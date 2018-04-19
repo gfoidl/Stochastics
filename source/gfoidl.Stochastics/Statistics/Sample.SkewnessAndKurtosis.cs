@@ -105,8 +105,8 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    skewness += Vector.Dot(skewVec, Vector<double>.One);
-                    kurtosis += Vector.Dot(kurtVec, Vector<double>.One);
+                    skewness += skewVec.ReduceSum();
+                    kurtosis += kurtVec.ReduceSum();
                 }
 
                 for (; i < n; ++i)

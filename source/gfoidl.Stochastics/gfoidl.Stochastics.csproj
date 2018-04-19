@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
@@ -19,9 +19,14 @@
         <DocumentationFile>bin\Release\netstandard2.0\gfoidl.Stochastics.xml</DocumentationFile>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.1'">
         <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.0-preview3-26417-03" />
+        <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="4.5.0-preview2-26406-04" />
     </ItemGroup>
 
     <ItemGroup>

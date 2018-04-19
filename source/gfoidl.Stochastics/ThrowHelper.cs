@@ -6,7 +6,7 @@ namespace gfoidl.Stochastics
 {
     internal static class ThrowHelper
     {
-#if NETSTANDARD2_0
+#if !NET471
         public static void ThrowArgumentNull(ExceptionArgument argument)       => throw new ArgumentNullException(GetArgumentName(argument));
         public static void ThrowArgumentOutOfRange(ExceptionArgument argument) => throw new ArgumentOutOfRangeException(GetArgumentName(argument));
         public static void ThrowArgumentOutOfRange(ExceptionArgument argument, ExceptionResource resource) => throw new ArgumentOutOfRangeException(GetArgumentName(argument), GetResourceText(resource));

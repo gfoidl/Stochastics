@@ -107,11 +107,7 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction
-                    for (int j = 0; j < Vector<double>.Count; ++j)
-                    {
-                        if (minVec[j] < min) min = minVec[j];
-                        if (maxVec[j] > max) max = maxVec[j];
-                    }
+                    VectorHelper.ReduceMinMax(minVec, maxVec, ref min, ref max);
                 }
 
                 for (; i < n; ++i)
