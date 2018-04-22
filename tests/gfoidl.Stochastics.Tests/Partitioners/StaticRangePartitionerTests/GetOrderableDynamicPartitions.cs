@@ -18,13 +18,16 @@ namespace gfoidl.Stochastics.Tests.Partitioners.StaticRangePartitionerTests
             KeyValuePair<long, Range> item1 = actual[0];
             KeyValuePair<long, Range> item2 = actual[1];
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(5, item1.Value.End);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(5, item1.Value.End);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(5, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 1, item2.Key);
+                Assert.AreEqual( 5, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -39,21 +42,24 @@ namespace gfoidl.Stochastics.Tests.Partitioners.StaticRangePartitionerTests
             KeyValuePair<long, Range> item3 = actual[2];
             KeyValuePair<long, Range> item4 = actual[3];
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(3, item1.Value.End);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(3, item1.Value.End);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(3, item2.Value.Start);
-            Assert.AreEqual(6, item2.Value.End);
+                Assert.AreEqual(1, item2.Key);
+                Assert.AreEqual(3, item2.Value.Start);
+                Assert.AreEqual(6, item2.Value.End);
 
-            Assert.AreEqual(2, item3.Key);
-            Assert.AreEqual(6, item3.Value.Start);
-            Assert.AreEqual(9, item3.Value.End);
+                Assert.AreEqual(2, item3.Key);
+                Assert.AreEqual(6, item3.Value.Start);
+                Assert.AreEqual(9, item3.Value.End);
 
-            Assert.AreEqual(3, item4.Key);
-            Assert.AreEqual(9, item4.Value.Start);
-            Assert.AreEqual(10, item4.Value.End);
+                Assert.AreEqual( 3, item4.Key);
+                Assert.AreEqual( 9, item4.Value.Start);
+                Assert.AreEqual(10, item4.Value.End);
+            });
         }
     }
 }

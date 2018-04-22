@@ -40,8 +40,11 @@ namespace gfoidl.Stochastics.Tests.SpecialFunctionsTests
 
             double[] results = Erf(values);
 
-            for (int i = 0; i < testData.Length; ++i)
-                Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < testData.Length; ++i)
+                    Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -60,8 +63,11 @@ namespace gfoidl.Stochastics.Tests.SpecialFunctionsTests
 
             double[] results = Erfc(values);
 
-            for (int i = 0; i < testData.Length; ++i)
-                Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < testData.Length; ++i)
+                    Assert.AreEqual(expected[i], results[i], 1e-6, "failure at index {0}", i);
+            });
         }
         //---------------------------------------------------------------------
         private static IEnumerable<(double x, double erf)> TestData()

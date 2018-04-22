@@ -30,8 +30,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -55,8 +58,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -80,8 +86,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -98,8 +107,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double[] sequential = sut.AutoCorrelationSequential().ToArray();
             double[] simd       = sut.AutoCorrelationSimd()      .ToArray();
 
-            for (int i = 0; i < sequential.Length; ++i)
-                Assert.AreEqual(sequential[i], simd[i], 1e-10);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < sequential.Length; ++i)
+                    Assert.AreEqual(sequential[i], simd[i], 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -123,8 +135,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -148,8 +163,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -173,8 +191,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             Assert.Greater(actual[0], 0.3);
 
-            for (int i = 1; i < actual.Length; ++i)
-                Assert.Less(actual[i], 0.3);
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < actual.Length; ++i)
+                    Assert.Less(actual[i], 0.3);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -191,8 +212,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double[] simd     = sut.AutoCorrelationToArraySimd();
             double[] parallel = sut.AutoCorrelationToArrayParallelSimd();
 
-            for (int i = 0; i < parallel.Length; ++i)
-                Assert.AreEqual(parallel[i], simd[i], 1e-10);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < parallel.Length; ++i)
+                    Assert.AreEqual(parallel[i], simd[i], 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -209,8 +233,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double[] arraySimd = sut.AutoCorrelationToArraySimd();
             double[] simd      = sut.AutoCorrelationSimd().ToArray();
 
-            for (int i = 0; i < simd.Length; ++i)
-                Assert.AreEqual(simd[i], arraySimd[i], 1e-10);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < simd.Length; ++i)
+                    Assert.AreEqual(simd[i], arraySimd[i], 1e-10);
+            });
         }
     }
 }

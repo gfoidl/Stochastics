@@ -33,8 +33,11 @@ namespace gfoidl.Stochastics.Tests.VectorHelperTests
 
             VectorHelper.ReduceMinMax(minVec, maxVec, ref min, ref max);
 
-            Assert.AreEqual(expectedMin, min, 1e-10);
-            Assert.AreEqual(expectedMax, max, 1e-10);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(expectedMin, min, 1e-10);
+                Assert.AreEqual(expectedMax, max, 1e-10);
+            });
         }
     }
 }

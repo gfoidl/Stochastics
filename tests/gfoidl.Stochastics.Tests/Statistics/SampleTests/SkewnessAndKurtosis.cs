@@ -31,8 +31,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             sut.CalculateSkewnessAndKurtosisSimd(out double sSkewness, out double sKurtosis);
             sut.CalculateSkewnessAndKurtosisParallelizedSimd(out double pSkewness, out double pKurtosis);
 
-            Assert.AreEqual(sSkewness, pSkewness, 1e-7);
-            Assert.AreEqual(sKurtosis, pKurtosis, 1e-7);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(sSkewness, pSkewness, 1e-7);
+                Assert.AreEqual(sKurtosis, pKurtosis, 1e-7);
+            });
         }
     }
 }
