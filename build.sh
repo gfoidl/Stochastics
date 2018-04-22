@@ -71,7 +71,7 @@ setBuildEnv() {
     # ci tools clone usually to depth 50, so this is not good
     #export BuildNumber=$(git log --oneline | wc -l)
     export BuildNumber=$CI_BUILD_NUMBER
-    
+
     if [[ -n "$TAG_NAME" ]]; then
         if [[ "$TAG_NAME" =~ ^v([0-9])\.([0-9])\.([0-9])(-(preview-[0-9]+))?$ ]]; then
             export VersionMajor="${BASH_REMATCH[1]}"
@@ -80,7 +80,7 @@ setBuildEnv() {
             export VersionSuffix="${BASH_REMATCH[5]}"
         fi
     fi
-    
+
     echo "-------------------------------------------------"
     echo "Branch:        $BRANCH_NAME"
     echo "Tag:           $TAG_NAME"
@@ -117,7 +117,7 @@ _testCore() {
     if [[ -n "$TEST_FRAMEWORK" ]]; then
         dotnetTestArgs="-f $TEST_FRAMEWORK $dotnetTestArgs"
     fi
-    
+
     dotnet test $dotnetTestArgs
 
     local result=$?
@@ -144,6 +144,8 @@ test() {
 }
 #------------------------------------------------------------------------------
 _pack() {
+    dotnet restore
+
     find source -name "*.csproj" -print0 | xargs -0 -n1 dotnet pack -o "$(pwd)/NuGet-Packed" --no-build -c Release
 
     ls -l ./NuGet-Packed
