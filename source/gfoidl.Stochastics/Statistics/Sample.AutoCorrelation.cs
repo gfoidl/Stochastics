@@ -38,13 +38,13 @@ namespace gfoidl.Stochastics.Statistics
                 {
                     var kVec  = new Vector<double>(arr, k);
                     var kmVec = new Vector<double>(arr, k - m);
-                    r_xx += Vector.Dot(kVec, kmVec);
-                    k += Vector<double>.Count;
+                    r_xx     += Vector.Dot(kVec, kmVec);
+                    k        += Vector<double>.Count;
 
                     kVec  = new Vector<double>(arr, k);
                     kmVec = new Vector<double>(arr, k - m);
                     r_xx += Vector.Dot(kVec, kmVec);
-                    k += Vector<double>.Count;
+                    k    += Vector<double>.Count;
                 }
 
                 for (; k < arr.Length; ++k)
@@ -84,7 +84,7 @@ namespace gfoidl.Stochastics.Statistics
             return corr;
         }
         //---------------------------------------------------------------------
-        private unsafe void AutoCorrelationToArrayImpl(double[] corr, (int Start, int End) range)
+        private unsafe void AutoCorrelationToArrayImpl(double[] corr, Range range)
         {
             int n = _values.Length;
 
@@ -157,7 +157,7 @@ namespace gfoidl.Stochastics.Statistics
             {
                 Vector<double> kVec  = VectorHelper.GetVector(a_k + offset);
                 Vector<double> kmVec = VectorHelper.GetVector(a_km + offset);
-                r_xx += Vector.Dot(kVec, kmVec);
+                r_xx                += Vector.Dot(kVec, kmVec);
             }
         }
         #endregion

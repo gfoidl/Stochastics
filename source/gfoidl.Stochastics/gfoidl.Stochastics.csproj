@@ -15,8 +15,12 @@
         <PackageTags>stochastics;statistics;outliers;error-function;Chauvenet</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
         <DocumentationFile>bin\Release\netstandard2.0\gfoidl.Stochastics.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefineConstants>DEBUG_ASSERT</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.1'">
