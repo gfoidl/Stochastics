@@ -64,21 +64,28 @@ namespace gfoidl.Stochastics.Statistics
 
                 if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
                 {
-                    var minVec = new Vector<double>(tmpMin);
-                    var maxVec = new Vector<double>(tmpMax);
+                    var minVec0 = new Vector<double>(tmpMin);
+                    var minVec1 = new Vector<double>(tmpMin);
+                    var minVec2 = new Vector<double>(tmpMin);
+                    var minVec3 = new Vector<double>(tmpMin);
+
+                    var maxVec0 = new Vector<double>(tmpMax);
+                    var maxVec1 = new Vector<double>(tmpMax);
+                    var maxVec2 = new Vector<double>(tmpMax);
+                    var maxVec3 = new Vector<double>(tmpMax);
 
                     // https://github.com/gfoidl/Stochastics/issues/46
                     int m = n & ~(8 * Vector<double>.Count - 1);
                     for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 2 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 3 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 4 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 5 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 6 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 7 * Vector<double>.Count, ref minVec, ref maxVec, end);
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 2 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 3 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
+                        Core(arr, 4 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 5 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 6 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 7 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
 
                         arr += 8 * Vector<double>.Count;
                     }
@@ -86,10 +93,10 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(4 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 2 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 3 * Vector<double>.Count, ref minVec, ref maxVec, end);
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 2 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 3 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
 
                         arr += 4 * Vector<double>.Count;
                         i   += 4 * Vector<double>.Count;
@@ -98,8 +105,8 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(2 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec, ref maxVec, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec, ref maxVec, end);
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
 
                         arr += 2 * Vector<double>.Count;
                         i   += 2 * Vector<double>.Count;
@@ -108,13 +115,15 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(1 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec, ref maxVec, end);
+                        Core(arr, 0 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
 
                         arr += 1 * Vector<double>.Count;
                     }
 
                     // Reduction
-                    VectorHelper.ReduceMinMax(minVec, maxVec, ref tmpMin, ref tmpMax);
+                    minVec0 = Vector.Min(minVec0, Vector.Min(minVec1, Vector.Min(minVec2, minVec3)));
+                    maxVec0 = Vector.Max(maxVec0, Vector.Max(maxVec1, Vector.Max(maxVec2, maxVec3)));
+                    VectorHelper.ReduceMinMax(minVec0, maxVec0, ref tmpMin, ref tmpMax);
                 }
 
                 while (arr < end)

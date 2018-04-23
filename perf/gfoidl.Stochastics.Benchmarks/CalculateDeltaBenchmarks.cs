@@ -25,7 +25,7 @@ namespace gfoidl.Stochastics.Benchmarks
             Console.WriteLine($"{nameof(benchs.ParallelizedUnsafeSimd),align}: {benchs.ParallelizedUnsafeSimd()}");
             Console.WriteLine($"{nameof(benchs.ParallelizedUnsafeSimdUnrolled),align}: {benchs.ParallelizedUnsafeSimdUnrolled()}");
 #if !DEBUG
-            //BenchmarkRunner.Run<CalculateDeltaBenchmarks>();
+            BenchmarkRunner.Run<CalculateDeltaBenchmarks>();
 #endif
         }
         //---------------------------------------------------------------------
