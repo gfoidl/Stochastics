@@ -14,26 +14,20 @@
 <body>
 <pre><code>
 BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
-Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
-.NET Core SDK=2.1.4
-  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
-  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=2
+.NET Core SDK=2.1.300-preview3-008416
+  [Host]     : .NET Core 2.1.0-preview2-26314-02 (Framework 4.6.26310.01), 64bit RyuJIT
+  DefaultJob : .NET Core 2.1.0-preview2-26314-02 (Framework 4.6.26310.01), 64bit RyuJIT
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>          Method</th><th>N</th><th>   Mean</th><th>  Error</th><th> StdDev</th><th>Scaled</th><th>ScaledSD</th>
+<thead><tr><th>    Method</th><th>N</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Scaled</th><th>ScaledSD</th>
 </tr>
-</thead><tbody><tr><td>      UnsafeSimd</td><td>100</td><td>97.70 ns</td><td>1.530 ns</td><td>1.356 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParallelizedUnsafeSimd</td><td>100</td><td>26,473.80 ns</td><td>929.853 ns</td><td>2,741.692 ns</td><td>271.01</td><td>28.16</td>
-</tr><tr><td>      UnsafeSimd</td><td>1000</td><td>778.18 ns</td><td>2.729 ns</td><td>2.553 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParallelizedUnsafeSimd</td><td>1000</td><td>21,562.80 ns</td><td>537.789 ns</td><td>1,551.643 ns</td><td>27.71</td><td>1.99</td>
-</tr><tr><td>      UnsafeSimd</td><td>10000</td><td>7,589.01 ns</td><td>21.531 ns</td><td>20.140 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParallelizedUnsafeSimd</td><td>10000</td><td>24,853.68 ns</td><td>490.125 ns</td><td>920.573 ns</td><td>3.27</td><td>0.12</td>
-</tr><tr><td>      UnsafeSimd</td><td>100000</td><td>76,781.94 ns</td><td>525.347 ns</td><td>465.706 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParallelizedUnsafeSimd</td><td>100000</td><td>49,217.29 ns</td><td>969.316 ns</td><td>1,116.265 ns</td><td>0.64</td><td>0.01</td>
-</tr><tr><td>      UnsafeSimd</td><td>1000000</td><td>901,205.68 ns</td><td>29,655.312 ns</td><td>86,973.897 ns</td><td>1.00</td><td>0.00</td>
-</tr><tr><td>ParallelizedUnsafeSimd</td><td>1000000</td><td>255,093.38 ns</td><td>3,361.747 ns</td><td>2,980.101 ns</td><td>0.29</td><td>0.03</td>
+</thead><tbody><tr><td>      Simd</td><td>1250000</td><td>478.9 us</td><td>8.053 us</td><td>7.139 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedSimd</td><td>1250000</td><td>482.0 us</td><td>9.424 us</td><td>11.574 us</td><td>1.01</td><td>0.03</td>
+</tr><tr><td>      Simd</td><td>1500000</td><td>630.5 us</td><td>17.713 us</td><td>51.670 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedSimd</td><td>1500000</td><td>574.1 us</td><td>11.324 us</td><td>12.586 us</td><td>0.92</td><td>0.08</td>
 </tr></tbody></table>
 </body>
 </html>

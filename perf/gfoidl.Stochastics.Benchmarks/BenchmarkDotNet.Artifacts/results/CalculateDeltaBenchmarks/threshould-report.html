@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>CalculateAverageBenchmarks</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=2
+.NET Core SDK=2.1.300-preview3-008416
+  [Host]     : .NET Core 2.1.0-preview2-26314-02 (Framework 4.6.26310.01), 64bit RyuJIT
+  DefaultJob : .NET Core 2.1.0-preview2-26314-02 (Framework 4.6.26310.01), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>    Method</th><th>N</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Scaled</th><th>ScaledSD</th>
+</tr>
+</thead><tbody><tr><td>      Simd</td><td>1250000</td><td>462.0 us</td><td>9.056 us</td><td>8.028 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedSimd</td><td>1250000</td><td>479.9 us</td><td>9.523 us</td><td>12.043 us</td><td>1.04</td><td>0.03</td>
+</tr><tr><td>      Simd</td><td>1500000</td><td>606.0 us</td><td>12.236 us</td><td>30.697 us</td><td>1.00</td><td>0.00</td>
+</tr><tr><td>ParallelizedSimd</td><td>1500000</td><td>571.7 us</td><td>7.548 us</td><td>6.303 us</td><td>0.95</td><td>0.05</td>
+</tr></tbody></table>
+</body>
+</html>
