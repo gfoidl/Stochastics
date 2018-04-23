@@ -5,23 +5,23 @@ using gfoidl.Stochastics.Statistics;
 
 namespace gfoidl.Stochastics.Benchmarks
 {
-    public class CalculateAverageBenchmarks : IBenchmark
+    public class GetMinMaxBenchmarks : IBenchmark
     {
         public void Run()
         {
-            var benchs      = new CalculateAverageBenchmarks();
+            var benchs      = new GetMinMaxBenchmarks();
             benchs.N        = 1000;
             benchs.GlobalSetup();
             const int align = -25;
             Console.WriteLine($"{nameof(benchs.Simd),align}: {benchs.Simd()}");
             Console.WriteLine($"{nameof(benchs.ParallelizedSimd),align}: {benchs.ParallelizedSimd()}");
 #if !DEBUG
-            BenchmarkRunner.Run<CalculateAverageBenchmarks>();
+            BenchmarkRunner.Run<GetMinMaxBenchmarks>();
 #endif
         }
         //---------------------------------------------------------------------
-        [Params(500_000, 1_000_000)]
-        public int N { get; set; } = 5_000_000;
+        [Params(1_750_000, 2_000_000)]
+        public int N { get; set; } = 10_000;
         //---------------------------------------------------------------------
         private Sample _sample;
         //---------------------------------------------------------------------
@@ -38,19 +38,19 @@ namespace gfoidl.Stochastics.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark(Baseline = true)]
-        public double Simd()
+        public (double Min, double Max) Simd()
         {
-            _sample.CalculateAverageAndVarianceCoreSimd(out double avg, out double var);
+            _sample.GetMinMaxSimd(out double min, out double max);
 
-            return avg;
+            return (min, max);
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public double ParallelizedSimd()
+        public (double Min, double Max) ParallelizedSimd()
         {
-            _sample.CalculateAverageAndVarianceCoreParallelizedSimd(out double avg, out double var);
+            _sample.GetMinMaxParallelizedSimd(out double min, out double max);
 
-            return avg;
+            return (min, max);
         }
     }
 }
