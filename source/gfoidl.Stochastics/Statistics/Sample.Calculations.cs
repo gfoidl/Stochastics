@@ -7,11 +7,9 @@ namespace gfoidl.Stochastics.Statistics
     {
 #pragma warning disable CS1591
         // Threshould determined by benchmark (roughly)
-        public const int ThresholdForParallel                = 50_000;
-        public const int ThresholdForAutocorrelationParallel = 250;
-        public const int ThresholdForMinMax                  = 75_000;
-        public const int ThresholdForAverageAndVarianceCore  = 75_000;
-        public const int ThresholdForSkewnessAndKurtosis     = 35_000;
+        public const int ThresholdForParallel                = 1_500_000;
+        public const int ThresholdForAutocorrelationParallel = 1_500;
+        public const int ThresholdForMinMax                  = 1_750_000;
 #pragma warning restore CS1591
         //---------------------------------------------------------------------
         private static ParallelOptions GetParallelOptions()

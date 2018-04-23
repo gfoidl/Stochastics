@@ -15,7 +15,7 @@ namespace gfoidl.Stochastics.Statistics
             double skewness = 0;
             double kurtosis = 0;
 
-            if (this.Count < ThresholdForSkewnessAndKurtosis)
+            if (this.Count < ThresholdForParallel)
                 this.CalculateSkewnessAndKurtosisSimd(out skewness, out kurtosis);
             else
                 this.CalculateSkewnessAndKurtosisParallelizedSimd(out skewness, out kurtosis);
