@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>CalculateKurtosisBenchmarks</title>
+
+<style type="text/css">
+    table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+    td, th { padding: 6px 13px; border: 1px solid #ddd; }
+    tr { background-color: #fff; border-top: 1px solid #ccc; }
+    tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.11, OS=ubuntu 16.04
+Processor=Intel Xeon CPU 2.60GHz, ProcessorCount=4
+.NET Core SDK=2.1.4
+  [Host]     : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+  DefaultJob : .NET Core 2.0.5 (Framework 4.6.0.0), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>      Method</th><th>N</th><th>    Mean</th><th>   Error</th><th>  StdDev</th><th>Scaled</th>
+</tr>
+</thead><tbody><tr><td>  UnsafeSimd</td><td>100</td><td>286.6 ns</td><td>1.4332 ns</td><td>1.3406 ns</td><td>1.00</td>
+</tr><tr><td>UnsafeSimdUnrolled</td><td>100</td><td>277.7 ns</td><td>0.8934 ns</td><td>0.8357 ns</td><td>0.97</td>
+</tr><tr><td>  UnsafeSimd</td><td>1000</td><td>2,667.5 ns</td><td>8.7674 ns</td><td>7.7721 ns</td><td>1.00</td>
+</tr><tr><td>UnsafeSimdUnrolled</td><td>1000</td><td>2,658.7 ns</td><td>13.1307 ns</td><td>12.2825 ns</td><td>1.00</td>
+</tr><tr><td>  UnsafeSimd</td><td>10000</td><td>26,410.1 ns</td><td>84.3692 ns</td><td>74.7911 ns</td><td>1.00</td>
+</tr><tr><td>UnsafeSimdUnrolled</td><td>10000</td><td>26,488.3 ns</td><td>113.0171 ns</td><td>100.1867 ns</td><td>1.00</td>
+</tr><tr><td>  UnsafeSimd</td><td>100000</td><td>270,792.0 ns</td><td>4,111.9347 ns</td><td>3,846.3059 ns</td><td>1.00</td>
+</tr><tr><td>UnsafeSimdUnrolled</td><td>100000</td><td>267,459.2 ns</td><td>1,177.1100 ns</td><td>1,101.0693 ns</td><td>0.99</td>
+</tr><tr><td>  UnsafeSimd</td><td>1000000</td><td>2,803,335.9 ns</td><td>31,686.7146 ns</td><td>29,639.7696 ns</td><td>1.00</td>
+</tr><tr><td>UnsafeSimdUnrolled</td><td>1000000</td><td>2,782,048.5 ns</td><td>15,356.2713 ns</td><td>13,612.9332 ns</td><td>0.99</td>
+</tr></tbody></table>
+</body>
+</html>
