@@ -31,8 +31,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             TestContext.WriteLine(sut);
             TestContext.WriteLine(actual);
 
-            Assert.AreEqual(0, actual.Mean, 1e-10);
-            Assert.AreEqual(1, actual.SampleStandardDeviation, 1e-10);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, actual.Mean, 1e-10);
+                Assert.AreEqual(1, actual.SampleStandardDeviation, 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -48,8 +51,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             TestContext.WriteLine(sut);
             TestContext.WriteLine(actual);
 
-            Assert.AreEqual(0, actual.Mean, 1e-10);
-            Assert.AreEqual(1, actual.SampleStandardDeviation, 1e-10);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, actual.Mean, 1e-10);
+                Assert.AreEqual(1, actual.SampleStandardDeviation, 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -63,12 +69,15 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double sigma = sut.Sigma;
             double avg   = sut.Mean;
 
-            for (int i = 0; i < values.Length; ++i)
+            Assert.Multiple(() =>
             {
-                double actual = transformed[i] * sut.Sigma + avg;
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    double actual = transformed[i] * sut.Sigma + avg;
 
-                Assert.AreEqual(values[i], actual, 1e-10);
-            }
+                    Assert.AreEqual(values[i], actual, 1e-10);
+                }
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -82,12 +91,15 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double sigma = sut.Sigma;
             double avg   = sut.Mean;
 
-            for (int i = 0; i < values.Length; ++i)
+            Assert.Multiple(() =>
             {
-                double actual = transformed[i] * sut.Sigma + avg;
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    double actual = transformed[i] * sut.Sigma + avg;
 
-                Assert.AreEqual(values[i], actual, 1e-10);
-            }
+                    Assert.AreEqual(values[i], actual, 1e-10);
+                }
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -124,8 +136,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double[] actual1 = sut.ZTransformationToArraySimd(sut.Sigma);
             double[] actual2 = sut.ZTransformationToArrayParallelizedSimd(sut.Sigma);
 
-            for (int i = 0; i < actual1.Length; ++i)
-                Assert.AreEqual(actual1[i], actual2[i], 1e-10);
+            Assert.Multiple(() =>
+            {
+                for (int i = 0; i < actual1.Length; ++i)
+                    Assert.AreEqual(actual1[i], actual2[i], 1e-10);
+            });
         }
         //---------------------------------------------------------------------
         private double[] GetSampleValues()

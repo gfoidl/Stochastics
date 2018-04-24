@@ -21,8 +21,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleBuilderTests
 
             Sample actual = sut.GetSample();
 
-            CollectionAssert.AreEqual(expected.Values, actual.Values);
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEqual(expected.Values, actual.Values);
+                Assert.AreEqual(expected.ToString(), actual.ToString());
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -37,8 +40,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleBuilderTests
 
             Sample actual = sut.GetSample();
 
-            CollectionAssert.AreEqual(expected.Values, actual.Values);
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEqual(expected.Values, actual.Values);
+                Assert.AreEqual(expected.ToString(), actual.ToString());
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -55,8 +61,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleBuilderTests
 
             TestContext.WriteLine(actual);
 
-            CollectionAssert.AreEqual(expected.Values, actual.Values);
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEqual(expected.Values, actual.Values);
+                Assert.AreEqual(expected.ToString(), actual.ToString());
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -72,8 +81,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleBuilderTests
 
             Sample actual = sut.GetSample();
 
-            CollectionAssert.AreEqual(expected.Values, actual.Values);
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEqual(expected.Values, actual.Values);
+                Assert.AreEqual(expected.ToString(), actual.ToString());
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -91,8 +103,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleBuilderTests
 
             TestContext.WriteLine(actual);
 
-            CollectionAssert.AreEqual(expected.Values, actual.Values);
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEqual(expected.Values, actual.Values);
+                Assert.AreEqual(expected.ToString(), actual.ToString());
+            });
         }
     }
 }

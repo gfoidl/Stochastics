@@ -22,15 +22,18 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item1.Value);
             TestContext.WriteLine(item2.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(5, item1.Value.End);
-            Assert.AreEqual(5, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(5, item1.Value.End);
+                Assert.AreEqual(5, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(5, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
-            Assert.AreEqual(5, item2.Value.Size);
+                Assert.AreEqual( 1, item2.Key);
+                Assert.AreEqual( 5, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 5, item2.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -46,15 +49,18 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item1.Value);
             TestContext.WriteLine(item2.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(7, item1.Value.End);
-            Assert.AreEqual(7, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(7, item1.Value.End);
+                Assert.AreEqual(7, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(7, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
-            Assert.AreEqual(3, item2.Value.Size);
+                Assert.AreEqual (1, item2.Key);
+                Assert.AreEqual( 7, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 3, item2.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -72,20 +78,23 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item2.Value);
             TestContext.WriteLine(item3.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(6, item1.Value.End);
-            Assert.AreEqual(6, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(6, item1.Value.End);
+                Assert.AreEqual(6, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(6, item2.Value.Start);
-            Assert.AreEqual(8, item2.Value.End);
-            Assert.AreEqual(2, item2.Value.Size);
+                Assert.AreEqual(1, item2.Key);
+                Assert.AreEqual(6, item2.Value.Start);
+                Assert.AreEqual(8, item2.Value.End);
+                Assert.AreEqual(2, item2.Value.Size);
 
-            Assert.AreEqual(2, item3.Key);
-            Assert.AreEqual(8, item3.Value.Start);
-            Assert.AreEqual(10, item3.Value.End);
-            Assert.AreEqual(2, item3.Value.Size);
+                Assert.AreEqual( 2, item3.Key);
+                Assert.AreEqual( 8, item3.Value.Start);
+                Assert.AreEqual(10, item3.Value.End);
+                Assert.AreEqual( 2, item3.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -101,15 +110,18 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item1.Value);
             TestContext.WriteLine(item2.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(3, item1.Value.End);
-            Assert.AreEqual(3, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(3, item1.Value.End);
+                Assert.AreEqual(3, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(3, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
-            Assert.AreEqual(7, item2.Value.Size);
+                Assert.AreEqual( 1, item2.Key);
+                Assert.AreEqual( 3, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 7, item2.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -127,20 +139,23 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item2.Value);
             TestContext.WriteLine(item3.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(2, item1.Value.End);
-            Assert.AreEqual(2, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(2, item1.Value.End);
+                Assert.AreEqual(2, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(2, item2.Value.Start);
-            Assert.AreEqual(4, item2.Value.End);
-            Assert.AreEqual(2, item2.Value.Size);
+                Assert.AreEqual(1, item2.Key);
+                Assert.AreEqual(2, item2.Value.Start);
+                Assert.AreEqual(4, item2.Value.End);
+                Assert.AreEqual(2, item2.Value.Size);
 
-            Assert.AreEqual(2, item3.Key);
-            Assert.AreEqual(4, item3.Value.Start);
-            Assert.AreEqual(10, item3.Value.End);
-            Assert.AreEqual(6, item3.Value.Size);
+                Assert.AreEqual( 2, item3.Key);
+                Assert.AreEqual( 4, item3.Value.Start);
+                Assert.AreEqual(10, item3.Value.End);
+                Assert.AreEqual( 6, item3.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -156,15 +171,18 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item1.Value);
             TestContext.WriteLine(item2.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(6, item1.Value.End);
-            Assert.AreEqual(6, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(6, item1.Value.End);
+                Assert.AreEqual(6, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(6, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
-            Assert.AreEqual(4, item2.Value.Size);
+                Assert.AreEqual( 1, item2.Key);
+                Assert.AreEqual( 6, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 4, item2.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -182,20 +200,23 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item2.Value);
             TestContext.WriteLine(item3.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(4, item1.Value.End);
-            Assert.AreEqual(4, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(4, item1.Value.End);
+                Assert.AreEqual(4, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(4, item2.Value.Start);
-            Assert.AreEqual(7, item2.Value.End);
-            Assert.AreEqual(3, item2.Value.Size);
+                Assert.AreEqual(1, item2.Key);
+                Assert.AreEqual(4, item2.Value.Start);
+                Assert.AreEqual(7, item2.Value.End);
+                Assert.AreEqual(3, item2.Value.Size);
 
-            Assert.AreEqual(2, item3.Key);
-            Assert.AreEqual(7, item3.Value.Start);
-            Assert.AreEqual(10, item3.Value.End);
-            Assert.AreEqual(3, item3.Value.Size);
+                Assert.AreEqual( 2, item3.Key);
+                Assert.AreEqual( 7, item3.Value.Start);
+                Assert.AreEqual(10, item3.Value.End);
+                Assert.AreEqual( 3, item3.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -211,15 +232,18 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item1.Value);
             TestContext.WriteLine(item2.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(4, item1.Value.End);
-            Assert.AreEqual(4, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(4, item1.Value.End);
+                Assert.AreEqual(4, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(4, item2.Value.Start);
-            Assert.AreEqual(10, item2.Value.End);
-            Assert.AreEqual(6, item2.Value.Size);
+                Assert.AreEqual( 1, item2.Key);
+                Assert.AreEqual( 4, item2.Value.Start);
+                Assert.AreEqual(10, item2.Value.End);
+                Assert.AreEqual( 6, item2.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -237,20 +261,23 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             TestContext.WriteLine(item2.Value);
             TestContext.WriteLine(item3.Value);
 
-            Assert.AreEqual(0, item1.Key);
-            Assert.AreEqual(0, item1.Value.Start);
-            Assert.AreEqual(3, item1.Value.End);
-            Assert.AreEqual(3, item1.Value.Size);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(0, item1.Key);
+                Assert.AreEqual(0, item1.Value.Start);
+                Assert.AreEqual(3, item1.Value.End);
+                Assert.AreEqual(3, item1.Value.Size);
 
-            Assert.AreEqual(1, item2.Key);
-            Assert.AreEqual(3, item2.Value.Start);
-            Assert.AreEqual(6, item2.Value.End);
-            Assert.AreEqual(3, item2.Value.Size);
+                Assert.AreEqual(1, item2.Key);
+                Assert.AreEqual(3, item2.Value.Start);
+                Assert.AreEqual(6, item2.Value.End);
+                Assert.AreEqual(3, item2.Value.Size);
 
-            Assert.AreEqual(2, item3.Key);
-            Assert.AreEqual(6, item3.Value.Start);
-            Assert.AreEqual(10, item3.Value.End);
-            Assert.AreEqual(4, item3.Value.Size);
+                Assert.AreEqual( 2, item3.Key);
+                Assert.AreEqual( 6, item3.Value.Start);
+                Assert.AreEqual(10, item3.Value.End);
+                Assert.AreEqual( 4, item3.Value.Size);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
@@ -264,11 +291,14 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             Assert.AreEqual(0, actual[0].Value.Start);
             Assert.Less(actual[0].Value.Start, actual[0].Value.End);
 
-            for (int i = 1; i < actual.Count; ++i)
+            Assert.Multiple(() =>
             {
-                Assert.AreEqual(actual[i - 1].Value.End, actual[i].Value.Start);
-                Assert.Less(actual[i].Value.Start, actual[i].Value.End);
-            }
+                for (int i = 1; i < actual.Count; ++i)
+                {
+                    Assert.AreEqual(actual[i - 1].Value.End, actual[i].Value.Start);
+                    Assert.Less(actual[i].Value.Start, actual[i].Value.End);
+                }
+            });
 
             Assert.AreEqual(size, actual[actual.Count - 1].Value.End);
         }
@@ -284,11 +314,14 @@ namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
             Assert.AreEqual(0, actual[0].Value.Start);
             Assert.Less(actual[0].Value.Start, actual[0].Value.End);
 
-            for (int i = 1; i < actual.Count; ++i)
+            Assert.Multiple(() =>
             {
-                Assert.AreEqual(actual[i - 1].Value.End, actual[i].Value.Start);
-                Assert.Less(actual[i].Value.Start, actual[i].Value.End);
-            }
+                for (int i = 1; i < actual.Count; ++i)
+                {
+                    Assert.AreEqual(actual[i - 1].Value.End, actual[i].Value.Start);
+                    Assert.Less(actual[i].Value.Start, actual[i].Value.End);
+                }
+            });
 
             Assert.AreEqual(size, actual[actual.Count - 1].Value.End);
         }

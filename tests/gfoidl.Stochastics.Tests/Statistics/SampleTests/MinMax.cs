@@ -26,8 +26,11 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            Assert.AreEqual(42, sut.Min);
-            Assert.AreEqual(42, sut.Max);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(42, sut.Min);
+                Assert.AreEqual(42, sut.Max);
+            });
         }
         //---------------------------------------------------------------------
         [Test]
