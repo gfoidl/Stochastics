@@ -290,8 +290,8 @@ namespace gfoidl.Stochastics.Benchmarks
             //-----------------------------------------------------------------
             void Core(double* a_k, double* a_km, int offset, ref double r_xx)
             {
-                Vector<double> kVec  = VectorHelper.GetVector(a_k + offset);
-                Vector<double> kmVec = VectorHelper.GetVector(a_km + offset);
+                Vector<double> kVec  = VectorHelper.GetVectorUnaligned(a_k + offset);
+                Vector<double> kmVec = VectorHelper.GetVectorUnaligned(a_km + offset);
                 r_xx += Vector.Dot(kVec, kmVec);
             }
         }

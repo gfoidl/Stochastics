@@ -162,7 +162,7 @@ namespace gfoidl.Stochastics.Benchmarks
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec)
             {
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 minVec             = Vector.Min(minVec, vec);
                 maxVec             = Vector.Max(maxVec, vec);
             }

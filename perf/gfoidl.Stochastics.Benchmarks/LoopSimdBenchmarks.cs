@@ -105,10 +105,10 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
                         arr += 2 * Vector<double>.Count;
@@ -140,7 +140,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - Vector<double>.Count; i += Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
                         arr += Vector<double>.Count;
@@ -172,16 +172,16 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 4 * Vector<double>.Count; i += 4 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 2 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 2 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 3 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 3 * Vector<double>.Count);
                         res += vec;
 
                         arr += 4 * Vector<double>.Count;
@@ -263,28 +263,28 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 2 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 2 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 3 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 3 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 4 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 4 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 5 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 5 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 6 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 6 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 7 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 7 * Vector<double>.Count);
                         res += vec;
 
                         arr += 8 * Vector<double>.Count;
@@ -316,28 +316,28 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 8 * Vector<double>.Count; i += 8 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 2 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 2 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 3 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 3 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 4 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 4 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 5 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 5 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 6 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 6 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 7 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 7 * Vector<double>.Count);
                         res += vec;
 
                         arr += 8 * Vector<double>.Count;
@@ -345,16 +345,16 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 4 * Vector<double>.Count; i += 4 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 2 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 2 * Vector<double>.Count);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + 3 * Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + 3 * Vector<double>.Count);
                         res += vec;
 
                         arr += 4 * Vector<double>.Count;
@@ -362,10 +362,10 @@ namespace gfoidl.Stochastics.Benchmarks
 
                     for (; i < n - 2 * Vector<double>.Count; i += 2 * Vector<double>.Count)
                     {
-                        Vector<double> vec = VectorHelper.GetVector(arr);
+                        Vector<double> vec = VectorHelper.GetVectorUnaligned(arr);
                         res += vec;
 
-                        vec = VectorHelper.GetVector(arr + Vector<double>.Count);
+                        vec = VectorHelper.GetVectorUnaligned(arr + Vector<double>.Count);
                         res += vec;
 
                         arr += 2 * Vector<double>.Count;
@@ -449,7 +449,7 @@ namespace gfoidl.Stochastics.Benchmarks
         [DebuggerNonUserCode]
         private static unsafe void Core(double* a, int offset, ref Vector<double> res)
         {
-            Vector<double> vec = VectorHelper.GetVector(a + offset);
+            Vector<double> vec = VectorHelper.GetVectorUnaligned(a + offset);
             res += vec;
         }
     }

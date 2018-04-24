@@ -166,9 +166,9 @@ namespace gfoidl.Stochastics.Statistics
             //-----------------------------------------------------------------
             void Core(double* zTrans, double* tsus, int offset, Vector<double> sqrt2Inv)
             {
-                Vector<double> t = Vector.Abs(VectorHelper.GetVector(zTrans + offset));
+                Vector<double> t = Vector.Abs(VectorHelper.GetVectorUnaligned(zTrans + offset));
                 t *= sqrt2Inv;
-                t.WriteVector(tsus + offset);
+                t.WriteVectorUnaligned(tsus + offset);
             }
         }
     }

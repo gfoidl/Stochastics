@@ -13,7 +13,7 @@ namespace gfoidl.Stochastics
     [DebuggerNonUserCode]
     internal static unsafe class VectorHelper
     {
-        public static Vector<double> GetVector(double* arr)
+        public static Vector<double> GetVectorUnaligned(double* arr)
         {
             return Unsafe.ReadUnaligned<Vector<double>>(arr);
         }
@@ -27,7 +27,7 @@ namespace gfoidl.Stochastics
             return vec;
         }
         //---------------------------------------------------------------------
-        public static void WriteVector(this Vector<double> vector, double* arr)
+        public static void WriteVectorUnaligned(this Vector<double> vector, double* arr)
         {
             Unsafe.WriteUnaligned(arr, vector);
         }

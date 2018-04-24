@@ -151,9 +151,9 @@ namespace gfoidl.Stochastics.Statistics
             //-----------------------------------------------------------------
             void Core(double* sourceArr, double* targetArr, int offset, Vector<double> avgVec, Vector<double> sigmaInvVec)
             {
-                Vector<double> vec       = VectorHelper.GetVector(sourceArr + offset);
+                Vector<double> vec       = VectorHelper.GetVectorUnaligned(sourceArr + offset);
                 Vector<double> zTransVec = (vec - avgVec) * sigmaInvVec;
-                zTransVec.WriteVector(targetArr + offset);
+                zTransVec.WriteVectorUnaligned(targetArr + offset);
             }
         }
     }
