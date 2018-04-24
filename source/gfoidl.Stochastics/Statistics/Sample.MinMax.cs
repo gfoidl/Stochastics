@@ -140,7 +140,8 @@ namespace gfoidl.Stochastics.Statistics
             void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec, double* end)
             {
 #if DEBUG_ASSERT
-                Debug.Assert(arr + offset < end);
+                // arr is included -> -1
+                Debug.Assert(arr + offset + Vector<double>.Count - 1 < end);
 #endif
                 Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 minVec             = Vector.Min(minVec, vec);

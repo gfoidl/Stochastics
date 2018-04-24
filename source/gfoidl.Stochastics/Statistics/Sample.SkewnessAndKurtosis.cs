@@ -149,7 +149,8 @@ namespace gfoidl.Stochastics.Statistics
             void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> skewVec, ref Vector<double> kurtVec, double* end)
             {
 #if DEBUG_ASSERT
-                Debug.Assert(arr + offset < end);
+                // arr is included -> -1
+                Debug.Assert(arr + offset + Vector<double>.Count - 1 < end);
 #endif
                 Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 vec               -= avgVec;
