@@ -70,7 +70,7 @@ namespace gfoidl.Stochastics.Statistics
                 else
                     sequentialEnd = end;
 
-                // When SIMD is available first pass is for alignment to cache line.
+                // When SIMD is available, first pass is for register alignment.
                 // Second pass will be the remaining elements.
             Sequential:
                 while (current < sequentialEnd)
@@ -84,9 +84,7 @@ namespace gfoidl.Stochastics.Statistics
                 {
                     if (current >= end) goto Exit;
 
-                    i  = (int)(current - start);
-                    n -= i;
-                    i  = 0;
+                    n -= (int)(current - start);
 
                     var avgVec0 = Vector<double>.Zero;
                     var avgVec1 = Vector<double>.Zero;
@@ -148,7 +146,7 @@ namespace gfoidl.Stochastics.Statistics
                     avgVec0 += avgVec1 + avgVec2 + avgVec3;
                     tmpAvg  += avgVec0.ReduceSum();
 
-                    var0            += var1 + var2 + var3;
+                    var0        += var1 + var2 + var3;
                     tmpVariance += var0.ReduceSum();
 
                     if (current < end)
@@ -169,6 +167,8 @@ namespace gfoidl.Stochastics.Statistics
                 // arr is included -> -1
                 Debug.Assert(arr + offset + Vector<double>.Count - 1 < end);
 #endif
+                // Vector can be read aligned instead of unaligned, because arr was aligned 
+                // in the sequential pass.
                 Vector<double> vec = VectorHelper.GetVector(arr + offset);
                 avgVec            += vec;
                 var               += vec * vec;
