@@ -13,6 +13,14 @@ namespace gfoidl.Stochastics
     [DebuggerNonUserCode]
     internal static unsafe class VectorHelper
     {
+        public static Vector<double> GetVector(double* arr)
+        {
+#if DEBUG_ASSERT
+            Debug.Assert(((long)arr % Unsafe.SizeOf<Vector<double>>()) == 0);
+#endif
+            return Unsafe.Read<Vector<double>>(arr);
+        }
+        //---------------------------------------------------------------------
         public static Vector<double> GetVectorUnaligned(double* arr)
         {
             return Unsafe.ReadUnaligned<Vector<double>>(arr);
@@ -25,6 +33,14 @@ namespace gfoidl.Stochastics
             arr += Vector<double>.Count;
 
             return vec;
+        }
+        //---------------------------------------------------------------------
+        public static void WriteVector(this Vector<double> vector, double* arr)
+        {
+#if DEBUG_ASSERT
+            Debug.Assert(((long)arr % Unsafe.SizeOf<Vector<double>>()) == 0);
+#endif
+            Unsafe.Write(arr, vector);
         }
         //---------------------------------------------------------------------
         public static void WriteVectorUnaligned(this Vector<double> vector, double* arr)
@@ -100,5 +116,27 @@ namespace gfoidl.Stochastics
             return Sse2.ConvertToDouble(lo128);
         }
 #endif
+        //---------------------------------------------------------------------
+        // https://github.com/gfoidl/Stochastics/issues/47
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double* GetAlignedPointer(double* ptr)
+        {
+            const int bytesPerElement = sizeof(double) / sizeof(byte);
+            // JIT will treat these as constants
+            int sizeOfVector          = Unsafe.SizeOf<Vector<double>>();
+            int vectorElements        = Vector<double>.Count;
+
+            long address          = (long)ptr;
+            int unalignedBytes    = (int)(address & (sizeOfVector - 1));     // address % sizeOfVector
+            int unalignedElements = unalignedBytes / bytesPerElement;
+            int elementsToAlign   = (vectorElements - unalignedElements) & (vectorElements - 1);
+
+            double* aligned = ptr + elementsToAlign;
+#if DEBUG_ASSERT
+            Debug.Assert(((long)aligned % sizeOfVector) == 0);
+            Debug.Assert(aligned - ptr >= 0);
+#endif
+            return aligned;
+        }
     }
 }
