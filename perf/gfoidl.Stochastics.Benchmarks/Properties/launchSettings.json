@@ -1,0 +1,8 @@
+{
+    "profiles": {
+        "gfoidl.Stochastics.Benchmarks": {
+            "commandName"    : "Project",
+            "commandLineArgs": "SkewKurtISPBenchmarks"
+        }
+    }
+}
