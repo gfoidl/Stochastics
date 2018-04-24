@@ -58,22 +58,22 @@ namespace gfoidl.Stochastics.Statistics
 
             fixed (double* pArray = _values)
             {
-                double* start   = pArray + idxStart;
-                double* end         = pArray + idxEnd;
-                double* current = start;
-                double* workEnd = default;
-                int i           = 0;
-                int n           = idxEnd - idxStart;
+                double* start         = pArray + idxStart;
+                double* end           = pArray + idxEnd;
+                double* current       = start;
+                double* sequentialEnd = default;
+                int i                 = 0;
+                int n                 = idxEnd - idxStart;
 
                 if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
-                    workEnd = VectorHelper.GetAlignedPointer(start);
+                    sequentialEnd = VectorHelper.GetAlignedPointer(start);
                 else
-                    workEnd = end;
+                    sequentialEnd = end;
 
                 // When SIMD is available first pass is for alignment to cache line.
                 // Second pass will be the remaining elements.
             Sequential:
-                while (current < workEnd)
+                while (current < sequentialEnd)
                 {
                     tmpAvg      += *current;
                     tmpVariance += *current * *current;
@@ -86,6 +86,7 @@ namespace gfoidl.Stochastics.Statistics
 
                     i  = (int)(current - start);
                     n -= i;
+                    i  = 0;
 
                     var avgVec0 = Vector<double>.Zero;
                     var avgVec1 = Vector<double>.Zero;
@@ -98,8 +99,8 @@ namespace gfoidl.Stochastics.Statistics
                     var var3 = Vector<double>.Zero;
 
                     // https://github.com/gfoidl/Stochastics/issues/46
-                    workEnd = start + (n & ~(8 * Vector<double>.Count - 1));
-                    for (; current < workEnd; current += 8 * Vector<double>.Count)
+                    int m = n & ~(8 * Vector<double>.Count - 1);
+                    for (; i < m; i += 8 * Vector<double>.Count)
                     {
                         Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
                         Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
@@ -109,10 +110,12 @@ namespace gfoidl.Stochastics.Statistics
                         Core(current, 5 * Vector<double>.Count, ref avgVec1, ref var1, end);
                         Core(current, 6 * Vector<double>.Count, ref avgVec2, ref var2, end);
                         Core(current, 7 * Vector<double>.Count, ref avgVec3, ref var3, end);
+
+                        current += 8 * Vector<double>.Count;
                     }
 
-                    workEnd = start + (n & ~(4 * Vector<double>.Count - 1));
-                    if (current < workEnd)
+                    m = n & ~(4 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
                         Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
                         Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
@@ -120,19 +123,21 @@ namespace gfoidl.Stochastics.Statistics
                         Core(current, 3 * Vector<double>.Count, ref avgVec3, ref var3, end);
 
                         current += 4 * Vector<double>.Count;
+                        i       += 4 * Vector<double>.Count;
                     }
 
-                    workEnd = start + (n & ~(2 * Vector<double>.Count - 1));
-                    if (current < workEnd)
+                    m = n & ~(2 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
                         Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
                         Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
 
                         current += 2 * Vector<double>.Count;
+                        i       += 2 * Vector<double>.Count;
                     }
 
-                    workEnd = start + (n & ~(1 * Vector<double>.Count - 1));
-                    if (current < workEnd)
+                    m = n & ~(1 * Vector<double>.Count - 1);
+                    if (i < m)
                     {
                         Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
 
@@ -148,7 +153,7 @@ namespace gfoidl.Stochastics.Statistics
 
                     if (current < end)
                     {
-                        workEnd = end;
+                        sequentialEnd = end;
                         goto Sequential;            // second pass for sequential
                     }
                 }
