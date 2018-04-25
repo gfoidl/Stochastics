@@ -38,28 +38,28 @@ namespace gfoidl.Stochastics.Benchmarks
             return (sample.Mean, sample.Variance);
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public double Delta()
         {
             var sample = new Sample(_values);
             return sample.Delta;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public (double min, double max) MinMax()
         {
             var sample = new Sample(_values);
             return (sample.Min, sample.Max);
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public (double skewness, double kurtosis) SkewnessKurtosis()
         {
             var sample = new Sample(_values);
             return (sample.Skewness, sample.Kurtosis);
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        //[Benchmark]
         public double[] ZTransformation()
         {
             var sample = new Sample(_values);
