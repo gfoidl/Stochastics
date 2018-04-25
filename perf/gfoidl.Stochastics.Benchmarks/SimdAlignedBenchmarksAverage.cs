@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define PARALLEL
+//-----------------------------------------------------------------------------
+using System;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -8,18 +10,19 @@ using gfoidl.Stochastics.Statistics;
 
 namespace gfoidl.Stochastics.Benchmarks
 {
-    public class SimdAlignedBenchmarks : IBenchmark
+    public class SimdAlignedBenchmarksAverage : IBenchmark
     {
         public void Run()
         {
-            var benchs      = new SimdAlignedBenchmarks();
+            var benchs      = new SimdAlignedBenchmarksAverage();
             benchs.N        = 1000;
             benchs.GlobalSetup();
             const int align = -25;
-            Console.WriteLine($"{nameof(benchs.Base),align}: {benchs.Base()}");
+            Console.WriteLine($"{nameof(benchs.Base),align}: {benchs.Base0()}");
+            Console.WriteLine($"{nameof(benchs.Base),align}: {benchs.Base1()}");
             Console.WriteLine($"{nameof(benchs.Aligned),align}: {benchs.Aligned()}");
 #if !DEBUG
-            BenchmarkRunner.Run<SimdAlignedBenchmarks>();
+            BenchmarkRunner.Run<SimdAlignedBenchmarksAverage>();
 #endif
         }
         //---------------------------------------------------------------------
@@ -44,7 +47,15 @@ namespace gfoidl.Stochastics.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark(Baseline = true)]
-        public (double Avg, double Variance) Base()
+        public (double Avg, double Variance) Base0()
+        {
+            this.Base(out double avg, out double var);
+
+            return (avg, var);
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public (double Avg, double Variance) Base1()
         {
             this.Base(out double avg, out double var);
 
@@ -54,8 +65,11 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark]
         public (double Avg, double Variance) Aligned()
         {
+#if PARALLEL
             _sample.CalculateAverageAndVarianceCoreParallelizedSimd(out double avg, out double var);
-
+#else
+            _sample.CalculateAverageAndVarianceCoreSimd(out double avg, out double var);
+#endif
             return (avg, var);
         }
         //---------------------------------------------------------------------
@@ -63,7 +77,7 @@ namespace gfoidl.Stochastics.Benchmarks
         {
             double tmpAvg      = 0;
             double tmpVariance = 0;
-
+#if PARALLEL
             Parallel.ForEach(
                 Partitioner.Create(0, _values.Length),
                 range =>
@@ -73,7 +87,9 @@ namespace gfoidl.Stochastics.Benchmarks
                     localVariance.SafeAdd(ref tmpVariance);
                 }
             );
-
+#else
+            this.Impl_Base(0, this.N, out tmpAvg, out tmpVariance);
+#endif
             avg      = tmpAvg;
             variance = tmpVariance;
         }
