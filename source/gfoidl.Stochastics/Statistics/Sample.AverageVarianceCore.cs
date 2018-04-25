@@ -173,8 +173,7 @@ namespace gfoidl.Stochastics.Statistics
                 // arr is included -> -1
                 Debug.Assert(arr + offset + Vector<double>.Count - 1 < end);
 #endif
-                // Vector can be read aligned instead of unaligned, because arr was aligned 
-                // in the sequential pass.
+                // Vector can be read aligned instead of unaligned, because arr was aligned in the sequential pass.
                 Vector<double> vec = VectorHelper.GetVector(arr + offset);
                 avgVec            += vec;
                 var               += vec * vec;
