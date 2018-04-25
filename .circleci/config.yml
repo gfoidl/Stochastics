@@ -35,6 +35,7 @@ jobs:
                 path: tests/TestResults
             - store_artifacts:
                 path: tests/TestResults
+                destination: TestResults
     debug_test:
         <<: *defaults
         steps:
@@ -54,7 +55,11 @@ jobs:
                     cd perf/$NAME.Benchmarks
                     dotnet run -c Release -f netcoreapp2.1 SampleAll
             - store_artifacts:
-                path: perf/$NAME.Benchmarks/BenchmarkDotNet.Artifacts/results/gfoidl.Stochastics.Benchmarks.SampleAll-report*.*
+                path: perf/gfoidl.Stochastics.Benchmarks/BenchmarkDotNet.Artifacts/results/gfoidl.Stochastics.Benchmarks.SampleAll-report-github.md
+                destination: benchmark.md
+            - store_artifacts:
+                path: perf/gfoidl.Stochastics.Benchmarks/BenchmarkDotNet.Artifacts/results/gfoidl.Stochastics.Benchmarks.SampleAll-report.csv
+                destination: benchmark.csv
     deploy_nuget:
         <<: *defaults
         steps:
@@ -94,9 +99,16 @@ workflows:
                 requires:
                     - build_and_test
                     - debug_test
+                filters:
+                    branches:
+                        #only: master
+                        ignore: /.*/
+                    tags:
+                        only: /^v[0-9]\.[0-9]\.[0-9](-preview-[0-9]+)?$/
             - deploy_nuget:
                 requires:
                     - build_and_test
+                    - debug_test
                 filters:
                     branches:
                         ignore: /.*/
@@ -106,6 +118,7 @@ workflows:
             - deploy_myget:
                 requires:
                     - build_and_test
+                    - debug_test
                 filters:
                     branches:
                         #only: master
