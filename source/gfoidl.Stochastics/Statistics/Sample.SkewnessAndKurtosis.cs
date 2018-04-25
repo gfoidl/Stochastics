@@ -53,7 +53,7 @@ namespace gfoidl.Stochastics.Statistics
             kurtosis = tmpKurtosis;
         }
         //---------------------------------------------------------------------
-        private unsafe void CalculateSkewnessAndKurtosisImpl(int i, int n, out double skewness, out double kurtosis)
+        private unsafe void CalculateSkewnessAndKurtosisImpl(int idxStart, int idxEnd, out double skewness, out double kurtosis)
         {
             double tmpSkewness = 0;
             double tmpKurtosis = 0;
@@ -61,13 +61,42 @@ namespace gfoidl.Stochastics.Statistics
 
             fixed (double* pArray = _values)
             {
-                double* arr = pArray + i;
-                n          -= i;
-                i           = 0;
-                double* end = arr + n;
+                double* start         = pArray + idxStart;
+                double* end           = pArray + idxEnd;
+                double* current       = start;
+                double* sequentialEnd = default;
+                int i                 = 0;
+                int n                 = idxEnd - idxStart;
 
                 if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
+                    sequentialEnd = VectorHelper.GetAlignedPointer(start);
+                else
+                    sequentialEnd = end;
+
+                // When SIMD is available, first pass is for register alignment.
+                // Second pass will be the remaining elements.
+            Sequential:
+                while (current < sequentialEnd)
                 {
+                    double t     = *current - avg;
+                    double t1    = t * t * t;
+                    tmpSkewness += t1;
+                    tmpKurtosis += t1 * t;
+                    current++;
+                }
+
+                if (Vector.IsHardwareAccelerated)
+                {
+                    if (current >= end) goto Exit;
+
+                    n -= (int)(current - start);
+
+                    if (n < Vector<double>.Count)
+                    {
+                        sequentialEnd = end;
+                        goto Sequential;
+                    }
+
                     var avgVec   = new Vector<double>(avg);
                     var skewVec0 = Vector<double>.Zero;
                     var skewVec1 = Vector<double>.Zero;
@@ -83,46 +112,46 @@ namespace gfoidl.Stochastics.Statistics
                     int m = n & ~(8 * Vector<double>.Count - 1);
                     for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(arr, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(arr, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
-                        Core(arr, 4 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(arr, 5 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(arr, 6 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(arr, 7 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
+                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
+                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
+                        Core(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
+                        Core(current, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
+                        Core(current, 4 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
+                        Core(current, 5 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
+                        Core(current, 6 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
+                        Core(current, 7 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
 
-                        arr += 8 * Vector<double>.Count;
+                        current += 8 * Vector<double>.Count;
                     }
 
                     m = n & ~(4 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(arr, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(arr, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
+                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
+                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
+                        Core(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
+                        Core(current, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
 
-                        arr += 4 * Vector<double>.Count;
-                        i   += 4 * Vector<double>.Count;
+                        current += 4 * Vector<double>.Count;
+                        i       += 4 * Vector<double>.Count;
                     }
 
                     m = n & ~(2 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
+                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
+                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
 
-                        arr += 2 * Vector<double>.Count;
-                        i   += 2 * Vector<double>.Count;
+                        current += 2 * Vector<double>.Count;
+                        i       += 2 * Vector<double>.Count;
                     }
 
                     m = n & ~(1 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
+                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
 
-                        arr += 1 * Vector<double>.Count;
+                        current += 1 * Vector<double>.Count;
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
@@ -131,17 +160,15 @@ namespace gfoidl.Stochastics.Statistics
 
                     kurtVec0    += kurtVec1 + kurtVec2 + kurtVec3;
                     tmpKurtosis += kurtVec0.ReduceSum();
+
+                    if (current < end)
+                    {
+                        sequentialEnd = end;
+                        goto Sequential;
+                    }
                 }
 
-                while (arr < end)
-                {
-                    double t     = *arr - avg;
-                    double t1    = t * t * t;
-                    tmpSkewness += t1;
-                    tmpKurtosis += t1 * t;
-                    arr++;
-                }
-
+            Exit:
                 skewness = tmpSkewness;
                 kurtosis = tmpKurtosis;
             }
@@ -149,8 +176,10 @@ namespace gfoidl.Stochastics.Statistics
             void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> skewVec, ref Vector<double> kurtVec, double* end)
             {
 #if DEBUG_ASSERT
-                Debug.Assert(arr + offset < end);
+                // arr is included -> -1
+                Debug.Assert(arr + offset + Vector<double>.Count - 1 < end);
 #endif
+                // Vector can be read aligned instead of unaligned, because arr was aligned in the sequential pass.
                 Vector<double> vec = VectorHelper.GetVector(arr + offset);
                 vec               -= avgVec;
                 Vector<double> tmp = vec * vec * vec;

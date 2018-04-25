@@ -142,7 +142,7 @@ namespace gfoidl.Stochastics.Benchmarks
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, ref Vector<double> avgVec)
             {
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 avgVec += vec;
             }
         }

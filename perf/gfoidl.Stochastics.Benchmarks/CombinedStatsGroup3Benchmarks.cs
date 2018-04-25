@@ -189,7 +189,7 @@ namespace gfoidl.Stochastics.Benchmarks
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, Vector<double> avgVec, ref Vector<double> kurtVec, ref Vector<double> skewVec)
             {
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 vec -= avgVec;
                 Vector<double> tmp = vec * vec * vec;
                 kurtVec += tmp * vec;

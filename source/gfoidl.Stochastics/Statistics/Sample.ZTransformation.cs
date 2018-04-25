@@ -71,7 +71,7 @@ namespace gfoidl.Stochastics.Statistics
             return zTrans;
         }
         //---------------------------------------------------------------------
-        private unsafe void ZTransformationToArrayImpl(double[] zTrans, double sigma, int i, int n)
+        private unsafe void ZTransformationToArrayImpl(double[] zTrans, double sigma, int idxStart, int idxEnd)
         {
             double avg      = this.Mean;
             double sigmaInv = 1d / sigma;
@@ -79,14 +79,47 @@ namespace gfoidl.Stochastics.Statistics
             fixed (double* pSource = _values)
             fixed (double* pTarget = zTrans)
             {
-                double* source = pSource + i;
-                double* target = pTarget + i;
-                n             -= i;
-                i              = 0;
-                double* end    = source + n;
+                double* sourceStart   = pSource + idxStart;
+                double* sourceCurrent = sourceStart;
 
-                if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
+                double* targetStart         = pTarget + idxStart;
+                double* targetEnd           = pTarget + idxEnd;
+                double* targetCurrent       = targetStart;
+                double* targetSequentialEnd = default;
+
+                int i = 0;
+                int n = idxEnd - idxStart;
+
+                // Only one pointer can be aligned to simd registers.
+                // Because writes (stores) have greater penalty for miss-aligned data
+                // than reads (loads), the target will be aligned.
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
+                    targetSequentialEnd = VectorHelper.GetAlignedPointer(targetStart);
+                else
+                    targetSequentialEnd = targetEnd;
+
+                // When SIMD is available, first pass is for register alignment.
+                // Second pass will be the remaining elements.
+            Sequential:
+                while (targetCurrent < targetSequentialEnd)
                 {
+                    *targetCurrent = this.ZTransformation(*sourceCurrent, avg, sigmaInv);
+                    sourceCurrent++;
+                    targetCurrent++;
+                }
+
+                if (Vector.IsHardwareAccelerated)
+                {
+                    if (targetCurrent >= targetEnd) return;
+
+                    n -= (int)(targetCurrent - targetStart);
+
+                    if (n < Vector<double>.Count)
+                    {
+                        targetSequentialEnd = targetEnd;
+                        goto Sequential;
+                    }
+
                     var avgVec      = new Vector<double>(avg);
                     var sigmaInvVec = new Vector<double>(sigmaInv);
 
@@ -94,65 +127,70 @@ namespace gfoidl.Stochastics.Statistics
                     int m = n & ~(8 * Vector<double>.Count - 1);
                     for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 4 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 5 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 6 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 7 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceCurrent, targetCurrent, 0 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 1 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 2 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 3 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 4 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 5 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 6 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 7 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
 
-                        source += 8 * Vector<double>.Count;
-                        target += 8 * Vector<double>.Count;
+                        sourceCurrent += 8 * Vector<double>.Count;
+                        targetCurrent += 8 * Vector<double>.Count;
                     }
 
                     m = n & ~(4 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 2 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 3 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceCurrent, targetCurrent, 0 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 1 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 2 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 3 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
 
-                        source += 4 * Vector<double>.Count;
-                        target += 4 * Vector<double>.Count;
-                        i      += 4 * Vector<double>.Count;
+                        sourceCurrent += 4 * Vector<double>.Count;
+                        targetCurrent += 4 * Vector<double>.Count;
+                        i             += 4 * Vector<double>.Count;
                     }
 
                     m = n & ~(2 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
-                        Core(source, target, 1 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceCurrent, targetCurrent, 0 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
+                        Core(sourceCurrent, targetCurrent, 1 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
 
-                        source += 2 * Vector<double>.Count;
-                        target += 2 * Vector<double>.Count;
-                        i      += 2 * Vector<double>.Count;
+                        sourceCurrent += 2 * Vector<double>.Count;
+                        targetCurrent += 2 * Vector<double>.Count;
+                        i             += 2 * Vector<double>.Count;
                     }
 
                     m = n & ~(1 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(source, target, 0 * Vector<double>.Count, avgVec, sigmaInvVec);
+                        Core(sourceCurrent, targetCurrent, 0 * Vector<double>.Count, avgVec, sigmaInvVec, targetEnd);
 
-                        source += 1 * Vector<double>.Count;
-                        target += 1 * Vector<double>.Count;
+                        sourceCurrent += 1 * Vector<double>.Count;
+                        targetCurrent += 1 * Vector<double>.Count;
                     }
-                }
 
-                while (source < end)
-                {
-                    *target = this.ZTransformation(*source, avg, sigmaInv);
-                    source++;
-                    target++;
+                    if (targetCurrent < targetEnd)
+                    {
+                        targetSequentialEnd = targetEnd;
+                        goto Sequential;            // second pass for sequential
+                    }
                 }
             }
             //-----------------------------------------------------------------
-            void Core(double* sourceArr, double* targetArr, int offset, Vector<double> avgVec, Vector<double> sigmaInvVec)
+            void Core(double* sourceArr, double* targetArr, int offset, Vector<double> avgVec, Vector<double> sigmaInvVec, double* targetEnd)
             {
-                Vector<double> vec       = VectorHelper.GetVector(sourceArr + offset);
+#if DEBUG_ASSERT
+                // targetArr is included -> -1
+                Debug.Assert(targetArr + offset + Vector<double>.Count - 1 < targetEnd);
+#endif
+                Vector<double> vec       = VectorHelper.GetVectorUnaligned(sourceArr + offset);
                 Vector<double> zTransVec = (vec - avgVec) * sigmaInvVec;
+
+                // Vector can be written aligned instead of unaligned, because targetArr was aligned in the sequential pass.
                 zTransVec.WriteVector(targetArr + offset);
             }
         }

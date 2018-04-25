@@ -158,7 +158,7 @@ namespace gfoidl.Stochastics.Benchmarks
 #if DEBUG_ASSERT
                 Debug.Assert(arr + offset < end);
 #endif
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 vec               -= avgVec;
                 Vector<double> tmp = vec * vec * vec;
                 skewVec           += tmp;
@@ -259,7 +259,7 @@ namespace gfoidl.Stochastics.Benchmarks
 #if DEBUG_ASSERT
                 Debug.Assert(arr + offset < end);
 #endif
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 vec               -= avgVec;
                 Vector<double> tmp = vec * vec * vec;
                 skewVec           += tmp;
@@ -365,7 +365,7 @@ namespace gfoidl.Stochastics.Benchmarks
 #if DEBUG_ASSERT
                 Debug.Assert(arr + offset < end);
 #endif
-                Vector<double> vec = VectorHelper.GetVector(arr + offset);
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 vec               -= avgVec;
                 Vector<double> tmp = vec * vec * vec;
                 skewVec           += tmp;
