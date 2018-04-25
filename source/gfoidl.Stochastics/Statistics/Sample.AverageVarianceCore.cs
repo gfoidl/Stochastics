@@ -86,6 +86,12 @@ namespace gfoidl.Stochastics.Statistics
 
                     n -= (int)(current - start);
 
+                    if (n < Vector<double>.Count)
+                    {
+                        sequentialEnd = end;
+                        goto Sequential;
+                    }
+
                     var avgVec0 = Vector<double>.Zero;
                     var avgVec1 = Vector<double>.Zero;
                     var avgVec2 = Vector<double>.Zero;
