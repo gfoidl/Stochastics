@@ -4,6 +4,10 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 
+#if NETCOREAPP2_1
+using System.Runtime.Intrinsics.X86;
+#endif
+
 namespace gfoidl.Stochastics.Benchmarks
 {
     static class Program
@@ -17,7 +21,7 @@ namespace gfoidl.Stochastics.Benchmarks
                 Environment.Exit(1);
             }
 
-            Console.WriteLine($"{nameof(Vector.IsHardwareAccelerated)}: {Vector.IsHardwareAccelerated}");
+            PrintSimdInfo();
 
             string type          = args[0];
             IBenchmark benchmark = GetBenchmark(type);
@@ -36,6 +40,20 @@ namespace gfoidl.Stochastics.Benchmarks
                 Console.WriteLine("\nEnd.");
                 Console.ReadKey();
             }
+        }
+        //---------------------------------------------------------------------
+        private static void PrintSimdInfo()
+        {
+            Console.WriteLine($"{nameof(Vector.IsHardwareAccelerated)}: {Vector.IsHardwareAccelerated}");
+            Console.WriteLine($"SIMD-size: {Vector<double>.Count * sizeof(double) * 8}");
+            Console.WriteLine($"Vector<double>.Count: {Vector<double>.Count}");
+#if NETCOREAPP2_1
+            Console.WriteLine($"Sse : {Sse.IsSupported}");
+            Console.WriteLine($"Sse2: {Sse2.IsSupported}");
+            Console.WriteLine($"Avx : {Avx.IsSupported}");
+            Console.WriteLine($"Avx2: {Avx2.IsSupported}");
+#endif
+            Console.WriteLine();
         }
         //---------------------------------------------------------------------
         private static IBenchmark GetBenchmark(string type)
