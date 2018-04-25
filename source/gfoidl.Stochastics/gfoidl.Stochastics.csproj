@@ -15,8 +15,8 @@
         <PackageTags>stochastics;statistics;outliers;error-function;Chauvenet</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-        <DocumentationFile>bin\Release\netstandard2.0\gfoidl.Stochastics.xml</DocumentationFile>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DocumentationFile>bin\Release\$(TargetFramework)\gfoidl.Stochastics.xml</DocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup>
