@@ -61,6 +61,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfoidl.Stochastics.Native-w
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfoidl.Stochastics.Native-win-x64.Tests", "tests\gfoidl.Stochastics.Native-win-x64.Tests\gfoidl.Stochastics.Native-win-x64.Tests.vcxproj", "{7A4AAA49-6071-4FEA-8920-D8EFC6B8A019}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "release-notes", "release-notes", "{2EE5949B-0F90-49E5-B487-CC04C0940BC4}"
+	ProjectSection(SolutionItems) = preProject
+		doc\release-notes\v1.1.0.md = doc\release-notes\v1.1.0.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{A741E7D0-1788-4145-BA6C-2C4698CCECF1}"
+	ProjectSection(SolutionItems) = preProject
+		doc\release-notes\images\perf-avg-var-v1.1.0-preview-3.png = doc\release-notes\images\perf-avg-var-v1.1.0-preview-3.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +134,8 @@ Global
 		{813695B2-09E2-4111-BD6B-18EEF40299C0} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
 		{38EFC956-7271-4472-B56F-BAC3F0D0DC78} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
 		{7A4AAA49-6071-4FEA-8920-D8EFC6B8A019} = {EFBEAA6C-2E09-4A10-898C-D20897F3609F}
+		{2EE5949B-0F90-49E5-B487-CC04C0940BC4} = {7917B2B4-78F0-4BDE-86FE-316549A84E4E}
+		{A741E7D0-1788-4145-BA6C-2C4698CCECF1} = {2EE5949B-0F90-49E5-B487-CC04C0940BC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
