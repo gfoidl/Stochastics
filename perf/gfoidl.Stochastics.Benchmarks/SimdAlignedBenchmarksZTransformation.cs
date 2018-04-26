@@ -94,7 +94,7 @@ namespace gfoidl.Stochastics.Benchmarks
 
                 if (Vector.IsHardwareAccelerated && (n - i) >= Vector<double>.Count)
                 {
-                    var avgVec = new Vector<double>(avg);
+                    var avgVec      = new Vector<double>(avg);
                     var sigmaInvVec = new Vector<double>(sigmaInv);
 
                     // https://github.com/gfoidl/Stochastics/issues/46
