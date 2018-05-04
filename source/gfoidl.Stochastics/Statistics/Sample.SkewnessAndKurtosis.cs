@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 #if DEBUG_ASSERT
 using System.Diagnostics;
@@ -112,14 +113,11 @@ namespace gfoidl.Stochastics.Statistics
                     int m = n & ~(8 * Vector<double>.Count - 1);
                     for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(current, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
-                        Core(current, 4 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(current, 5 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(current, 6 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(current, 7 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
+                        // A ...Core4 doesn't work, because of register spilling. Here up to ymm13 is used.
+                        CalculateSkewnessAndKurtosisImplCore2(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref skewVec1, ref kurtVec0, ref kurtVec1, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref skewVec3, ref kurtVec2, ref kurtVec3, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 4 * Vector<double>.Count, avgVec, ref skewVec0, ref skewVec1, ref kurtVec0, ref kurtVec1, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 6 * Vector<double>.Count, avgVec, ref skewVec2, ref skewVec3, ref kurtVec2, ref kurtVec3, end);
 
                         current += 8 * Vector<double>.Count;
                     }
@@ -127,10 +125,8 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(4 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
-                        Core(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref kurtVec2, end);
-                        Core(current, 3 * Vector<double>.Count, avgVec, ref skewVec3, ref kurtVec3, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref skewVec1, ref kurtVec0, ref kurtVec1, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 2 * Vector<double>.Count, avgVec, ref skewVec2, ref skewVec3, ref kurtVec2, ref kurtVec3, end);
 
                         current += 4 * Vector<double>.Count;
                         i       += 4 * Vector<double>.Count;
@@ -139,8 +135,7 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(2 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref kurtVec0, end);
-                        Core(current, 1 * Vector<double>.Count, avgVec, ref skewVec1, ref kurtVec1, end);
+                        CalculateSkewnessAndKurtosisImplCore2(current, 0 * Vector<double>.Count, avgVec, ref skewVec0, ref skewVec1, ref kurtVec0, ref kurtVec1, end);
 
                         current += 2 * Vector<double>.Count;
                         i       += 2 * Vector<double>.Count;
@@ -155,10 +150,14 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    skewVec0    += skewVec1 + skewVec2 + skewVec3;
+                    skewVec0    += skewVec1;
+                    skewVec2    += skewVec3;
+                    skewVec0    += skewVec2;
                     tmpSkewness += skewVec0.ReduceSum();
 
-                    kurtVec0    += kurtVec1 + kurtVec2 + kurtVec3;
+                    kurtVec0    += kurtVec1;
+                    kurtVec2    += kurtVec3;
+                    kurtVec0    += kurtVec2;
                     tmpKurtosis += kurtVec0.ReduceSum();
 
                     if (current < end)
@@ -186,6 +185,36 @@ namespace gfoidl.Stochastics.Statistics
                 skewVec           += tmp;
                 kurtVec           += tmp * vec;
             }
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void CalculateSkewnessAndKurtosisImplCore2(double* arr, int offset, Vector<double> avgVec, ref Vector<double> skewVec0, ref Vector<double> skewVec1, ref Vector<double> kurtVec0, ref Vector<double> kurtVec1, double* end)
+        {
+#if DEBUG_ASSERT
+            // arr is included -> -1
+            Debug.Assert(arr + offset + 2 * Vector<double>.Count - 1 < end);
+#endif
+            // Vector can be read aligned instead of unaligned, because arr was aligned in the sequential pass.
+            Vector<double> vec0 = VectorHelper.GetVector(arr + offset + 0 * Vector<double>.Count);
+            Vector<double> vec1 = VectorHelper.GetVector(arr + offset + 1 * Vector<double>.Count);
+
+            vec0 -= avgVec;
+            vec1 -= avgVec;
+
+            var tmp0 = vec0 * vec0;
+            var tmp1 = vec1 * vec1;
+
+            tmp0 *= vec0;
+            tmp1 *= vec1;
+
+            skewVec0 += tmp0;
+            skewVec1 += tmp1;
+
+            tmp0 *= vec0;
+            tmp1 *= vec1;
+
+            kurtVec0 += tmp0;
+            kurtVec1 += tmp1;
         }
     }
 }
