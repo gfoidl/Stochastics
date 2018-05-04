@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 #if DEBUG_ASSERT
 using System.Diagnostics;
@@ -106,14 +107,8 @@ namespace gfoidl.Stochastics.Statistics
                     int m = n & ~(8 * Vector<double>.Count - 1);
                     for (; i < m; i += 8 * Vector<double>.Count)
                     {
-                        Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
-                        Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
-                        Core(current, 2 * Vector<double>.Count, ref avgVec2, ref var2, end);
-                        Core(current, 3 * Vector<double>.Count, ref avgVec3, ref var3, end);
-                        Core(current, 4 * Vector<double>.Count, ref avgVec0, ref var0, end);
-                        Core(current, 5 * Vector<double>.Count, ref avgVec1, ref var1, end);
-                        Core(current, 6 * Vector<double>.Count, ref avgVec2, ref var2, end);
-                        Core(current, 7 * Vector<double>.Count, ref avgVec3, ref var3, end);
+                        CalculateAverageAndVarianceCoreImplCore4(current, 0 * Vector<double>.Count, ref avgVec0, ref avgVec1, ref avgVec2, ref avgVec3, ref var0, ref var1, ref var2, ref var3, end);
+                        CalculateAverageAndVarianceCoreImplCore4(current, 4 * Vector<double>.Count, ref avgVec0, ref avgVec1, ref avgVec2, ref avgVec3, ref var0, ref var1, ref var2, ref var3, end);
 
                         current += 8 * Vector<double>.Count;
                     }
@@ -121,10 +116,7 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(4 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
-                        Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
-                        Core(current, 2 * Vector<double>.Count, ref avgVec2, ref var2, end);
-                        Core(current, 3 * Vector<double>.Count, ref avgVec3, ref var3, end);
+                        CalculateAverageAndVarianceCoreImplCore4(current, 0 * Vector<double>.Count, ref avgVec0, ref avgVec1, ref avgVec2, ref avgVec3, ref var0, ref var1, ref var2, ref var3, end);
 
                         current += 4 * Vector<double>.Count;
                         i       += 4 * Vector<double>.Count;
@@ -133,8 +125,7 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(2 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(current, 0 * Vector<double>.Count, ref avgVec0, ref var0, end);
-                        Core(current, 1 * Vector<double>.Count, ref avgVec1, ref var1, end);
+                        CalculateAverageAndVarianceCoreImplCore2(current, 0 * Vector<double>.Count, ref avgVec0, ref avgVec1, ref var0, ref var1, end);
 
                         current += 2 * Vector<double>.Count;
                         i       += 2 * Vector<double>.Count;
@@ -149,10 +140,14 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     // Reduction -- https://github.com/gfoidl/Stochastics/issues/43
-                    avgVec0 += avgVec1 + avgVec2 + avgVec3;
+                    avgVec0 += avgVec1;
+                    avgVec2 += avgVec3;
+                    avgVec0 += avgVec2;
                     tmpAvg  += avgVec0.ReduceSum();
 
-                    var0        += var1 + var2 + var3;
+                    var0        += var1;
+                    var2        += var3;
+                    var0        += var2;
                     tmpVariance += var0.ReduceSum();
 
                     if (current < end)
@@ -178,6 +173,56 @@ namespace gfoidl.Stochastics.Statistics
                 avgVec            += vec;
                 var               += vec * vec;
             }
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void CalculateAverageAndVarianceCoreImplCore4(double* arr, int offset, ref Vector<double> avgVec0, ref Vector<double> avgVec1, ref Vector<double> avgVec2, ref Vector<double> avgVec3, ref Vector<double> var0, ref Vector<double> var1, ref Vector<double> var2, ref Vector<double> var3, double* end)
+        {
+#if DEBUG_ASSERT
+            // arr is included -> -1
+            Debug.Assert(arr + offset + 4 * Vector<double>.Count - 1 < end);
+#endif
+            // Vector can be read aligned instead of unaligned, because arr was aligned in the sequential pass.
+            Vector<double> vec0 = VectorHelper.GetVector(arr + offset + 0 * Vector<double>.Count);
+            Vector<double> vec1 = VectorHelper.GetVector(arr + offset + 1 * Vector<double>.Count);
+            Vector<double> vec2 = VectorHelper.GetVector(arr + offset + 2 * Vector<double>.Count);
+            Vector<double> vec3 = VectorHelper.GetVector(arr + offset + 3 * Vector<double>.Count);
+
+            avgVec0 += vec0;
+            avgVec1 += vec1;
+            avgVec2 += vec2;
+            avgVec3 += vec3;
+
+            var tmp0 = vec0 * vec0;
+            var tmp1 = vec1 * vec1;
+            var tmp2 = vec2 * vec2;
+            var tmp3 = vec3 * vec3;
+
+            var0 += tmp0;
+            var1 += tmp1;
+            var2 += tmp2;
+            var3 += tmp3;
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void CalculateAverageAndVarianceCoreImplCore2(double* arr, int offset, ref Vector<double> avgVec0, ref Vector<double> avgVec1, ref Vector<double> var0, ref Vector<double> var1, double* end)
+        {
+#if DEBUG_ASSERT
+            // arr is included -> -1
+            Debug.Assert(arr + offset + 2 * Vector<double>.Count - 1 < end);
+#endif
+            // Vector can be read aligned instead of unaligned, because arr was aligned in the sequential pass.
+            Vector<double> vec0 = VectorHelper.GetVector(arr + offset + 0 * Vector<double>.Count);
+            Vector<double> vec1 = VectorHelper.GetVector(arr + offset + 1 * Vector<double>.Count);
+
+            avgVec0 += vec0;
+            avgVec1 += vec1;
+
+            var tmp0 = vec0 * vec0;
+            var tmp1 = vec1 * vec1;
+
+            var0 += tmp0;
+            var1 += tmp1;
         }
     }
 }
