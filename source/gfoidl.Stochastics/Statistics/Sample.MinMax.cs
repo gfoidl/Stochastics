@@ -92,14 +92,14 @@ namespace gfoidl.Stochastics.Statistics
                     }
 
                     var minVec0 = new Vector<double>(tmpMin);
-                    var minVec1 = new Vector<double>(tmpMin);
-                    var minVec2 = new Vector<double>(tmpMin);
-                    var minVec3 = new Vector<double>(tmpMin);
+                    var minVec1 = minVec0;
+                    var minVec2 = minVec0;
+                    var minVec3 = minVec0;
 
                     var maxVec0 = new Vector<double>(tmpMax);
-                    var maxVec1 = new Vector<double>(tmpMax);
-                    var maxVec2 = new Vector<double>(tmpMax);
-                    var maxVec3 = new Vector<double>(tmpMax);
+                    var maxVec1 = maxVec0;
+                    var maxVec2 = maxVec0;
+                    var maxVec3 = maxVec0;
 
                     // https://github.com/gfoidl/Stochastics/issues/46
                     int m = n & ~(8 * Vector<double>.Count - 1);
@@ -142,14 +142,19 @@ namespace gfoidl.Stochastics.Statistics
                     m = n & ~(1 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(current, 0 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(current, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
 
                         current += 1 * Vector<double>.Count;
                     }
 
                     // Reduction
-                    minVec0 = Vector.Min(minVec0, Vector.Min(minVec1, Vector.Min(minVec2, minVec3)));
-                    maxVec0 = Vector.Max(maxVec0, Vector.Max(maxVec1, Vector.Max(maxVec2, maxVec3)));
+                    minVec0 = Vector.Min(minVec0, minVec1);
+                    minVec2 = Vector.Min(minVec2, minVec3);
+                    maxVec0 = Vector.Max(maxVec0, maxVec1);
+                    maxVec2 = Vector.Max(maxVec2, maxVec3);
+
+                    minVec0 = Vector.Min(minVec0, minVec2);
+                    maxVec0 = Vector.Max(maxVec0, maxVec2);
                     VectorHelper.ReduceMinMax(minVec0, maxVec0, ref tmpMin, ref tmpMax);
 
                     if (current < end)
