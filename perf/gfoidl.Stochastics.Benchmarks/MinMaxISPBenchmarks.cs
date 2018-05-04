@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
@@ -41,7 +42,7 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark(Baseline = true)]
         public (double Min, double Max) Base()
         {
-            this.GetMinMaxImpl_Base(0, this.N, out double min, out double max);
+            this.Base(0, this.N, out double min, out double max);
 
             return (min, max);
         }
@@ -49,7 +50,7 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark]
         public (double Min, double Max) ISP()
         {
-            this.GetMinMaxImpl_ISP(0, this.N, out double min, out double max);
+            this.ISP(0, this.N, out double min, out double max);
 
             return (min, max);
         }
@@ -57,12 +58,12 @@ namespace gfoidl.Stochastics.Benchmarks
         [Benchmark]
         public (double Min, double Max) ISP1()
         {
-            this.GetMinMaxImpl_ISP1(0, this.N, out double min, out double max);
+            this.ISP1(0, this.N, out double min, out double max);
 
             return (min, max);
         }
         //---------------------------------------------------------------------
-        private unsafe void GetMinMaxImpl_Base(int i, int n, out double min, out double max)
+        private unsafe void Base(int i, int n, out double min, out double max)
         {
             double tmpMin = double.MaxValue;
             double tmpMax = double.MinValue;
@@ -151,100 +152,7 @@ namespace gfoidl.Stochastics.Benchmarks
             }
         }
         //---------------------------------------------------------------------
-        private unsafe void GetMinMaxImpl_ISP(int i, int n, out double min, out double max)
-        {
-            double tmpMin = double.MaxValue;
-            double tmpMax = double.MinValue;
-
-            fixed (double* pArray = _values)
-            {
-                double* arr = pArray + i;
-                n          -= i;
-                i           = 0;
-                double* end = arr + n;
-
-                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
-                {
-                    var minVec0 = new Vector<double>(tmpMin);
-                    var minVec1 = new Vector<double>(tmpMin);
-                    var maxVec0 = new Vector<double>(tmpMax);
-                    var maxVec1 = new Vector<double>(tmpMax);
-
-                    // https://github.com/gfoidl/Stochastics/issues/46
-                    int m = n & ~(8 * Vector<double>.Count - 1);
-                    for (; i < m; i += 8 * Vector<double>.Count)
-                    {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-                        Core(arr, 2 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 3 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-                        Core(arr, 4 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 5 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-                        Core(arr, 6 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 7 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-
-                        arr += 8 * Vector<double>.Count;
-                    }
-
-                    m = n & ~(4 * Vector<double>.Count - 1);
-                    if (i < m)
-                    {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-                        Core(arr, 2 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 3 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-
-                        arr += 4 * Vector<double>.Count;
-                        i   += 4 * Vector<double>.Count;
-                    }
-
-                    m = n & ~(2 * Vector<double>.Count - 1);
-                    if (i < m)
-                    {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
-
-                        arr += 2 * Vector<double>.Count;
-                        i   += 2 * Vector<double>.Count;
-                    }
-
-                    m = n & ~(1 * Vector<double>.Count - 1);
-                    if (i < m)
-                    {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
-
-                        arr += 1 * Vector<double>.Count;
-                    }
-
-                    // Reduction
-                    minVec0 = Vector.Min(minVec0, minVec1);
-                    maxVec0 = Vector.Max(maxVec0, maxVec1);
-                    VectorHelper.ReduceMinMax(minVec0, maxVec0, ref tmpMin, ref tmpMax);
-                }
-
-                while (arr < end)
-                {
-                    if (*arr < tmpMin) tmpMin = *arr;
-                    if (*arr > tmpMax) tmpMax = *arr;
-                    arr++;
-                }
-
-                min = tmpMin;
-                max = tmpMax;
-            }
-            //-----------------------------------------------------------------
-            void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec, double* end)
-            {
-#if DEBUG_ASSERT
-                Debug.Assert(arr + offset < end);
-#endif
-                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
-                minVec = Vector.Min(minVec, vec);
-                maxVec = Vector.Max(maxVec, vec);
-            }
-        }
-        //---------------------------------------------------------------------
-        private unsafe void GetMinMaxImpl_ISP1(int i, int n, out double min, out double max)
+        private unsafe void ISP(int i, int n, out double min, out double max)
         {
             double tmpMin = double.MaxValue;
             double tmpMax = double.MinValue;
@@ -309,7 +217,7 @@ namespace gfoidl.Stochastics.Benchmarks
                     m = n & ~(1 * Vector<double>.Count - 1);
                     if (i < m)
                     {
-                        Core(arr, 0 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
 
                         arr += 1 * Vector<double>.Count;
                     }
@@ -333,9 +241,106 @@ namespace gfoidl.Stochastics.Benchmarks
             //-----------------------------------------------------------------
             void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec, double* end)
             {
-#if DEBUG_ASSERT
-                Debug.Assert(arr + offset < end);
-#endif
+                Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
+                minVec = Vector.Min(minVec, vec);
+                maxVec = Vector.Max(maxVec, vec);
+            }
+        }
+        //---------------------------------------------------------------------
+        private unsafe void ISP1(int i, int n, out double min, out double max)
+        {
+            double tmpMin = double.MaxValue;
+            double tmpMax = double.MinValue;
+
+            fixed (double* pArray = _values)
+            {
+                double* arr = pArray + i;
+                n          -= i;
+                i           = 0;
+                double* end = arr + n;
+
+                if (Vector.IsHardwareAccelerated && n >= Vector<double>.Count)
+                {
+                    var minVec0 = new Vector<double>(tmpMin);
+                    var minVec1 = minVec0;
+                    var minVec2 = minVec0;
+                    var minVec3 = minVec0;
+
+                    var maxVec0 = new Vector<double>(tmpMax);
+                    var maxVec1 = maxVec0;
+                    var maxVec2 = maxVec0;
+                    var maxVec3 = maxVec0;
+
+                    // https://github.com/gfoidl/Stochastics/issues/46
+                    int m = n & ~(8 * Vector<double>.Count - 1);
+                    for (; i < m; i += 8 * Vector<double>.Count)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 2 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 3 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
+                        Core(arr, 4 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 5 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 6 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 7 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
+
+                        arr += 8 * Vector<double>.Count;
+                    }
+
+                    m = n & ~(4 * Vector<double>.Count - 1);
+                    if (i < m)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+                        Core(arr, 2 * Vector<double>.Count, ref minVec2, ref maxVec2, end);
+                        Core(arr, 3 * Vector<double>.Count, ref minVec3, ref maxVec3, end);
+
+                        arr += 4 * Vector<double>.Count;
+                        i   += 4 * Vector<double>.Count;
+                    }
+
+                    m = n & ~(2 * Vector<double>.Count - 1);
+                    if (i < m)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref minVec0, ref maxVec0, end);
+                        Core(arr, 1 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+
+                        arr += 2 * Vector<double>.Count;
+                        i   += 2 * Vector<double>.Count;
+                    }
+
+                    m = n & ~(1 * Vector<double>.Count - 1);
+                    if (i < m)
+                    {
+                        Core(arr, 0 * Vector<double>.Count, ref minVec1, ref maxVec1, end);
+
+                        arr += 1 * Vector<double>.Count;
+                    }
+
+                    // Reduction
+                    minVec0 = Vector.Min(minVec0, minVec1);
+                    minVec2 = Vector.Min(minVec2, minVec3);
+                    maxVec0 = Vector.Max(maxVec0, maxVec1);
+                    maxVec2 = Vector.Max(maxVec2, maxVec3);
+
+                    minVec0 = Vector.Min(minVec0, minVec2);
+                    maxVec0 = Vector.Max(maxVec0, maxVec2);
+                    VectorHelper.ReduceMinMax(minVec0, maxVec0, ref tmpMin, ref tmpMax);
+                }
+
+                while (arr < end)
+                {
+                    if (*arr < tmpMin) tmpMin = *arr;
+                    if (*arr > tmpMax) tmpMax = *arr;
+                    arr++;
+                }
+
+                min = tmpMin;
+                max = tmpMax;
+            }
+            //-----------------------------------------------------------------
+            void Core(double* arr, int offset, ref Vector<double> minVec, ref Vector<double> maxVec, double* end)
+            {
                 Vector<double> vec = VectorHelper.GetVectorUnaligned(arr + offset);
                 minVec = Vector.Min(minVec, vec);
                 maxVec = Vector.Max(maxVec, vec);
