@@ -8,6 +8,7 @@ extern "C"
     double gaussian_error_function_complementary(double x);
 
     void gaussian_error_function_vector(double* values, double* result, const int n);
+    void gaussian_error_function_vector1(double* values, double* result, const int n);
     void gaussian_error_function_complementary_vector(double* values, double* result, const int n);
 #ifdef __cplusplus
 }
