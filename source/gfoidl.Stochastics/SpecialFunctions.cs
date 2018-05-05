@@ -409,7 +409,7 @@ namespace gfoidl.Stochastics
         //---------------------------------------------------------------------
         internal static unsafe void Erf(double* values, double* result, int size)
         {
-            // Is a JIT compile-time constant, due the cctor. Note only a static readonly field my not be
+            // Is a JIT compile-time constant, due the cctor. Note only a static readonly field may not be
             // sufficient (on the first access). See https://github.com/dotnet/coreclr/issues/1193
             // So the not taken branch(es) will be removed.
             if (_isDotNetCore && _erfNative)
