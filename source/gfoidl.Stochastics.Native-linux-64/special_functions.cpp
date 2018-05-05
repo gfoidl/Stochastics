@@ -14,11 +14,11 @@ double gaussian_error_function_complementary(double x)
 void gaussian_error_function_vector(double* values, double* result, const int n)
 {
     for (int i = 0; i < n; ++i)
-        result[i] = erf(values[i]);
+        result[i] = std::erf(values[i]);
 }
 //-----------------------------------------------------------------------------
 void gaussian_error_function_complementary_vector(double* values, double* result, const int n)
 {
     for (int i = 0; i < n; ++i)
-        result[i] = erfc(values[i]);
+        result[i] = std::erfc(values[i]);
 }
