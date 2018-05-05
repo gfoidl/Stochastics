@@ -302,12 +302,6 @@ void gaussian_error_function_vector(double* values, double* result, const int n)
         result[i] = std::erf(values[i]);
 }
 //-----------------------------------------------------------------------------
-void gaussian_error_function_vector1(double* values, double* result, const int n)
-{
-    for (int i = 0; i < n; ++i)
-        result[i] = gaussian_error_function(values[i]);
-}
-//-----------------------------------------------------------------------------
 void gaussian_error_function_complementary_vector(double* values, double* result, const int n)
 {
     for (int i = 0; i < n; ++i)

@@ -16,9 +16,6 @@ namespace gfoidl.Stochastics.Native
         public static extern unsafe void gaussian_error_function_vector(double* values, double* result, int n);
         //---------------------------------------------------------------------
         [DllImport(LibName)]
-        public static extern unsafe void gaussian_error_function_vector1(double* values, double* result, int n);
-        //---------------------------------------------------------------------
-        [DllImport(LibName)]
         public static extern unsafe void gaussian_error_function_complementary_vector(double* values, double* result, int n);
     }
 }
