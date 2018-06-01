@@ -61,7 +61,7 @@ namespace gfoidl.Stochastics.Benchmarks
         //[Benchmark]
         public (double Mean, double Variance) Combined()
         {
-            return this.Count < Sample.ThresholdForParallel
+            return this.Count < SampleThresholds.ThresholdForParallel
                 ? this.CombinedSequential()
                 : this.CombinedParallel();
         }

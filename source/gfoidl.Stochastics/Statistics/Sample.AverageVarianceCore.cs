@@ -16,7 +16,7 @@ namespace gfoidl.Stochastics.Statistics
             double avg      = 0;
             double variance = 0;
 
-            if (this.Count < ThresholdForParallel)
+            if (this.Count < SampleThresholds.ThresholdForParallel)
                 this.CalculateAverageAndVarianceCoreSimd(out avg, out variance);
             else
                 this.CalculateAverageAndVarianceCoreParallelizedSimd(out avg, out variance);

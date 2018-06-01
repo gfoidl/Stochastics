@@ -13,7 +13,7 @@ namespace gfoidl.Stochastics.Statistics
     /// </summary>
     /// <remarks>
     /// Computation of statistical parameter is done in parallel, when
-    /// <see cref="Count" /> is greater or equal <see cref="ThresholdForParallel" />.
+    /// <see cref="Count" /> is greater or equal <see cref="SampleThresholds.ThresholdForParallel" />.
     /// SIMD is used where possible and where it brings an advantage.
     /// </remarks>
     public partial class Sample
@@ -329,10 +329,10 @@ namespace gfoidl.Stochastics.Statistics
         /// </summary>
         /// <returns>The autocorrelation of the sample.</returns>
         /// <remarks>
-        /// When <see cref="Count" /> is greater or equal <see cref="ThresholdForAutocorrelationParallel"/>
+        /// When <see cref="Count" /> is greater or equal <see cref="SampleThresholds.ThresholdForAutocorrelationParallel"/>
         /// all CPUs are used for processing.
         /// </remarks>
-        public double[] AutoCorrelationToArray() => this.Count < ThresholdForAutocorrelationParallel
+        public double[] AutoCorrelationToArray() => this.Count < SampleThresholds.ThresholdForAutocorrelationParallel
             ? this.AutoCorrelationToArraySimd()
             : this.AutoCorrelationToArrayParallelSimd();
         //---------------------------------------------------------------------
