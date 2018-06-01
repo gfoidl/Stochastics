@@ -30,7 +30,7 @@ jobs:
                 command: |
                     if [[ -d "tests/TestResults" ]]; then
                         find tests/TestResults -name "*.trx" | xargs -n1 trx2junit
-                        rm tests/TestResults/*.trx
+                        #rm tests/TestResults/*.trx
                     fi
                 when: always
             - run:
