@@ -1,4 +1,11 @@
 ﻿<Project>
+
+    <Import Project="dependencies.props" />
+
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
     <PropertyGroup>
         <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>
         <VersionMinor Condition="'$(VersionMinor)' == ''">1</VersionMinor>
