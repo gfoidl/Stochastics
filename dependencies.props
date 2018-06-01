@@ -1,0 +1,15 @@
+<Project>
+
+    <PropertyGroup Label="Package Versions">
+        <BenchmarkDotNetPackageVersion>0.10.14</BenchmarkDotNetPackageVersion>
+        <ConcurrencyVisualizerPackageVersion>1.0.1</ConcurrencyVisualizerPackageVersion>
+        <MicrosoftNETTestSdkPackageVersion>15.7.2</MicrosoftNETTestSdkPackageVersion>
+        <NUnitPackageVersion>3.10.1</NUnitPackageVersion>
+        <NUnit3TestAdapterPackageVersion>3.10.0</NUnit3TestAdapterPackageVersion>
+        <SystemMemoryPackageVersion>4.5.0</SystemMemoryPackageVersion>
+        <SystemNumericsVectorsPackageVersion>4.5.0</SystemNumericsVectorsPackageVersion>
+        <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.0</SystemRuntimeCompilerServicesUnsafePackageVersion>
+        <SystemRuntimeIntrinsicsExperimentalPackageVersion>4.5.0-rc1</SystemRuntimeIntrinsicsExperimentalPackageVersion>
+    </PropertyGroup>
+
+</Project>

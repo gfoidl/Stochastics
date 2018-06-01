@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DebugType>pdbonly</DebugType>
         <DebugSymbols>true</DebugSymbols>
@@ -21,17 +20,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.10.11" />        
+        <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetPackageVersion)" />       
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <PackageReference Include="System.Memory" Version="4.4.0-preview2-25405-01" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
+        <PackageReference Include="System.Memory" Version="$(SystemMemoryPackageVersion)" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
-        <PackageReference Include="ConcurrencyVisualizer" Version="1.0.1" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
+        <PackageReference Include="ConcurrencyVisualizer" Version="$(ConcurrencyVisualizerPackageVersion)" />
+        <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>

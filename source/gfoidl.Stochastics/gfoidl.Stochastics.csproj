@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netcoreapp2.1</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -24,13 +23,13 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp2.1'">
-        <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0" />
+        <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsPackageVersion)" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.0-preview3-26417-03" />
-        <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="4.5.0-preview2-26406-04" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
+        <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="$(SystemRuntimeIntrinsicsExperimentalPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>
