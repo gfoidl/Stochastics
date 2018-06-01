@@ -3,7 +3,7 @@
         <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>
         <VersionMinor Condition="'$(VersionMinor)' == ''">1</VersionMinor>
         <VersionPatch Condition="'$(VersionPatch)' == ''">0</VersionPatch>
-        <BuildNumber Condition="'$(BuildNumber)' == ''">147</BuildNumber>
+        <BuildNumber Condition="'$(BuildNumber)' == ''">207</BuildNumber>
         <VersionSuffix Condition="'$(Configuration)' == 'Debug' and '$(VersionSuffix)' == ''">dev</VersionSuffix>
         <Authors>gfoidl</Authors>
         <Company>Foidl Günther</Company>
