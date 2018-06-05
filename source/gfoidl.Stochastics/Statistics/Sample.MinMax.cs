@@ -19,7 +19,7 @@ namespace gfoidl.Stochastics.Statistics
             }
             else
             {
-                if (this.Count < ThresholdForMinMax)
+                if (this.Count < SampleThresholds.ThresholdForMinMax)
                     this.GetMinMaxSimd(out _min, out _max);
                 else
                     this.GetMinMaxParallelizedSimd(out _min, out _max);

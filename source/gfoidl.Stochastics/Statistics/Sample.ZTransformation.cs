@@ -45,7 +45,7 @@ namespace gfoidl.Stochastics.Statistics
                 return tmp;
             }
 
-            return this.Count < ThresholdForParallel
+            return this.Count < SampleThresholds.ThresholdForParallel
                 ? this.ZTransformationToArraySimd(sigma)
                 : this.ZTransformationToArrayParallelizedSimd(sigma);
         }

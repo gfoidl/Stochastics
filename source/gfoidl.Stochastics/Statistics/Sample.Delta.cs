@@ -14,7 +14,7 @@ namespace gfoidl.Stochastics.Statistics
     {
         private double CalculateDelta()
         {
-            return this.Count < ThresholdForParallel
+            return this.Count < SampleThresholds.ThresholdForParallel
                 ? this.CalculateDeltaSimd()
                 : this.CalculateDeltaParallelizedSimd();
         }
