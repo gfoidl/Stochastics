@@ -32,9 +32,13 @@
         <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="$(SystemRuntimeIntrinsicsExperimentalPackageVersion)" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Label="native">
         <Content Include="..\..\native-out\gfoidl-Stochastics-Native.dll" PackagePath="runtimes/win-x64/native" Visible="false" CopyToOutputDirectory="PreserveNewest" />
         <Content Include="..\..\native-out\libgfoidl-Stochastics-Native.so" PackagePath="runtimes/linux-x64/native" Visible="false" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup Label="gpu">
+        <Content Include="..\..\native-out\gfoidl-Stochastics-gpu.dll" PackagePath="runtimes/win-x64/native" Visible="false" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>

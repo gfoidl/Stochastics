@@ -12,7 +12,7 @@ namespace gfoidl.Stochastics
             if (!_isRunningOnDotNetCore.HasValue)
             {
                 string frameworkName = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
-                _isRunningOnDotNetCore = frameworkName.Contains("NETCoreApp");
+                _isRunningOnDotNetCore = frameworkName?.Contains("NETCoreApp") ?? false;
             }
 
             return _isRunningOnDotNetCore.Value;

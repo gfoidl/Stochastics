@@ -61,6 +61,15 @@ namespace gfoidl.Stochastics {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No GPU for CUDA is available, or GFOIDL_STOCHASTICS_USE_GPU is set to &quot;0&quot; (in order to disable usage of the GPU). To use the GPU the process must be x64 and running on .NET Core..
+        /// </summary>
+        internal static string Gpu_not_available {
+            get {
+                return ResourceManager.GetString("Gpu_not_available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The value must be greater than 0..
         /// </summary>
         internal static string Value_must_be_greater_than_zero {
