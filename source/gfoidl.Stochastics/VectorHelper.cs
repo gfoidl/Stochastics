@@ -64,7 +64,8 @@ namespace gfoidl.Stochastics
                 Vector256<double> a     = Unsafe.As<Vector<double>, Vector256<double>>(ref vector);
                 Vector256<double> tmp   = Avx.HorizontalAdd(a, a);
                 Vector128<double> hi128 = Avx.ExtractVector128(tmp, 1);
-                Vector128<double> s     = Sse2.Add(Unsafe.As<Vector256<double>, Vector128<double>>(ref tmp), hi128);
+                Vector128<double> lo128 = Avx.GetLowerHalf(tmp);
+                Vector128<double> s     = Sse2.Add(lo128, hi128);
 
                 return Sse2.ConvertToDouble(s);
             }
@@ -96,7 +97,7 @@ namespace gfoidl.Stochastics
         {
             Vector256<double> vec256 = Unsafe.As<Vector<double>, Vector256<double>>(ref vector);
             Vector128<double> hi128  = Avx.ExtractVector128(vec256, 1);
-            Vector128<double> lo128  = Avx.ExtractVector128(vec256, 0);
+            Vector128<double> lo128  = Avx.GetLowerHalf(vec256);
             Vector128<double> tmp1   = Avx.Permute(hi128, 0b_01);
             Vector128<double> tmp2   = Avx.Permute(lo128, 0b_01);
 
@@ -127,7 +128,7 @@ namespace gfoidl.Stochastics
             int vectorElements        = Vector<double>.Count;
 
             long address          = (long)ptr;
-            int unalignedBytes    = (int)(address & (sizeOfVector - 1));     // address % sizeOfVector
+            int unalignedBytes    = (int)(address & (sizeOfVector - 1));    // address % sizeOfVector
             int unalignedElements = unalignedBytes / bytesPerElement;
             int elementsToAlign   = (vectorElements - unalignedElements) & (vectorElements - 1);
 
