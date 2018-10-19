@@ -56,7 +56,7 @@ const int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStat
         Kernel::CalculateAverageAndVarianceCore<<<numBlocks, blockSize>>>(deviceSample, sampleSize, deviceSampleStats);
         Kernel::CalculateAverageAndVarianceCoreFinal<<<1, 1>>>(deviceSampleStats, sampleSize);
 
-        Kernel::CalculateDelta<<<numBlocks, blockSize>>>(deviceSample, sampleSize, deviceSampleStats);
+        Kernel::CalculateDeltaSkewnessKurtosis<<<numBlocks, blockSize>>>(deviceSample, sampleSize, deviceSampleStats);
 
         //checkCuda(cudaDeviceSynchronize());       // not necessary
         checkCuda(cudaMemcpy(sampleStats, deviceSampleStats, sizeof(SampleStats), cudaMemcpyDeviceToHost));
@@ -67,6 +67,11 @@ const int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStat
         // Final fixup of values, not done yet
         // No need to launch a kernel for a simple division.
         sampleStats->Delta /= sampleSize;
+
+        double sigma = sqrt(sampleStats->VarianceCore / sampleSize);
+        double t     = sampleSize * sigma * sigma * sigma;
+        sampleStats->Skewness /= t;
+        sampleStats->Kurtosis /= t * sigma;
     }
     catch (const int e)
     {

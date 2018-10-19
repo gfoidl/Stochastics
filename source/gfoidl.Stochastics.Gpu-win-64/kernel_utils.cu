@@ -54,6 +54,19 @@ namespace Kernel
         }
         //---------------------------------------------------------------------
         __device__
+        ThreeDoubles WarpReduceSum(ThreeDoubles threeDoubles)
+        {
+            for (int offset = warpSize / 2; offset > 0; offset /= 2)
+            {
+                threeDoubles.A += __shfl_down(threeDoubles.A, offset);
+                threeDoubles.B += __shfl_down(threeDoubles.B, offset);
+                threeDoubles.C += __shfl_down(threeDoubles.C, offset);
+            }
+
+            return threeDoubles;
+        }
+        //---------------------------------------------------------------------
+        __device__
         double BlockReduceSum(double value)
         {
 #ifdef _DEBUG
@@ -107,6 +120,34 @@ namespace Kernel
                 twoDoubles = WarpReduceSum(twoDoubles);
 
             return twoDoubles;
+        }
+        //---------------------------------------------------------------------
+        __device__
+        ThreeDoubles BlockReduceSum(ThreeDoubles threeDoubles)
+        {
+#ifdef _DEBUG
+            assert(warpSize == 32);
+#endif
+            static __shared__ ThreeDoubles shared[32];
+            const int lane = threadIdx.x & (warpSize - 1);      // threadIdx.x % warpSize
+            const int warpId = threadIdx.x / warpSize;
+
+            threeDoubles = WarpReduceSum(threeDoubles);
+
+            if (lane == 0)
+                shared[warpId] = threeDoubles;
+
+            __syncthreads();
+
+            // Read from shared memory only if that warp existed
+            bool warpExisted = (threadIdx.x < blockDim.x / warpSize) || (threadIdx.x == 0 && blockDim.x == 1);
+            threeDoubles = warpExisted ? shared[lane] : ThreeDoubles {0,0,0};
+
+            // Final reduce within first warp
+            if (warpId == 0)
+                threeDoubles = WarpReduceSum(threeDoubles);
+
+            return threeDoubles;
         }
         //---------------------------------------------------------------------
         __device__

@@ -43,21 +43,35 @@ namespace Kernel
     }
     //-----------------------------------------------------------------------------
     __global__
-    void CalculateDelta(const double* sample, const int n, SampleStats* sampleStats)
+    void CalculateDeltaSkewnessKurtosis(const double* sample, const int n, SampleStats* sampleStats)
     {
         const int index  = blockDim.x * blockIdx.x + threadIdx.x;
         const int stride = gridDim.x * blockDim.x;
 
-        double avg   = sampleStats->Mean;
-        double delta = 0;
+        double avg      = sampleStats->Mean;
+        double delta    = 0;
+        double skewness = 0;
+        double kurtosis = 0;
 
         for (int i = index; i < n; i += stride)
-            delta += abs(sample[i] - avg);
+        {
+            double t = sample[i] - avg;
+            double t1 = t * t*t;
 
-        delta = Utils::BlockReduceSum(delta);
+            delta    += abs(t);
+            skewness += t1;
+            kurtosis += t1 * t;
+        }
+
+        Utils::ThreeDoubles threeDoubles {delta, skewness,kurtosis};
+        threeDoubles = Utils::BlockReduceSum(threeDoubles);
 
         // Final sum in first thread of each block
         if (threadIdx.x == 0)
-            atomicAdd(&sampleStats->Delta, delta);
+        {
+            atomicAdd(&sampleStats->Delta, threeDoubles.A);
+            atomicAdd(&sampleStats->Skewness, threeDoubles.B);
+            atomicAdd(&sampleStats->Kurtosis, threeDoubles.C);
+        }
     }
 }
