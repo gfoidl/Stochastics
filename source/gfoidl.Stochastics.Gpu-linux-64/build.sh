@@ -17,6 +17,7 @@ nvcc    -std=c++14 \
         -shared -rdc=true \
         -Xcompiler -fPIC,-fvisibility=hidden  \
         -gencode=arch=compute_60,code=sm_60 \
+        -gencode=arch=compute_35,code=sm_35 \
         kernel_utils.cu kernel.cu gpu_core.cu
 
 nm -DC "$libName" | grep " T "
