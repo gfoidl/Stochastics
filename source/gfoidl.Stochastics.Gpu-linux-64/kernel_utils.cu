@@ -14,7 +14,7 @@ namespace Kernel
         using uint = unsigned int;
         const uint FULL_MASK = 0xffffffff;
         //---------------------------------------------------------------------
-#if __CUDA_ARCH__ < 600 && false
+#if __CUDA_ARCH__ < 600
         __device__
         double atomicAdd(double* address, double val)
         {

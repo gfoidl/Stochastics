@@ -12,7 +12,7 @@
 // Forward declarations
 inline cudaError_t checkCuda(cudaError_t result);
 //-----------------------------------------------------------------------------
-const bool gpu_available()
+bool gpu_available()
 {
     int deviceCount;
     cudaError_t errorId = cudaGetDeviceCount(&deviceCount);
@@ -26,7 +26,7 @@ const char* gpu_get_error_string(const int errorCode)
     return cudaGetErrorString(static_cast<cudaError>(errorCode));
 }
 //-----------------------------------------------------------------------------
-const int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStats* sampleStats)
+int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStats* sampleStats)
 {
     double*      deviceSample;
     SampleStats* deviceSampleStats;

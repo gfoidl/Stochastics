@@ -24,8 +24,13 @@ namespace Kernel
         // Final sum in first thread of each block
         if (threadIdx.x == 0)
         {
+#if __CUDA_ARCH__ < 600
+            Utils::atomicAdd(&sampleStats->Mean        , twoDoubles.A);
+            Utils::atomicAdd(&sampleStats->VarianceCore, twoDoubles.B);
+#else
             atomicAdd(&sampleStats->Mean        , twoDoubles.A);
             atomicAdd(&sampleStats->VarianceCore, twoDoubles.B);
+#endif
         }
     }
     //-----------------------------------------------------------------------------
@@ -69,9 +74,15 @@ namespace Kernel
         // Final sum in first thread of each block
         if (threadIdx.x == 0)
         {
-            atomicAdd(&sampleStats->Delta, threeDoubles.A);
+#if __CUDA_ARCH__ < 600
+            Utils::atomicAdd(&sampleStats->Delta   , threeDoubles.A);
+            Utils::atomicAdd(&sampleStats->Skewness, threeDoubles.B);
+            Utils::atomicAdd(&sampleStats->Kurtosis, threeDoubles.C);
+#else
+            atomicAdd(&sampleStats->Delta   , threeDoubles.A);
             atomicAdd(&sampleStats->Skewness, threeDoubles.B);
             atomicAdd(&sampleStats->Kurtosis, threeDoubles.C);
+#endif
         }
     }
 }

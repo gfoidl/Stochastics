@@ -46,5 +46,8 @@ namespace Kernel
         __device__ void ReduceSum(TwoDoubles twoDoubles, TwoDoubles* result);
         __device__ void ReduceSum(const double* in, const int n, double* result);
 
+#if __CUDA_ARCH__ < 600
+        __device__ double atomicAdd(double* address, double val);
+#endif
     }
 }
