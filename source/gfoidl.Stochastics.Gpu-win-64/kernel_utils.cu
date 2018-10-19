@@ -71,7 +71,8 @@ namespace Kernel
             __syncthreads();
 
             // Read from shared memory only if that warp existed
-            value = (threadIdx.x < blockIdx.x / warpSize) ? shared[lane] : 0;
+            bool warpExisted = (threadIdx.x < blockDim.x / warpSize) || (threadIdx.x == 0 && blockDim.x == 1);
+            value = warpExisted ? shared[lane] : 0;
 
             // Final reduce within first warp
             if (warpId == 0)

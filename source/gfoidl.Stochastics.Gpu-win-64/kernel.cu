@@ -41,4 +41,23 @@ namespace Kernel
             sampleStats->VarianceCore -= n * avg*avg;
         }
     }
+    //-----------------------------------------------------------------------------
+    __global__
+    void CalculateDelta(const double* sample, const int n, SampleStats* sampleStats)
+    {
+        const int index  = blockDim.x * blockIdx.x + threadIdx.x;
+        const int stride = gridDim.x * blockDim.x;
+
+        double avg   = sampleStats->Mean;
+        double delta = 0;
+
+        for (int i = index; i < n; i += stride)
+            delta += abs(sample[i] - avg);
+
+        delta = Utils::BlockReduceSum(delta);
+
+        // Final sum in first thread of each block
+        if (threadIdx.x == 0)
+            atomicAdd(&sampleStats->Delta, delta);
+    }
 }

@@ -1,3 +1,5 @@
+//#define SINGLE_THREAD
+//-----------------------------------------------------------------------------
 #include "gpu_core.h"
 #include <cuda_runtime.h>
 #include "kernel.h"
@@ -37,8 +39,13 @@ const int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStat
         checkCuda(cudaMemcpy(deviceSample, sample, sizeof(double) * sampleSize, cudaMemcpyHostToDevice));
         checkCuda(cudaMemset(deviceSampleStats, 0, sizeof(SampleStats)));
 
+#ifndef SINGLE_THREAD
         const int blockSize = 256;
         int numBlocks       = (sampleSize + blockSize - 1) / blockSize;
+#else
+        const int blockSize = 1;
+        const int numBlocks = 1;
+#endif
 
 #if defined(DEBUG) || defined(_DEBUG)
         printf("blockSize: %d\nnumBlocks: %d\n", blockSize, numBlocks);
@@ -49,11 +56,17 @@ const int gpu_sample_calc_stats(double* sample, const int sampleSize, SampleStat
         Kernel::CalculateAverageAndVarianceCore<<<numBlocks, blockSize>>>(deviceSample, sampleSize, deviceSampleStats);
         Kernel::CalculateAverageAndVarianceCoreFinal<<<1, 1>>>(deviceSampleStats, sampleSize);
 
+        Kernel::CalculateDelta<<<numBlocks, blockSize>>>(deviceSample, sampleSize, deviceSampleStats);
+
         //checkCuda(cudaDeviceSynchronize());       // not necessary
         checkCuda(cudaMemcpy(sampleStats, deviceSampleStats, sizeof(SampleStats), cudaMemcpyDeviceToHost));
 
         checkCuda(cudaFree(deviceSample));
         checkCuda(cudaFree(deviceSampleStats));
+
+        // Final fixup of values, not done yet
+        // No need to launch a kernel for a simple division.
+        sampleStats->Delta /= sampleSize;
     }
     catch (const int e)
     {

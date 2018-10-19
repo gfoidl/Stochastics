@@ -57,9 +57,9 @@ namespace gfoidlStochasticsGpuwin64Tests
             Assert::AreEqual(51.9500 , sampleStats.Mean       , 1e-3);
             Assert::AreEqual(217.2718, standardDeviation      , 1e-3);
             Assert::AreEqual(222.9162, sampleStandardDeviation, 1e-3);
+            Assert::AreEqual(94.7050 , sampleStats.Delta      , 1e-3);
             //Assert::AreEqual(4.1293  , sampleStats.Skewness   , 1e-3);
             //Assert::AreEqual(18.0514 , sampleStats.Kurtosis   , 1e-3);
-            //Assert::AreEqual(94.7050 , sampleStats.Delta      , 1e-3);
         }
     };
     //-------------------------------------------------------------------------
