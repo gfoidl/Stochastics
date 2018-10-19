@@ -11,6 +11,9 @@ namespace Kernel
 {
     namespace Utils
     {
+        using uint = unsigned int;
+        const uint FULL_MASK = 0xffffffff;
+        //---------------------------------------------------------------------
 #if __CUDA_ARCH__ < 600 && false
         __device__
         double atomicAdd(double* address, double val)
@@ -36,7 +39,7 @@ namespace Kernel
         double WarpReduceSum(double value)
         {
             for (int offset = warpSize / 2; offset > 0; offset /= 2)
-                value += __shfl_down(value, offset);
+                value += __shfl_down_sync(FULL_MASK, value, offset);
 
             return value;
         }
@@ -46,8 +49,8 @@ namespace Kernel
         {
             for (int offset = warpSize / 2; offset > 0; offset /= 2)
             {
-                twoDoubles.A += __shfl_down(twoDoubles.A, offset);
-                twoDoubles.B += __shfl_down(twoDoubles.B, offset);
+                twoDoubles.A += __shfl_down_sync(FULL_MASK, twoDoubles.A, offset);
+                twoDoubles.B += __shfl_down_sync(FULL_MASK, twoDoubles.B, offset);
             }
 
             return twoDoubles;
@@ -58,9 +61,9 @@ namespace Kernel
         {
             for (int offset = warpSize / 2; offset > 0; offset /= 2)
             {
-                threeDoubles.A += __shfl_down(threeDoubles.A, offset);
-                threeDoubles.B += __shfl_down(threeDoubles.B, offset);
-                threeDoubles.C += __shfl_down(threeDoubles.C, offset);
+                threeDoubles.A += __shfl_down_sync(FULL_MASK, threeDoubles.A, offset);
+                threeDoubles.B += __shfl_down_sync(FULL_MASK, threeDoubles.B, offset);
+                threeDoubles.C += __shfl_down_sync(FULL_MASK, threeDoubles.C, offset);
             }
 
             return threeDoubles;
