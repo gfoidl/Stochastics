@@ -39,6 +39,7 @@
 
     <ItemGroup Label="gpu">
         <Content Include="..\..\native-out\gfoidl-Stochastics-gpu.dll" PackagePath="runtimes/win-x64/native" Visible="false" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="..\..\native-out\libgfoidl-Stochastics-gpu.so" PackagePath="runtimes/linux-x64/native" Visible="false" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>

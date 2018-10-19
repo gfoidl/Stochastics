@@ -11,16 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dll.h" />
-    <ClInclude Include="gpu_core.h" />
-    <ClInclude Include="kernel.h" />
-    <ClInclude Include="kernel_utils.h" />
-    <ClInclude Include="SampleStats.h" />
+    <ClInclude Include="..\gfoidl.Stochastics.Gpu-linux-64\dll.h" />
+    <ClInclude Include="..\gfoidl.Stochastics.Gpu-linux-64\gpu_core.h" />
+    <ClInclude Include="..\gfoidl.Stochastics.Gpu-linux-64\kernel.h" />
+    <ClInclude Include="..\gfoidl.Stochastics.Gpu-linux-64\kernel_utils.h" />
+    <ClInclude Include="..\gfoidl.Stochastics.Gpu-linux-64\SampleStats.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="gpu_core.cu" />
-    <CudaCompile Include="kernel.cu" />
-    <CudaCompile Include="kernel_utils.cu" />
+    <CudaCompile Include="..\gfoidl.Stochastics.Gpu-linux-64\gpu_core.cu" />
+    <CudaCompile Include="..\gfoidl.Stochastics.Gpu-linux-64\kernel.cu" />
+    <CudaCompile Include="..\gfoidl.Stochastics.Gpu-linux-64\kernel_utils.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dummy.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{60D3CEC5-E8DE-45E4-8834-86C9940D942A}</ProjectGuid>
@@ -64,6 +67,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GFOIDL_STOCHASTICS_GPU_EXPORTS;WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\gfoidl.Stochastics.Gpu-linux-64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,6 +88,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GFOIDL_STOCHASTICS_GPU_EXPORTS;WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\gfoidl.Stochastics.Gpu-linux-64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

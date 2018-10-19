@@ -78,6 +78,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfoidl.Stochastics.Gpu-win-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfoidl.Stochastics.Gpu-win-64.Tests.Console", "tests\gfoidl.Stochastics.Gpu-win-64.Tests.Console\gfoidl.Stochastics.Gpu-win-64.Tests.Console.vcxproj", "{1C7AA347-76CE-4C7F-A468-B46ADDD93215}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfoidl.Stochastics.Gpu-linux-64", "source\gfoidl.Stochastics.Gpu-linux-64\gfoidl.Stochastics.Gpu-linux-64.vcxproj", "{0729F977-87F1-4139-A9B1-569BFB4A352E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,10 @@ Global
 		{1C7AA347-76CE-4C7F-A468-B46ADDD93215}.Release|Any CPU.ActiveCfg = Release|x64
 		{1C7AA347-76CE-4C7F-A468-B46ADDD93215}.Release|x64.ActiveCfg = Release|x64
 		{1C7AA347-76CE-4C7F-A468-B46ADDD93215}.Release|x64.Build.0 = Release|x64
+		{0729F977-87F1-4139-A9B1-569BFB4A352E}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{0729F977-87F1-4139-A9B1-569BFB4A352E}.Debug|x64.ActiveCfg = Debug|x64
+		{0729F977-87F1-4139-A9B1-569BFB4A352E}.Release|Any CPU.ActiveCfg = Release|x64
+		{0729F977-87F1-4139-A9B1-569BFB4A352E}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +164,7 @@ Global
 		{60D3CEC5-E8DE-45E4-8834-86C9940D942A} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
 		{90DA6C71-5A2B-4D26-9EA4-B6BF60A7B7E3} = {EFBEAA6C-2E09-4A10-898C-D20897F3609F}
 		{1C7AA347-76CE-4C7F-A468-B46ADDD93215} = {EFBEAA6C-2E09-4A10-898C-D20897F3609F}
+		{0729F977-87F1-4139-A9B1-569BFB4A352E} = {0B4051AE-E1F2-4601-B0A8-B4CA660CC4B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A594189A-069D-4FEE-8CD8-1A5786CF97AA}
