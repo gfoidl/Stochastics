@@ -160,6 +160,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _delta;
             }
+            internal set => _delta = value;
         }
         //---------------------------------------------------------------------
         /// <summary>
@@ -261,6 +262,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _skewness;
             }
+            internal set => _skewness = value;
         }
         //---------------------------------------------------------------------
         private double _kurtosis = double.NaN;
@@ -282,6 +284,7 @@ namespace gfoidl.Stochastics.Statistics
 
                 return _kurtosis;
             }
+            internal set => _kurtosis = value;
         }
         //---------------------------------------------------------------------
         /// <summary>

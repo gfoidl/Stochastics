@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Gpu_not_available" xml:space="preserve">
+    <value>No GPU for CUDA is available, or GFOIDL_STOCHASTICS_USE_GPU is set to "0" (in order to disable usage of the GPU). To use the GPU the process must be x64 and running on .NET Core.</value>
+  </data>
   <data name="Value_must_be_greater_than_zero" xml:space="preserve">
     <value>The value must be greater than 0.</value>
   </data>

@@ -23,5 +23,10 @@
         ///  and <see cref="Sample.Max" />.
         /// </summary>
         public static int ThresholdForMinMax { get; set; } = 1_750_000;
+
+        /// <summary>
+        /// Threshold for cpu vs. gpu execution for <see cref="Sample.CalculateStats" />.
+        /// </summary>
+        public static int ThresholdForGpu { get; set; } = 5_000_000;
     }
 }

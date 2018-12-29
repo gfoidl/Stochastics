@@ -24,6 +24,7 @@ Dockerfile          text eol=lf
 *.f03               filter=tabs2spaces
 *.sql               filter=tabs2spaces
 *.ino               filter=tabs2spaces
+*.cu                filter=tabs2spaces
 
 # Project files
 *.csproj            filter=tabs2spaces

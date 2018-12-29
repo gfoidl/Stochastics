@@ -21,6 +21,8 @@ namespace gfoidl.Stochastics.Enumerators
         //---------------------------------------------------------------------
         public static implicit operator ArrayEnumerable<T>(T[] array)       => new ArrayEnumerable<T>(array);
         public static implicit operator T[] (ArrayEnumerable<T> enumerable) => enumerable._array;
+        //---------------------------------------------------------------------
+        public ref T GetPinnableReference() => ref _array[0];
     }
     //---------------------------------------------------------------------
     public struct ArrayEnumerator<T> : IEnumerator<T>

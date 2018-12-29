@@ -10,19 +10,19 @@ namespace gfoidl.Stochastics
     /// </summary>
     public static class SpecialFunctions
     {
-        private static readonly bool _isDotNetCore;
-        private static readonly bool _erfNative;
-        private static readonly bool _erfNativeLinux;
+        private static readonly bool s_isDotNetCore;
+        private static readonly bool s_erfNative;
+        private static readonly bool s_erfNativeLinux;
         //---------------------------------------------------------------------
         static SpecialFunctions()
         {
-            _isDotNetCore = RuntimeHelper.IsRunningOnDotNetCore();
+            s_isDotNetCore = RuntimeHelper.IsRunningOnDotNetCore();
 
-            _erfNative =
+            s_erfNative =
                 RuntimeInformation.OSArchitecture == Architecture.X64
                 && (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
 
-            _erfNativeLinux = _erfNative && RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            s_erfNativeLinux = s_erfNative && RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         }
         //---------------------------------------------------------------------
         /// <summary>
@@ -34,7 +34,7 @@ namespace gfoidl.Stochastics
         // https://math.stackexchange.com/questions/263216/error-function-erf-with-better-precision/1889960#1889960
         public static double Erf(double x)
         {
-            if (_isDotNetCore && _erfNativeLinux)
+            if (s_isDotNetCore && s_erfNativeLinux)
                 return NativeMethods.gaussian_error_function(x);
 
             /*
@@ -197,7 +197,7 @@ namespace gfoidl.Stochastics
         /// <seealso cref="Erfc(double[])" />
         public static double Erfc(double x)
         {
-            if (_isDotNetCore && _erfNativeLinux)
+            if (s_isDotNetCore && s_erfNativeLinux)
                 return NativeMethods.gaussian_error_function_complementary(x);
 
             /*
@@ -412,7 +412,7 @@ namespace gfoidl.Stochastics
             // Is a JIT compile-time constant, due the cctor. Note only a static readonly field may not be
             // sufficient (on the first access). See https://github.com/dotnet/coreclr/issues/1193
             // So the not taken branch(es) will be removed.
-            if (_isDotNetCore && _erfNative)
+            if (s_isDotNetCore && s_erfNative)
                 NativeMethods.gaussian_error_function_vector(values, result, size);
             else
             {
@@ -423,7 +423,7 @@ namespace gfoidl.Stochastics
         //---------------------------------------------------------------------
         internal static unsafe void Erfc(double* values, double* result, int size)
         {
-            if (_isDotNetCore && _erfNative)
+            if (s_isDotNetCore && s_erfNative)
                 NativeMethods.gaussian_error_function_complementary_vector(values, result, size);
             else
             {
