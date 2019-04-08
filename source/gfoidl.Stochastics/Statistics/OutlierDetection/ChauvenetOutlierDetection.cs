@@ -10,7 +10,7 @@ namespace gfoidl.Stochastics.Statistics
     /// <summary>
     /// Outlier detection based on Chauvenet's criterion.
     /// </summary>
-    public sealed class ChauvenetOutlierDetection : OutlierDetection
+    public class ChauvenetOutlierDetection : OutlierDetection
     {
         private double[] _tsusSqrt2Inv;
         //---------------------------------------------------------------------
