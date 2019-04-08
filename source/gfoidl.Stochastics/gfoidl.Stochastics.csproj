@@ -45,9 +45,4 @@
         <Compile Update="Statistics\Sample.*.cs" DependentUpon="Sample.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Update="Strings.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Strings.Designer.cs" />
-        <Compile Update="Strings.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Strings.resx" />
-    </ItemGroup>
-
 </Project>
