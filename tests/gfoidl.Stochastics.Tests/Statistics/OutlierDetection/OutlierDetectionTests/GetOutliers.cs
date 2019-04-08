@@ -1,27 +1,24 @@
 ﻿using System;
+using System.Linq;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
 namespace gfoidl.Stochastics.Tests.Statistics.OutlierDetectionTests
 {
     [TestFixture]
-    public class Ctor : Base
+    public class GetOutliers : Base
     {
         [Test]
-        public void Sample_is_null___throws_ArgumentNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new TestOutlierDetection(null));
-        }
-        //---------------------------------------------------------------------
-        [Test]
-        public void Sample_given___OK()
+        public void TestOutlierDetection___Empty()
         {
             double[] values = { 1, 2, 3 };
             var sample      = new Sample(values);
 
             OutlierDetection sut = new TestOutlierDetection(sample);
 
-            Assert.AreSame(sample, sut.Sample);
+            var actual = sut.GetOutliers().ToArray();
+
+            CollectionAssert.AreEqual(Array.Empty<double>(), actual);
         }
     }
 }
