@@ -148,8 +148,8 @@ namespace gfoidl.Stochastics
 #endif
         }
 #endif
-            //---------------------------------------------------------------------
-            // https://github.com/gfoidl/Stochastics/issues/47
+        //---------------------------------------------------------------------
+        // https://github.com/gfoidl/Stochastics/issues/47
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double* GetAlignedPointer(double* ptr)
         {
