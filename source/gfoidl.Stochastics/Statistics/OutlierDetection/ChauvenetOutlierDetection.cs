@@ -10,7 +10,7 @@ namespace gfoidl.Stochastics.Statistics
     /// <summary>
     /// Outlier detection based on Chauvenet's criterion.
     /// </summary>
-    public class ChauvenetOutlierDetection : OutlierDetection
+    public sealed class ChauvenetOutlierDetection : OutlierDetection
     {
         private double[] _tsusSqrt2Inv;
         //---------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace gfoidl.Stochastics.Statistics
         /// <c>true</c> if the value is an outlier, <c>false</c> if the value
         /// is not an outlier.
         /// </returns>
-        protected override bool IsOutlier((double Value, double zTransformed) value)
+        protected internal override bool IsOutlier((double Value, double zTransformed) value)
         {
             double tsus = Abs(value.zTransformed);
             //double probOutside = 1 - Erf(tsus * _sqrt2Inv);

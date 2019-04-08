@@ -28,8 +28,6 @@ namespace gfoidl.Stochastics.Enumerators
         private readonly T[] _array;
         private int          _index;
         //---------------------------------------------------------------------
-        internal T[] Array => _array;
-        //---------------------------------------------------------------------
         public ArrayEnumerator(T[] array)
         {
             if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);

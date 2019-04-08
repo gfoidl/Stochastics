@@ -56,6 +56,6 @@ namespace gfoidl.Stochastics.Statistics
         /// <c>true</c> if the value is an outlier, <c>false</c> if the value
         /// is not an outlier.
         /// </returns>
-        protected abstract bool IsOutlier((double Value, double zTransformed) value);
+        protected internal abstract bool IsOutlier((double Value, double zTransformed) value);
     }
 }
