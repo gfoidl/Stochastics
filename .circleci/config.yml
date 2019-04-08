@@ -1,16 +1,16 @@
 version: 2.1
 
 executors:
-    dotnet-executor:
+    dotnet-build-executor:
         docker:
-            - image: mcr.microsoft.com/dotnet/core/sdk:3.0
+            - image: gfoidl/dotnet-ci:sdk3.0-runtime_2.2-2.1
               environment:
                 DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
                 DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
-    dotnet-mono-executor:
+    dotnet-executor:
         docker:
-            - image: gfoidl/dotnet-mono:3.0-2.2-2.1-sdk-5.18.1.0
+            - image: mcr.microsoft.com/dotnet/core/sdk:3.0
               environment:
                 DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
                 DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -104,12 +104,12 @@ commands:
 
 jobs:
     release_build_test:
-        executor: dotnet-mono-executor
+        executor: dotnet-build-executor
         steps:
             - build_test
 
     debug_build_test:
-        executor: dotnet-mono-executor
+        executor: dotnet-build-executor
         environment:
             BUILD_CONFIG: Debug
         steps:
