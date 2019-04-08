@@ -16,3 +16,7 @@ var rnd = new RandomNumberGenerator();
 for (int i = 0; i < 100; ++i)
     Console.WriteLine($"{rnd.Uniform()}\t{rnd.NormalDistributed(0, 1)}\t{rnd.ExponentialDistributed(2.5)}");
 ```
+
+## Distribution
+
+![](./images/distribution.png)

@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Math;
 
 namespace gfoidl.Stochastics
 {
@@ -8,7 +9,7 @@ namespace gfoidl.Stochastics
     /// </summary>
     public class RandomNumberGenerator
     {
-        private static readonly double _100_000_by_3 = 100_000d / 3;
+        private const double _100_000_by_3 = 100_000d / 3;
         private double _uz;
         private double _nz;
         private double _ez;
@@ -55,8 +56,9 @@ namespace gfoidl.Stochastics
         public double NormalDistributed(double mu, double sigma)
         {
             _nz =
-                sigma * Math.Sqrt(-2d * Math.Log(Uniform(), 2d))
-                * Math.Sin(2d * Math.PI * Uniform()) + mu;
+                sigma * Sqrt(-2d * Log(this.Uniform(), 2d))
+                * Sin(2d * PI * this.Uniform())
+                + mu;
 
             return _nz;
         }
@@ -68,10 +70,10 @@ namespace gfoidl.Stochastics
         /// <returns>The next exponentially distributes number.</returns>
         public double ExponentialDistributed(double lambda)
         {
-            if (Math.Abs(lambda - 0) < Accuracy.Epsilon)
+            if (Abs(lambda - 0) < Accuracy.Epsilon)
                 ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.lambda, ThrowHelper.ExceptionResource.Value_must_be_greater_than_zero);
 
-            _ez = -(1d / lambda) * Math.Log(Uniform() + 1e-12, 2d);
+            _ez = -(1d / lambda) * Log(this.Uniform() + 1e-12, 2d);
 
             return _ez;
         }
