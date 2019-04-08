@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using static System.Math;
 
 namespace gfoidl.Stochastics
@@ -40,6 +41,7 @@ namespace gfoidl.Stochastics
         /// </summary>
         /// <returns>The next uniform distributes number in the range [0, 1).</returns>
         /// <remarks>Lehmer / Knuth</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Uniform()
         {
             _uz = (201d * _uz + _100_000_by_3) - (int)(201d * _uz + _100_000_by_3);
@@ -73,6 +75,18 @@ namespace gfoidl.Stochastics
             if (Abs(lambda - 0) < Accuracy.Epsilon)
                 ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.lambda, ThrowHelper.ExceptionResource.Value_must_be_greater_than_zero);
 
+            _ez = -(1d / lambda) * Log(this.Uniform() + 1e-12, 2d);
+
+            return _ez;
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Produces the next exponentially distributes number (wihtout validation of <paramref name="lambda" />).
+        /// </summary>
+        /// <param name="lambda">Parameter in the exponential distribution</param>
+        /// <returns>The next exponentially distributes number.</returns>
+        public double UnsafeExponentialDistributed(double lambda)
+        {
             _ez = -(1d / lambda) * Log(this.Uniform() + 1e-12, 2d);
 
             return _ez;
