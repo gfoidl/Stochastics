@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using gfoidl.Stochastics.Partitioners;
 using NUnit.Framework;
+using Range = gfoidl.Stochastics.Partitioners.Range;
 
 namespace gfoidl.Stochastics.Tests.Partitioners.TrapezeWorkloadPartitionerTests
 {

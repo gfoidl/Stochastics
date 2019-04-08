@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-        <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net471</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.0;netcoreapp2.1;net471</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-        <TargetFrameworks>netcoreapp2.1;netcoreapp2.0</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.0;netcoreapp2.1</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,17 +20,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetPackageVersion)" />       
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-        <PackageReference Include="System.Memory" Version="$(SystemMemoryPackageVersion)" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemRuntimeCompilerServicesUnsafePackageVersion)" />
+        <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
         <PackageReference Include="ConcurrencyVisualizer" Version="$(ConcurrencyVisualizerPackageVersion)" />
-        <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-#if NETCOREAPP2_1
+#if NETCOREAPP
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
@@ -58,8 +58,19 @@ namespace gfoidl.Stochastics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ReduceSum(this Vector<double> vector)
         {
-#if NETCOREAPP2_1
-            if (Avx.IsSupported && Sse2.IsSupported && 256 / 8 == sizeof(double) * Vector<double>.Count)
+#if NETCOREAPP3_0
+            if (Avx.IsSupported)
+            {
+                Vector256<double> a     = Unsafe.As<Vector<double>, Vector256<double>>(ref vector);
+                Vector256<double> tmp   = Avx.HorizontalAdd(a, a);
+                Vector128<double> hi128 = tmp.GetUpper();
+                Vector128<double> lo128 = tmp.GetLower();
+                Vector128<double> s     = Sse2.Add(lo128, hi128);
+
+                return s.ToScalar();
+            }
+#elif NETCOREAPP2_1
+            if (Avx.IsSupported && Sse2.IsSupported)
             {
                 Vector256<double> a     = Unsafe.As<Vector<double>, Vector256<double>>(ref vector);
                 Vector256<double> tmp   = Avx.HorizontalAdd(a, a);
@@ -76,8 +87,15 @@ namespace gfoidl.Stochastics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ReduceMinMax(Vector<double> minVec, Vector<double> maxVec, ref double min, ref double max)
         {
-#if NETCOREAPP2_1
-            if (Avx.IsSupported && Sse2.IsSupported && 256 / 8 == sizeof(double) * Vector<double>.Count)
+#if NETCOREAPP3_0
+            if (Avx.IsSupported)
+            {
+                min = MinMaxCore(minVec, true);
+                max = MinMaxCore(maxVec, false);
+                return;
+            }
+#elif NETCOREAPP2_1
+            if (Avx.IsSupported && Sse2.IsSupported)
             {
                 min = MinMaxCore(minVec, true);
                 max = MinMaxCore(maxVec, false);
@@ -91,13 +109,20 @@ namespace gfoidl.Stochastics
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1
+#if NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double MinMaxCore(Vector<double> vector, bool doMin)
         {
             Vector256<double> vec256 = Unsafe.As<Vector<double>, Vector256<double>>(ref vector);
+#if NETCOREAPP3_0
+            Vector128<double> hi128 = vec256.GetUpper();
+            Vector128<double> lo128 = vec256.GetLower();
+#elif NETCOREAPP2_1
             Vector128<double> hi128  = Avx.ExtractVector128(vec256, 1);
             Vector128<double> lo128  = Avx.GetLowerHalf(vec256);
+#else
+#error Update TFM
+#endif
             Vector128<double> tmp1   = Avx.Permute(hi128, 0b_01);
             Vector128<double> tmp2   = Avx.Permute(lo128, 0b_01);
 
@@ -114,11 +139,17 @@ namespace gfoidl.Stochastics
                 lo128 = Sse2.Max(lo128, hi128);
             }
 
+#if NETCOREAPP3_0
+            return lo128.ToScalar();
+#elif NETCOREAPP2_1
             return Sse2.ConvertToDouble(lo128);
+#else
+#error Update TFM
+#endif
         }
 #endif
-        //---------------------------------------------------------------------
-        // https://github.com/gfoidl/Stochastics/issues/47
+            //---------------------------------------------------------------------
+            // https://github.com/gfoidl/Stochastics/issues/47
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double* GetAlignedPointer(double* ptr)
         {
