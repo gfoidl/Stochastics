@@ -12,7 +12,6 @@ namespace gfoidl.Stochastics
     {
         private static readonly bool _isDotNetCore;
         private static readonly bool _erfNative;
-        private static readonly bool _erfNativeLinux;
         //---------------------------------------------------------------------
         static SpecialFunctions()
         {
@@ -21,8 +20,6 @@ namespace gfoidl.Stochastics
             _erfNative =
                 RuntimeInformation.OSArchitecture == Architecture.X64
                 && (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux));
-
-            _erfNativeLinux = _erfNative && RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         }
         //---------------------------------------------------------------------
         /// <summary>
@@ -34,7 +31,7 @@ namespace gfoidl.Stochastics
         // https://math.stackexchange.com/questions/263216/error-function-erf-with-better-precision/1889960#1889960
         public static double Erf(double x)
         {
-            if (_isDotNetCore && _erfNativeLinux)
+            if (_isDotNetCore && _erfNative)
                 return NativeMethods.gaussian_error_function(x);
 
             /*
@@ -197,7 +194,7 @@ namespace gfoidl.Stochastics
         /// <seealso cref="Erfc(double[])" />
         public static double Erfc(double x)
         {
-            if (_isDotNetCore && _erfNativeLinux)
+            if (_isDotNetCore && _erfNative)
                 return NativeMethods.gaussian_error_function_complementary(x);
 
             /*
