@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 
-#if NETCOREAPP2_1
+#if NETCOREAPP3_0
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -47,7 +47,7 @@ namespace gfoidl.Stochastics.Benchmarks
             Console.WriteLine($"{nameof(Vector.IsHardwareAccelerated)}: {Vector.IsHardwareAccelerated}");
             Console.WriteLine($"SIMD-size: {Vector<double>.Count * sizeof(double) * 8}");
             Console.WriteLine($"Vector<double>.Count: {Vector<double>.Count}");
-#if NETCOREAPP2_1
+#if NETCOREAPP3_0
             Console.WriteLine($"Sse : {Sse.IsSupported}");
             Console.WriteLine($"Sse2: {Sse2.IsSupported}");
             Console.WriteLine($"Avx : {Avx.IsSupported}");
