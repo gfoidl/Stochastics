@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{D9E63A0E-EE9A-4507-9D4A-35AD47E5C89A}"
 	ProjectSection(SolutionItems) = preProject
 		.appveyor.yml = .appveyor.yml
+		.codecov.yml = .codecov.yml
 		build.sh = build.sh
 		dependencies.props = dependencies.props
 		Directory.Build.props = Directory.Build.props

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using gfoidl.Stochastics.Partitioners;
+using Range = gfoidl.Stochastics.Partitioners.Range;
 
 #if NET471
 using Microsoft.ConcurrencyVisualizer.Instrumentation;
