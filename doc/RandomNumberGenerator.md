@@ -19,4 +19,4 @@ for (int i = 0; i < 100; ++i)
 
 ## Distribution
 
-![](./images/distribution.png)
+![](./images/distribution1.png)

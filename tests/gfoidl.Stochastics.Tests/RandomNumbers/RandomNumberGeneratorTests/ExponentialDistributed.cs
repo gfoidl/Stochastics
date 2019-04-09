@@ -1,7 +1,8 @@
 ﻿using System;
+using gfoidl.Stochastics.RandomNumbers;
 using NUnit.Framework;
 
-namespace gfoidl.Stochastics.Tests.RandomNumberGeneratorTests
+namespace gfoidl.Stochastics.Tests.RandomNumbers.RandomNumberGeneratorTests
 {
     [TestFixture]
     public class ExponentialDistributed

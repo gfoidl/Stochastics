@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using static System.Math;
 
-namespace gfoidl.Stochastics
+namespace gfoidl.Stochastics.RandomNumbers
 {
     /// <summary>
     /// A pseudo-random number generator, that produces samples in the

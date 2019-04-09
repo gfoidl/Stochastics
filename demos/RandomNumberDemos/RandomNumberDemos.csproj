@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="plot.plt" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="*.plt" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

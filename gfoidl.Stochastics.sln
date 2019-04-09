@@ -41,7 +41,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{14C631E7-BED7-4C06-BDEF-2AF5FAF0F37C}"
 	ProjectSection(SolutionItems) = preProject
 		doc\images\Chauvenet's-criterion.png = doc\images\Chauvenet's-criterion.png
-		doc\images\distribution.png = doc\images\distribution.png
+		doc\images\distribution1.png = doc\images\distribution1.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Statistics", "Statistics", "{244A6568-911B-4EA7-BC51-3F1AA155E8E7}"
@@ -76,7 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{A741E7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{2D6F5E92-E7F2-4C88-B7AF-8B61FA0F89BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomNumberDemos", "demos\RandomNumberDemos\RandomNumberDemos.csproj", "{E2B95236-8924-47A9-83EB-AF55C4D8D4D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomNumberDemos", "demos\RandomNumberDemos\RandomNumberDemos.csproj", "{E2B95236-8924-47A9-83EB-AF55C4D8D4D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
