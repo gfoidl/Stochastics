@@ -94,7 +94,7 @@ commands:
                 name: benchmarks for Sample
                 command: |
                     cd perf/$NAME.Benchmarks
-                    dotnet run -c Release -f netcoreapp2.1 SampleAll
+                    dotnet run -c Release -f netcoreapp3.0 SampleAll
             - store_artifacts:
                 path: perf/gfoidl.Stochastics.Benchmarks/BenchmarkDotNet.Artifacts/results/gfoidl.Stochastics.Benchmarks.SampleAll-report-github.md
                 destination: benchmark.md
