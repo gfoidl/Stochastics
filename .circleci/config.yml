@@ -150,16 +150,7 @@ workflows:
                     tags:
                         only: /^v[0-9]\.[0-9]\.[0-9](-preview-[0-9]+)?$/
 
-            - benchmarks:
-                requires:
-                    - release_build_test
-                    - debug_build_test
-                filters:
-                    branches:
-                        #only: master
-                        ignore: /.*/
-                    tags:
-                        only: /^v[0-9]\.[0-9]\.[0-9](-preview-[0-9]+)?$/
+            - benchmarks
 
             - deploy:
                 name: deploy-nuget
