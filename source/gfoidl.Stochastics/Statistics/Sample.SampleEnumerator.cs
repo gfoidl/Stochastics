@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using gfoidl.Stochastics.Enumerators;
 
@@ -19,6 +19,7 @@ namespace gfoidl.Stochastics.Statistics
             get
             {
                 double[] values = _values;
+                index += _offset;
 
                 if ((uint)index >= (uint)values.Length)
                     ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.index);
@@ -28,7 +29,7 @@ namespace gfoidl.Stochastics.Statistics
         }
         //---------------------------------------------------------------------
 #pragma warning disable CS1591
-        public ArrayEnumerator<double> GetEnumerator()          => new ArrayEnumerator<double>(_values);
+        public ArrayEnumerator<double> GetEnumerator()          => new ArrayEnumerator<double>(_values, _offset, _length);
         IEnumerator<double> IEnumerable<double>.GetEnumerator() => this.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()                 => this.GetEnumerator();
 #pragma warning restore CS1591

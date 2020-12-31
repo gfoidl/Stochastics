@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
@@ -36,6 +36,17 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
         {
             double[] array = { 1d, 2d };
             var sut        = new Sample(array);
+
+            double actual = sut[1];
+
+            Assert.AreEqual(2d, actual, 1e-6);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void With_offset___OK()
+        {
+            double[] array = { 0d, 1d, 2d };
+            var sut        = new Sample(array, 1, 2);
 
             double actual = sut[1];
 

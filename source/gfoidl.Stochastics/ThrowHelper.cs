@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Resources;
 
@@ -42,7 +42,9 @@ namespace gfoidl.Stochastics
             range,
             values,
             sampleBuilder,
-            lambda
+            lambda,
+            offset,
+            length
         }
         //---------------------------------------------------------------------
         public enum ExceptionResource

@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
@@ -22,7 +22,7 @@ namespace gfoidl.Stochastics.Statistics
                 this.CalculateSkewnessAndKurtosisParallelizedSimd(out skewness, out kurtosis);
 
             double sigma = this.StandardDeviation;
-            double t     = _values.Length * sigma * sigma * sigma;
+            double t     = this.Count * sigma * sigma * sigma;
             skewness    /= t;
             kurtosis    /= t * sigma;
 
@@ -32,7 +32,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal void CalculateSkewnessAndKurtosisSimd(out double skewness, out double kurtosis)
         {
-            this.CalculateSkewnessAndKurtosisImpl(0, this.Count, out skewness, out kurtosis);
+            this.CalculateSkewnessAndKurtosisImpl(_offset, _offset + _length, out skewness, out kurtosis);
         }
         //---------------------------------------------------------------------
         internal void CalculateSkewnessAndKurtosisParallelizedSimd(out double skewness, out double kurtosis)
@@ -41,7 +41,7 @@ namespace gfoidl.Stochastics.Statistics
             double tmpKurtosis = 0;
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
+                Partitioner.Create(_offset, _offset + _length),
                 range =>
                 {
                     this.CalculateSkewnessAndKurtosisImpl(range.Item1, range.Item2, out double localSkewness, out double localKurtosis);

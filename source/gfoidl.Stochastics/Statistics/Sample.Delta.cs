@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -21,9 +21,9 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double CalculateDeltaSimd()
         {
-            double delta = this.CalculateDeltaImpl(0, _values.Length);
+            double delta = this.CalculateDeltaImpl(_offset, _offset + _length);
 
-            return delta / _values.Length;
+            return delta / this.Count;
         }
         //---------------------------------------------------------------------
         internal double CalculateDeltaParallelizedSimd()
@@ -31,7 +31,7 @@ namespace gfoidl.Stochastics.Statistics
             double delta = 0;
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
+                Partitioner.Create(_offset, _offset + _length),
                 range =>
                 {
                     double localDelta = this.CalculateDeltaImpl(range.Item1, range.Item2);
@@ -39,7 +39,7 @@ namespace gfoidl.Stochastics.Statistics
                 }
             );
 
-            return delta / _values.Length;
+            return delta / this.Count;
         }
         //---------------------------------------------------------------------
         private unsafe double CalculateDeltaImpl(int idxStart, int idxEnd)

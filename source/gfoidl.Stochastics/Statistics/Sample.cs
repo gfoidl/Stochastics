@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -16,19 +17,21 @@ namespace gfoidl.Stochastics.Statistics
     /// <see cref="Count" /> is greater or equal <see cref="SampleThresholds.ThresholdForParallel" />.
     /// SIMD is used where possible and where it brings an advantage.
     /// </remarks>
-    public partial class Sample
+    public partial class Sample : IDisposable
     {
         private readonly double[] _values;
+        private readonly int      _offset;
+        private readonly int      _length;
         //---------------------------------------------------------------------
         /// <summary>
         /// Sample.
         /// </summary>
-        public ArrayEnumerable<double> Values => _values;
+        public ArrayEnumerable<double> Values => new ArrayEnumerable<double>(_values, _offset, _length);
         //---------------------------------------------------------------------
         /// <summary>
         /// Sample size.
         /// </summary>
-        public int Count => _values.Length;
+        public int Count => _length;
         //---------------------------------------------------------------------
         /// <summary>
         /// Creates a new instance of <see cref="Sample" />
@@ -43,6 +46,34 @@ namespace gfoidl.Stochastics.Statistics
                 _values = tmp;
             else
                 _values = values.ToArray();
+
+            _offset = 0;
+            _length = _values.Length;
+        }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Creates a new instance of <see cref="Sample" />
+        /// </summary>
+        /// <param name="values">The array, wich gets analyzed (lazy evaluated).</param>
+        /// <param name="offset">The offset in <paramref name="values"/> where analyzing should start.</param>
+        /// <param name="length">The number of elements in <paramref name="values"/> to take into account for analyzing.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="values" /> is <c>null</c>.</exception>
+        public Sample(double[] values, int offset, int length)
+        {
+            if (values == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.values);
+            if (offset + length > values.Length) ThrowHelper.ThrowArgumentOutOfRange(ThrowHelper.ExceptionArgument.length);
+
+            _values = values;
+            _offset = offset;
+            _length = length;
+        }
+        //---------------------------------------------------------------------
+        public void Dispose()
+        {
+            if (_sortedValues != null)
+            {
+                ArrayPool<double>.Shared.Return(_sortedValues);
+            }
         }
         //---------------------------------------------------------------------
 #pragma warning disable CS1591
@@ -54,18 +85,18 @@ namespace gfoidl.Stochastics.Statistics
         /// <summary>
         /// Sample data, sorted ascending.
         /// </summary>
-        public ICollection<double> SortedValues
+        public ArrayEnumerable<double> SortedValues
         {
             get
             {
                 if (_sortedValues == null)
                 {
-                    _sortedValues = new double[_values.Length];
-                    _values.CopyTo(_sortedValues, 0);
-                    Array.Sort(_sortedValues);
+                    _sortedValues = ArrayPool<double>.Shared.Rent(_length);
+                    Array.Copy(_values, _offset, _sortedValues, 0, _length);
+                    Array.Sort(_sortedValues, 0, _length);
                 }
 
-                return _sortedValues;
+                return new ArrayEnumerable<double>(_sortedValues, 0, _length);
             }
         }
         //---------------------------------------------------------------------
@@ -235,19 +266,19 @@ namespace gfoidl.Stochastics.Statistics
         /// Skewness is a measure of the asymmetry of the probability distribution
         /// about its mean. The skewness value can be positive or negative, or undefined.
         /// <para>
-        /// negative skew: The left tail is longer; the mass of the distribution is 
-        /// concentrated on the right of the figure. The distribution is said to be 
-        /// left-skewed, left-tailed, or skewed to the left, despite the fact that the 
-        /// curve itself appears to be skewed or leaning to the right; left instead 
-        /// refers to the left tail being drawn out and, often, the mean being skewed 
+        /// negative skew: The left tail is longer; the mass of the distribution is
+        /// concentrated on the right of the figure. The distribution is said to be
+        /// left-skewed, left-tailed, or skewed to the left, despite the fact that the
+        /// curve itself appears to be skewed or leaning to the right; left instead
+        /// refers to the left tail being drawn out and, often, the mean being skewed
         /// to the left of a typical center of the data.
         /// </para>
         /// <para>
-        /// positive skew: The right tail is longer; the mass of the distribution is 
-        /// concentrated on the left of the figure. The distribution is said to be 
-        /// right-skewed, right-tailed, or skewed to the right, despite the fact that the 
-        /// curve itself appears to be skewed or leaning to the left; right instead 
-        /// refers to the right tail being drawn out and, often, the mean being skewed 
+        /// positive skew: The right tail is longer; the mass of the distribution is
+        /// concentrated on the left of the figure. The distribution is said to be
+        /// right-skewed, right-tailed, or skewed to the right, despite the fact that the
+        /// curve itself appears to be skewed or leaning to the left; right instead
+        /// refers to the right tail being drawn out and, often, the mean being skewed
         /// to the right of a typical center of the data.
         /// </para>
         /// </remarks>
@@ -269,8 +300,8 @@ namespace gfoidl.Stochastics.Statistics
         /// </summary>
         /// <remarks>
         /// A measure of the curvature of a distribution. The value of 3 corresponds
-        /// the ideal normal distribution. A value lower than 3 indicates one flatter 
-        /// distribution than the normal distribution, whereas a steeper distribution 
+        /// the ideal normal distribution. A value lower than 3 indicates one flatter
+        /// distribution than the normal distribution, whereas a steeper distribution
         /// corresponding to a value greater than 3.
         /// </remarks>
         public double Kurtosis

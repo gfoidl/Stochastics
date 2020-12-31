@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 
 namespace gfoidl.Stochastics.Statistics
@@ -10,15 +10,20 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         private double CalculateMedian()
         {
-            int n = this.SortedValues.Count;
+            _     = this.SortedValues;  // lazy created
+            int n = _length;
 
-            if (n % 2 == 0)
+            if ((n & 1) == 0)   // n % 2
+            {
                 return (_sortedValues[(n >> 1) - 1] + _sortedValues[n >> 1]) * 0.5;
+            }
             else
-                // this is correct, but n is an int, so the next line is 
+            {
+                // this is correct, but n is an int, so the next line is
                 // very slight optimization and yield the same result.
                 //_median = _sortedValues[(n - 1) / 2];
                 return _sortedValues[n >> 1];
+            }
         }
         //---------------------------------------------------------------------
         private double CalculateVariance()       => this.VarianceCore / this.Count;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -40,7 +40,7 @@ namespace gfoidl.Stochastics.Statistics
 
             if (sigma == 0)
             {
-                var tmp = new double[_values.Length];
+                var tmp = new double[_length];
                 _values.CopyTo(tmp, 0);
                 return tmp;
             }
@@ -54,7 +54,7 @@ namespace gfoidl.Stochastics.Statistics
         {
             var zTrans = new double[this.Count];
 
-            this.ZTransformationToArrayImpl(zTrans, sigma, 0, _values.Length);
+            this.ZTransformationToArrayImpl(zTrans, sigma, 0, _length);
 
             return zTrans;
         }
@@ -64,7 +64,7 @@ namespace gfoidl.Stochastics.Statistics
             var zTrans = new double[this.Count];
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
+                Partitioner.Create(0, _length),
                 range => this.ZTransformationToArrayImpl(zTrans, sigma, range.Item1, range.Item2)
             );
 

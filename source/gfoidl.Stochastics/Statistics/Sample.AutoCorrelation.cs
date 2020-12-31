@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using gfoidl.Stochastics.Partitioners;
@@ -58,7 +58,7 @@ namespace gfoidl.Stochastics.Statistics
         #region ToArray
         internal double[] AutoCorrelationToArraySimd()
         {
-            int n    = _values.Length;
+            int n    = _length;
             int n2   = n / 2;
             var corr = new double[n2];
 
@@ -69,8 +69,8 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal double[] AutoCorrelationToArrayParallelSimd()
         {
-            var corr                      = new double[_values.Length / 2];
-            int n                         = _values.Length;
+            var corr                      = new double[_length / 2];
+            int n                         = _length;
             var parallelOptions           = GetParallelOptions();
             const int partitionMultiplier = 8;
             int partitionCount            = parallelOptions.MaxDegreeOfParallelism * partitionMultiplier;
@@ -86,7 +86,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         private unsafe void AutoCorrelationToArrayImpl(double[] corr, Range range)
         {
-            int n = _values.Length;
+            int n = _length;
 
             fixed (double* pArray = _values)
             fixed (double* pCorr  = corr)

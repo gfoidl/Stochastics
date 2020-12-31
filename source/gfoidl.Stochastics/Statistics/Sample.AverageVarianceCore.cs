@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
@@ -30,7 +30,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal void CalculateAverageAndVarianceCoreSimd(out double avg, out double variance)
         {
-            this.CalculateAverageAndVarianceCoreImpl(0, this.Count, out avg, out variance);
+            this.CalculateAverageAndVarianceCoreImpl(_offset, _offset + _length, out avg, out variance);
         }
         //---------------------------------------------------------------------
         internal void CalculateAverageAndVarianceCoreParallelizedSimd(out double avg, out double variance)
@@ -39,7 +39,7 @@ namespace gfoidl.Stochastics.Statistics
             double tmpVariance = 0;
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
+                Partitioner.Create(_offset, _offset + _length),
                 range =>
                 {
                     this.CalculateAverageAndVarianceCoreImpl(range.Item1, range.Item2, out double localAvg, out double localVariance);
