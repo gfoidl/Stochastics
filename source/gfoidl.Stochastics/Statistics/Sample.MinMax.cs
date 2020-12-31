@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -14,8 +14,9 @@ namespace gfoidl.Stochastics.Statistics
         {
             if (this.Count == 1)
             {
-                _min = _values[0];
-                _max = _values[0];
+                double value = _values[_offset];
+                _min = value;
+                _max = value;
             }
             else
             {
@@ -28,7 +29,7 @@ namespace gfoidl.Stochastics.Statistics
         //---------------------------------------------------------------------
         internal void GetMinMaxSimd(out double min, out double max)
         {
-            this.GetMinMaxImpl(0, this.Count, out min, out max);
+            this.GetMinMaxImpl(_offset, _offset + _length, out min, out max);
         }
         //---------------------------------------------------------------------
         internal void GetMinMaxParallelizedSimd(out double min, out double max)
@@ -37,7 +38,7 @@ namespace gfoidl.Stochastics.Statistics
             double tmpMax = double.MinValue;
 
             Parallel.ForEach(
-                Partitioner.Create(0, _values.Length),
+                Partitioner.Create(_offset, _offset + _length),
                 range =>
                 {
                     this.GetMinMaxImpl(range.Item1, range.Item2, out double localMin, out double localMax);

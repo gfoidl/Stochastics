@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Linq;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
@@ -15,7 +15,7 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
 
             var sut = new Sample(values);
 
-            ICollection<double> actual = sut.SortedValues;
+            double[] actual = sut.SortedValues.ToArray();
 
             CollectionAssert.AreEqual(expected, actual);
         }

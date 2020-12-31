@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>netcoreapp3.0;netcoreapp2.1;netstandard2.0</TargetFrameworks>
@@ -28,6 +28,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsPackageVersion)" />
+        <PackageReference Include="System.Buffers" Version="$(SystemBuffersPackageVersion)" />
     </ItemGroup>
 
     <ItemGroup>

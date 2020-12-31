@@ -6,6 +6,7 @@
         <MicrosoftNETTestSdkPackageVersion>15.9.0</MicrosoftNETTestSdkPackageVersion>
         <NUnitPackageVersion>3.11.0</NUnitPackageVersion>
         <NUnit3TestAdapterPackageVersion>3.10.0</NUnit3TestAdapterPackageVersion>
+        <SystemBuffersPackageVersion>4.5.1</SystemBuffersPackageVersion>
         <SystemMemoryPackageVersion>4.5.2</SystemMemoryPackageVersion>
         <SystemNumericsVectorsPackageVersion>4.5.0</SystemNumericsVectorsPackageVersion>
         <SystemRuntimeCompilerServicesUnsafePackageVersion>4.5.2</SystemRuntimeCompilerServicesUnsafePackageVersion>

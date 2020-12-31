@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-        <TargetFrameworks>netcoreapp3.0;netcoreapp2.1;net471</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.0;netcoreapp2.1;net48</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
@@ -23,7 +23,7 @@
         <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNetPackageVersion)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net471'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <PackageReference Include="ConcurrencyVisualizer" Version="$(ConcurrencyVisualizerPackageVersion)" />
     </ItemGroup>
 

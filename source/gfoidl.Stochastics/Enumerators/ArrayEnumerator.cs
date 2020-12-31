@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace gfoidl.Stochastics.Enumerators
@@ -7,15 +7,21 @@ namespace gfoidl.Stochastics.Enumerators
     public struct ArrayEnumerable<T> : IEnumerable<T>
     {
         private readonly T[] _array;
+        private readonly int _offset;
+        private readonly int _length;
         //---------------------------------------------------------------------
-        public ArrayEnumerable(T[] array)
+        public ArrayEnumerable(T[] array) : this(array, 0, array.Length) { }
+        //---------------------------------------------------------------------
+        public ArrayEnumerable(T[] array, int offset, int length)
         {
             if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);
 
-            _array = array;
+            _array  = array;
+            _offset = offset;
+            _length = length;
         }
         //---------------------------------------------------------------------
-        public ArrayEnumerator<T> GetEnumerator()     => new ArrayEnumerator<T>(_array);
+        public ArrayEnumerator<T> GetEnumerator()     => new ArrayEnumerator<T>(_array, _offset, _length);
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => this.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator()       => this.GetEnumerator();
         //---------------------------------------------------------------------
@@ -26,17 +32,23 @@ namespace gfoidl.Stochastics.Enumerators
     public struct ArrayEnumerator<T> : IEnumerator<T>
     {
         private readonly T[] _array;
+        private readonly int _offset;
+        private readonly int _length;
         private int          _index;
         //---------------------------------------------------------------------
-        public ArrayEnumerator(T[] array)
+        public ArrayEnumerator(T[] array) : this(array, 0, array.Length) { }
+        //---------------------------------------------------------------------
+        public ArrayEnumerator(T[] array, int offset, int length)
         {
             if (array == null) ThrowHelper.ThrowArgumentNull(ThrowHelper.ExceptionArgument.array);
 
-            _array = array;
-            _index = -1;
+            _array  = array;
+            _offset = offset;
+            _length = length;
+            _index  = -1;
         }
         //---------------------------------------------------------------------
-        public T Current           => _array[_index];
+        public T Current           => _array[_offset + _index];
         object IEnumerator.Current => this.Current;
         //---------------------------------------------------------------------
         public void Dispose() { }
@@ -44,7 +56,7 @@ namespace gfoidl.Stochastics.Enumerators
         public bool MoveNext()
         {
             _index++;
-            return _index < _array.Length;
+            return (uint)_index < (uint)(_length);
         }
         //-----------------------------------------------------------------
         public void Reset() => _index = -1;

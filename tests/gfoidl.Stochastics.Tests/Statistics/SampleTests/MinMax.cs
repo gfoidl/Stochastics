@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
@@ -25,6 +25,20 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
             double[] values = { 42 };
 
             var sut = new Sample(values);
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(42, sut.Min);
+                Assert.AreEqual(42, sut.Max);
+            });
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void One_value_with_offset___is_min_and_max()
+        {
+            double[] values = { 0, 42, 100 };
+
+            var sut = new Sample(values, 1, 1);
 
             Assert.Multiple(() =>
             {

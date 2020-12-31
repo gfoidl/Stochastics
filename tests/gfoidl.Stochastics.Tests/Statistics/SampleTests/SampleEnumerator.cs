@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
@@ -20,6 +21,22 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests
                 actual.Add(item);
 
             CollectionAssert.AreEqual(values, actual);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Foreach_over_sample_with_offset___correct_collection()
+        {
+            double[] values = { 0, 1, 2, 3 };
+
+            var sut = new Sample(values, 1, 3);
+
+            var actual = new List<double>();
+
+            foreach (double item in sut)
+                actual.Add(item);
+
+            double[] expected = values.Skip(1).ToArray();
+            CollectionAssert.AreEqual(expected, actual);
         }
         //---------------------------------------------------------------------
         [Test]

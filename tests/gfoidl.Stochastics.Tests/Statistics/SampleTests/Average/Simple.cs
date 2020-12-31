@@ -1,4 +1,4 @@
-﻿using gfoidl.Stochastics.Statistics;
+using gfoidl.Stochastics.Statistics;
 using NUnit.Framework;
 
 namespace gfoidl.Stochastics.Tests.Statistics.SampleTests.Average
@@ -17,6 +17,17 @@ namespace gfoidl.Stochastics.Tests.Statistics.SampleTests.Average
         {
             double[] values = { 42 };
             var sut         = new Sample(values);
+
+            double actual = sut.Mean;
+
+            Assert.AreEqual(42, actual);
+        }
+        //---------------------------------------------------------------------
+        [Test, Repeat(2)]
+        public void One_value_with_offset___is_the_Average()
+        {
+            double[] values = { 0, 42, 0 };
+            var sut         = new Sample(values, 1, 1);
 
             double actual = sut.Mean;
 
